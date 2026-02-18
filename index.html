@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZAMAN MAKİNESİ</title>
+    <title>OF-İS ZAMAN MAKİNESİ</title>
     <link rel="apple-touch-icon" href="icon.png">
     <link rel="icon" href="icon.png">
     <style>
@@ -19,7 +19,11 @@
 
         /* PANEL */
         .container { width: 90%; max-width: 320px; text-align: center; position: relative; z-index: 10; }
-        .header { font-size: 1.2rem; margin-bottom: 25px; text-shadow: 0 0 15px #fff; letter-spacing: 2px; }
+        
+        /* İKİ SATIRLI BAŞLIK */
+        .header { font-size: 1.5rem; line-height: 1.2; margin-bottom: 25px; text-shadow: 0 0 15px #fff; letter-spacing: 2px; text-transform: uppercase; }
+        .header span { display: block; font-size: 1.1rem; opacity: 0.9; }
+
         .box { background: rgba(5, 5, 5, 0.9); border: 2px solid #333; border-radius: 20px; padding: 20px 10px; box-shadow: 0 0 40px #000; backdrop-filter: blur(5px); }
         .display { background: #000; border: 1px solid #222; border-radius: 12px; margin: 12px 0; padding: 15px 5px; min-height: 80px; display: flex; flex-direction: column; justify-content: center; }
         .label { font-size: 0.65rem; color: #666; margin-bottom: 5px; display: block; }
@@ -36,7 +40,7 @@
 <body>
     <div class="warp-bg"><div id="warpLines" class="lines"></div></div>
     <div class="container">
-        <h1 class="header">ZAMAN MAKİNESİ</h1>
+        <h1 class="header">OF-İS<span>ZAMAN MAKİNESİ</span></h1>
         <div class="box">
             <div class="display red">
                 <span class="label">HEDEF TARİH</span>
@@ -87,7 +91,9 @@
                 el.style.transform = "translateY(0)";
                 
                 setTimeout(() => {
-                    el.getElementsByClassName('item')[COUNT-3].innerText = targets[i];
+                    if(el.getElementsByClassName('item')[COUNT-3]) {
+                        el.getElementsByClassName('item')[COUNT-3].innerText = targets[i];
+                    }
                     el.style.transition = "transform 2.5s cubic-bezier(0.1, 0, 0.1, 1)";
                     el.style.transform = `translateY(-${(COUNT-3) * ITEM_H}px)`;
                 }, 50);
@@ -96,7 +102,7 @@
             setTimeout(() => {
                 isSpinning = false;
                 lines.classList.remove('fast-warp');
-                startCooldown(300); // 5 dakika
+                startCooldown(300); 
             }, 2800);
         }
 
@@ -127,24 +133,28 @@
             const saved = localStorage.getItem('machineLock');
             if (saved) {
                 const remaining = Math.floor((saved - Date.now()) / 1000);
-                if (remaining > 0) startCooldown(remaining);
+                if (remaining > 0) {
+                    startCooldown(remaining);
+                } else {
+                    localStorage.removeItem('machineLock');
+                }
             }
         }
 
         function clock() {
             const n = new Date();
-            const months = ["OCAK", "SUB", "MART", "NIS", "MAY", "HAZ", "TEM", "AGU", "EYL", "EKM", "KAS", "ARL"];
             document.getElementById('p-d').innerText = String(n.getDate()).padStart(2, '0');
-            document.getElementById('p-m').innerText = months[n.getMonth()];
+            document.getElementById('p-m').innerText = ms[n.getMonth()];
             document.getElementById('p-y').innerText = n.getFullYear();
         }
 
-        window.onload = function() {
+        // ÖNEMLİ: Slotlar dolmadan butonu aktif etmiyoruz
+        window.addEventListener('load', () => {
             fillSlots();
             clock();
             checkCooldown();
             setInterval(clock, 1000);
-        };
+        });
     </script>
 </body>
 </html>
