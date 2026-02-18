@@ -3,172 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gültekin Bayır - Arşiv Yönetim Paneli</title>
+    <title>Gültekin Bayır - Pratik Arşiv Paneli</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; padding: 20px; display: flex; justify-content: center; }
-        .container { width: 100%; max-width: 950px; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        h2 { color: #2c3e50; border-bottom: 3px solid #e67e22; padding-bottom: 10px; margin-top: 0; }
-        .selection-box { background: #f8f9fa; padding: 20px; border-radius: 10px; border: 1px solid #e9ecef; margin-bottom: 20px; }
-        .dropdowns { display: flex; gap: 15px; margin-bottom: 15px; }
-        .select-group { flex: 1; display: flex; flex-direction: column; gap: 5px; }
-        select { padding: 10px; border-radius: 8px; border: 1px solid #ced4da; font-size: 15px; background: white; cursor: pointer; }
-        #fetch-btn { width: 100%; padding: 12px; background: #e67e22; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
-        .panel-label { font-weight: bold; margin: 15px 0 5px 0; display: block; color: #34495e; font-size: 13px; }
-        .old-data-view { width: 100%; height: 100px; padding: 12px; background: #f1f3f5; border: 1px solid #dee2e6; border-radius: 8px; overflow-y: auto; color: #333; font-size: 15px; box-sizing: border-box; border-left: 5px solid #e67e22; white-space: pre-wrap; }
-        .toolbar { display: flex; gap: 8px; background: #34495e; padding: 8px; border-radius: 8px 8px 0 0; margin-top: 15px; }
-        .tool-btn { background: none; border: 1px solid #5d6d7e; color: white; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
-        textarea { width: 100%; box-sizing: border-box; padding: 15px; border: 1px solid #ced4da; font-size: 16px; line-height: 1.5; }
-        #new-editor { height: 250px; border-radius: 0 0 8px 8px; margin-top: -1px; }
-        #code-output { height: 150px; background: #1e1e1e; color: #2ecc71; font-family: 'Consolas', monospace; font-size: 11px; border-radius: 8px; margin-top: 5px; white-space: pre; overflow: auto; }
-        .action-btns { display: flex; gap: 10px; margin-top: 15px; }
-        .btn-main { flex: 1; padding: 15px; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
-        #process-btn { background: #2980b9; color: white; }
-        #generate-btn { background: #8e44ad; color: white; }
-        #copy-all-btn { background: #27ae60; color: white; margin-top: 10px; width: 100%; }
-        #status { margin-top: 10px; text-align: center; font-weight: bold; display: none; padding: 8px; border-radius: 5px; font-size: 13px; color: white; }
+        .container { width: 100%; max-width: 850px; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        h2 { color: #2c3e50; border-bottom: 3px solid #e67e22; padding-bottom: 10px; }
+        
+        .selection-box { background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #e9ecef; }
+        .dropdowns { display: flex; gap: 10px; margin-bottom: 15px; }
+        .select-group { flex: 1; display: flex; flex-direction: column; }
+        select { padding: 10px; border-radius: 8px; border: 1px solid #ced4da; }
+        
+        #fetch-btn { width: 100%; padding: 12px; background: #34495e; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        
+        .panel-label { font-weight: bold; margin: 15px 0 5px 0; display: block; font-size: 13px; color: #7f8c8d; }
+        textarea { width: 100%; height: 180px; padding: 15px; border: 1px solid #ced4da; border-radius: 8px; font-size: 16px; box-sizing: border-box; resize: vertical; }
+
+        /* Yeni Satır Alanı */
+        .output-box { background: #2c3e50; color: #2ecc71; padding: 15px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 14px; margin-top: 10px; border-left: 5px solid #27ae60; word-break: break-all; }
+        
+        .btn-row { display: flex; gap: 10px; margin-top: 15px; }
+        .btn-gen { flex: 1; padding: 15px; background: #e67e22; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+        .btn-copy { padding: 15px; background: #27ae60; color: white; border: none; border-radius: 8px; cursor: pointer; width: 150px; font-weight: bold; }
+        
+        #status { margin-top: 10px; text-align: center; font-weight: bold; display: none; padding: 8px; border-radius: 5px; color: white; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Arşiv Yönetim Paneli</h2>
+    <h2>Arşiv Satır Jeneratörü</h2>
     
     <div class="selection-box">
         <div class="dropdowns">
             <div class="select-group"><label>Gün</label><select id="day-select"><option value="">Gün</option></select></div>
             <div class="select-group"><label>Ay</label>
                 <select id="month-select">
-                    <option value="">Ay</option>
-                    <option value="01">Ocak</option><option value="02">Şubat</option><option value="03">Mart</option>
-                    <option value="04">Nisan</option><option value="05">Mayıs</option><option value="06">Haziran</option>
-                    <option value="07">Temmuz</option><option value="08">Ağustos</option><option value="09">Eylül</option>
-                    <option value="10">Ekim</option><option value="11">Kasım</option><option value="12">Aralık</option>
+                    <option value="">Ay</option><option value="01">Ocak</option><option value="02">Şubat</option>
+                    <option value="03">Mart</option><option value="04">Nisan</option><option value="05">Mayıs</option>
+                    <option value="06">Haziran</option><option value="07">Temmuz</option><option value="08">Ağustos</option>
+                    <option value="09">Eylül</option><option value="10">Ekim</option><option value="11">Kasım</option><option value="12">Aralık</option>
                 </select>
             </div>
             <div class="select-group"><label>Yıl</label><select id="year-select"><option value="">Yıl</option></select></div>
         </div>
-        <button id="fetch-btn"><i class="fas fa-sync"></i> VERİYİ GETİR</button>
+        <button id="fetch-btn">ESKİ VERİYİ GÖSTER (OPSİYONEL)</button>
     </div>
 
-    <label class="panel-label">Mevcut Kayıt (Eski):</label>
-    <div id="old-view" class="old-data-view">Lütfen tarih seçip "Veriyi Getir"e basın...</div>
-
-    <label class="panel-label">Düzenleme Paneli:</label>
-    <div class="toolbar">
-        <button class="tool-btn" id="mic-btn"><i class="fas fa-microphone"></i> Sesle Yaz</button>
-        <button class="tool-btn" id="paste-btn"><i class="fas fa-paste"></i> Yapıştır</button>
-        <button class="tool-btn" id="copy-btn"><i class="fas fa-copy"></i> Kopyala</button>
-    </div>
-    <textarea id="new-editor" placeholder="Metni burada güncelleyin..."></textarea>
+    <label class="panel-label">Düzenleme Alanı:</label>
+    <textarea id="editor" placeholder="Açıklamanızı buraya yazın..."></textarea>
     
-    <div class="action-btns">
-        <button id="process-btn" class="btn-main">1. KODA İŞLE</button>
-        <button id="generate-btn" class="btn-main">2. DOSYA KODUNU OLUŞTUR</button>
+    <div class="btn-row">
+        <button id="generate-btn" class="btn-gen">Mükemmel Koda Çevir</button>
     </div>
 
-    <label class="panel-label">Yeni data.js Çıktısı (Kopyalayıp dosyaya yapıştırın):</label>
-    <textarea id="code-output" readonly placeholder="Kod burada oluşacak..."></textarea>
-    <button id="copy-all-btn" class="btn-main">TÜM KODU KOPYALA</button>
+    <label class="panel-label">Yapıştırılmaya Hazır Satır:</label>
+    <div id="output-line" class="output-box">Kod burada oluşacak...</div>
+    
+    <button id="copy-btn" class="btn-copy"><i class="fas fa-copy"></i> SATIRI KOPYALA</button>
 
     <div id="status"></div>
 </div>
 
+<script src="data.js"></script>
 <script>
-    let archiveMemory = {}; 
     const dayS = document.getElementById('day-select');
-    const yearS = document.getElementById('year-select');
     const monthS = document.getElementById('month-select');
-    const oldView = document.getElementById('old-view');
-    const newEditor = document.getElementById('new-editor');
-    const codeOut = document.getElementById('code-output');
+    const yearS = document.getElementById('year-select');
+    const editor = document.getElementById('editor');
+    const output = document.getElementById('output-line');
 
-    // --- ÖNCE MENÜLERİ DOLDURUYORUZ (Her koşulda çalışır) ---
-    for (let i = 1; i <= 31; i++) {
-        let d = i.toString().padStart(2, '0');
-        dayS.innerHTML += `<option value="${d}">${d}</option>`;
-    }
-    for (let i = 1990; i <= 1999; i++) {
-        yearS.innerHTML += `<option value="${i}">${i}</option>`;
-    }
+    // Menüleri doldur
+    for(let i=1; i<=31; i++) dayS.innerHTML += `<option value="${i.toString().padStart(2,'0')}">${i.toString().padStart(2,'0')}</option>`;
+    for(let i=1990; i<=1999; i++) yearS.innerHTML += `<option value="${i}">${i}</option>`;
 
-    // --- VERİ GETİRME ---
-    document.getElementById('fetch-btn').onclick = async () => {
-        if (!dayS.value || !monthS.value || !yearS.value) {
-            showMsg("Lütfen tarih seçin!", "#e74c3c");
+    // Eski veriyi getir (Sadece bakmak için)
+    document.getElementById('fetch-btn').onclick = () => {
+        const key = `${yearS.value}-${monthS.value}-${dayS.value}`;
+        if(typeof dataJS !== 'undefined' && dataJS[key]) {
+            editor.value = dataJS[key];
+            showMsg("Eski veri düzenleme alanına yüklendi.", "#34495e");
+        }
+    };
+
+    // KODA ÇEVİR (Asıl sihir burada)
+    document.getElementById('generate-btn').onclick = () => {
+        if(!dayS.value || !monthS.value || !yearS.value) {
+            showMsg("Lütfen önce tarih seçin!", "#c0392b");
             return;
         }
-        const searchKey = `${yearS.value}-${monthS.value}-${dayS.value}`;
-        
-        try {
-            const resp = await fetch('data.js');
-            if (!resp.ok) throw new Error("Dosya bulunamadı");
-            const text = await resp.text();
-            
-            // Tarih ve metin çiftlerini ayıklayan geliştirilmiş regex
-            const regex = /"(\d{4}-\d{2}-\d{2})"\s*:\s*"([^"]+)"/g;
-            let match;
-            archiveMemory = {}; 
 
-            while ((match = regex.exec(text)) !== null) {
-                archiveMemory[match[1]] = match[2];
-            }
-
-            if (archiveMemory[searchKey]) {
-                oldView.innerText = archiveMemory[searchKey];
-                newEditor.value = archiveMemory[searchKey];
-                showMsg(searchKey + " yüklendi.", "#27ae60");
-            } else {
-                oldView.innerText = "Kayıt bulunamadı.";
-                newEditor.value = "";
-                showMsg("Arşivde bu tarih boş.", "#e67e22");
-            }
-        } catch (e) {
-            oldView.innerText = "Hata: data.js dosyası okunamadı veya bozuk.";
-            showMsg("Dosya Hatası!", "red");
-        }
-    };
-
-    // 1. KODA İŞLE
-    document.getElementById('process-btn').onclick = () => {
         const key = `${yearS.value}-${monthS.value}-${dayS.value}`;
-        if (key && dayS.value) {
-            archiveMemory[key] = newEditor.value;
-            showMsg("Hafızaya alındı.", "#2980b9");
-        }
-    };
+        // Tırnakları ve Enterları temizle
+        let temizMetin = editor.value
+            .replace(/"/g, "'")    // Çift tırnakları tek tırnağa çevirir
+            .replace(/\n/g, " ")   // Satır sonlarını boşluğa çevirir
+            .trim();
 
-    // 2. DOSYA KODUNU OLUŞTUR
-    document.getElementById('generate-btn').onclick = () => {
-        const sortedKeys = Object.keys(archiveMemory).sort();
-        let finalCode = "const dataJS = {\n";
-        sortedKeys.forEach((key, index) => {
-            const comma = (index === sortedKeys.length - 1) ? "" : ",";
-            finalCode += `    "${key}": "${archiveMemory[key]}"${comma}\n`;
-        });
-        finalCode += "};";
-        codeOut.value = finalCode;
-        showMsg("Kod pencerede hazır!", "#8e44ad");
+        const finalLine = `"${key}": "${temizMetin}",`;
+        output.innerText = finalLine;
+        showMsg("Kod hazır! Kopyalayıp yapıştırabilirsiniz.", "#27ae60");
     };
 
     // KOPYALA
-    document.getElementById('copy-all-btn').onclick = () => {
-        codeOut.select();
-        document.execCommand('copy');
-        showMsg("Kod kopyalandı!", "#27ae60");
+    document.getElementById('copy-btn').onclick = () => {
+        const text = output.innerText;
+        navigator.clipboard.writeText(text);
+        showMsg("Satır başarıyla kopyalandı!", "#2ecc71");
     };
-
-    // SESLE YAZ VE ARAÇLAR
-    const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (Speech) {
-        const rec = new Speech(); rec.lang = 'tr-TR';
-        rec.onresult = (e) => { newEditor.value += " " + e.results[0][0].transcript; };
-        document.getElementById('mic-btn').onclick = () => { rec.start(); showMsg("Dinleniyor...", "#3498db"); };
-    }
-    document.getElementById('paste-btn').onclick = async () => { 
-        newEditor.value += await navigator.clipboard.readText(); 
-    };
-    document.getElementById('copy-btn').onclick = () => { newEditor.select(); document.execCommand('copy'); };
 
     function showMsg(txt, color) {
         const s = document.getElementById('status');
