@@ -1,10 +1,10 @@
-const zamanVerisi = {
-    "1990-01-01": "90'ların ilk sabahı! TRT'de yeni yıl neşesi. Bugün efsane Aliye Rona aramızda.",
-    "1990-01-02": "Türkiye yeni yıla umutla bakıyor. Bugün usta oyuncu Belgin Doruk en verimli çağında.",
-    "1990-01-03": "Panama lideri Noriega teslim oldu. Bugün Mel Gibson 34 yaşında.",
-    "1990-01-04": "Pakistan'da tren kazası: 300 ölü. Bugün müzisyen Gökhan Özoğuz 14 yaşında.",
-    "1990-01-05": "Edip Akbayram 'Hava Nasıl Oralarda' ile listelerde. Bugün Bradley Cooper 15 yaşında.",
-    "1990-01-06": "İstanbul'da yoğun sis trafiği aksattı. Bugün Alex Ferguson ManU başında zorlanıyor.",
+i
+    
+,,,
+    
+    
+    
+    nda zorlanıyor.",
     "1990-01-07": "Pisa Kulesi güvenlik için kapatıldı. Bugün usta kalem Çetin Altan köşe yazısında.",
     "1990-01-08": "Turgut Özal Çankaya'da yoğun mesaide. Bugün David Bowie 43. yaşını kutluyor.",
     "1990-01-09": "Sinemalarda 'Zengin Mutfağı' rüzgarı. Bugün oyuncu JK Simmons 35 yaşında.",
