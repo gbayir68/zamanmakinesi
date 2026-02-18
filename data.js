@@ -730,4 +730,3 @@ const zamanVerisi = {
     "1991-12-30": "Bağımsız Devletler Topluluğu liderleri Minsk'te toplandı. Bugün LeBron James 7 yaşında",
     "1991-12-31": "Hoş geldin 1992! Sovyetler Birliği'nin olmadığı ilk yıla giriyoruz"
 };
-};
