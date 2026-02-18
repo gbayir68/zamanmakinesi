@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Zaman Makinesi">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#000000">
+
+    <title>ZAMAN MAKİNESİ</title>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
+        
+        body { 
+            background: #000; 
+            margin: 0; 
+            display: flex; 
+            flex-direction: column;
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh;
+            font-family: 'Orbitron', sans-serif;
+            color: #fff;
+            touch-action: manipulation;
+        }
+
+        .main-header { 
+            letter-spacing: 10px; 
+            text-shadow: 0 0 10px #fff;
+            margin-bottom: 20px;
+            font-size: 2rem;
+            text-align: center;
+        }
+
+        .circuit-board {
+            background: #151515;
+            padding: 20px;
+            border: 8px solid #333;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 0 50px #000;
+        }
+
+        .display-row {
+            background: #000;
+            margin: 10px 0;
+            padding: 15px;
+            border: 3px solid #222;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .label { 
+            display: block; 
+            font-size: 0.8rem; 
+            margin-bottom: 10px; 
+            letter-spacing: 3px;
+        }
+
+        .red { color: #ff3131; text-shadow: 0 0 15px #ff3131; }
+        .green { color: #00ff41; text-shadow: 0 0 15px #00ff41; }
+
+        .slot-window {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            font-size: 3rem;
+            height: 70px;
+            overflow: hidden;
+        }
+
+        .strip {
+            position: relative;
+            top: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slot-item {
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-panel { margin-top: 30px; }
+
+        button {
+            padding: 18px 50px;
+            font-size: 1.4rem;
+            background: #b00;
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            box-shadow: 0 8px #600;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.1s;
+        }
+
+        button:active { transform: translateY(4px); box-shadow: 0 2px #300; }
+        button:disabled { background: #444; box-shadow: 0 4px #222; opacity: 0.7; }
+    </style>
+</head>
+<body>
+
+    <h1 class="main-header">ZAMAN MAKİNESİ</h1>
+
+    <div class="circuit-board">
+        <div class="display-row red">
+            <span class="label">HEDEF TARİH</span>
+            <div class="slot-window">
+                <div class="slot-box"><div id="m-strip" class="strip"></div></div>
+                <div class="slot-box"><div id="d-strip" class="strip"></div></div>
+                <div class="slot-box"><div id="y-strip" class="strip"></div></div>
+            </div>
+        </div>
+        
+        <div class="display-row green">
+            <span class="label">ŞİMDİKİ TARİH</span>
+            <div id="present-display" class="slot-window"></div>
+        </div>
+    </div>
+
+    <div class="btn-panel">
+        <button id="spinBtn" onclick="startSpin()">ZAMANI DEĞİŞTİR</button>
+    </div>
+
+    <script>
+        const months = ["OCAK", "SUB", "MART", "NIS", "MAY", "HAZ", "TEM", "AGU", "EYL", "EKM", "KAS", "ARL"];
+        const ITEM_HEIGHT = 70;
+        const STRIP_COUNT = 40;
+
+        function init() {
+            const mS = document.getElementById('m-strip');
+            const dS = document.getElementById('d-strip');
+            const yS = document.getElementById('y-strip');
+
+            const fill = (el, arr) => {
+                let h = "";
+                for(let i=0; i<STRIP_COUNT; i++) h += `<div class="slot-item">${arr[i % arr.length]}</div>`;
+                el.innerHTML = h;
+            };
+
+            fill(mS, months);
+            fill(dS, Array.from({length: 28}, (_, i) => i + 1));
+            fill(yS, Array.from({length: 10}, (_, i) => 1990 + i));
+        }
+
+        function startSpin() {
+            const btn = document.getElementById('spinBtn');
+            btn.disabled = true;
+
+            const targets = [
+                months[Math.floor(Math.random() * 12)],
+                Math.floor(Math.random() * 28) + 1,
+                Math.floor(Math.random() * 10) + 1990
+            ];
+
+            ['m-strip', 'd-strip', 'y-strip'].forEach((id, i) => {
+                const el = document.getElementById(id);
+                const stopIdx = STRIP_COUNT - 5;
+                
+                el.style.transition = "none";
+                el.style.transform = "translateY(0)";
+
+                setTimeout(() => {
+                    el.getElementsByClassName('slot-item')[stopIdx].innerText = targets[i];
+                    el.style.transition = `transform ${3000 + (i * 1000)}ms cubic-bezier(0.1, 0, 0.1, 1)`;
+                    el.style.transform = `translateY(-${stopIdx * ITEM_HEIGHT}px)`;
+                }, 50);
+            });
+
+            setTimeout(() => { btn.disabled = false; }, 5500);
+        }
+
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('present-display').innerText = months[now.getMonth()] + " " + String(now.getDate()).padStart(2, '0') + " " + now.getFullYear();
+        }
+
+        init();
+        updateClock();
+        setInterval(updateClock, 1000);
+
+        // Service Worker Kaydı (Çevrimdışı Çalışma İçin)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(() => {
+                    console.log("Çevrimdışı modu için hosting gereklidir.");
+                });
+            });
+        }
+    </script>
+</body>
+</html>
