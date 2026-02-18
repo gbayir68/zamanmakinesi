@@ -3,202 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>OF-İS KONTROL PANELİ</title>
+    <title>OF-İS KONTROL PANELİ V3</title>
     
     <link rel="apple-touch-icon" href="icon.png">
     <link rel="icon" href="icon.png">
-    
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
     
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        
-        body { 
-            background: #000; 
-            color: #fff; 
-            font-family: 'Orbitron', sans-serif; 
-            min-height: 100vh; 
-            display: flex; 
-            flex-direction: column;
-            align-items: center; 
-            padding: 20px 0;
-            overflow-x: hidden;
-            position: relative; 
-        }
-
+        body { background: #000; color: #fff; font-family: 'Orbitron', sans-serif; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 20px 0; overflow-x: hidden; position: relative; }
         .warp-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, #1a0033 0%, #000 80%); z-index: -1; perspective: 600px; }
         .lines { position: absolute; width: 200%; height: 200%; top: -50%; left: -50%; background-image: linear-gradient(to right, rgba(147, 51, 234, 0.2) 2px, transparent 2px), linear-gradient(to bottom, rgba(147, 51, 234, 0.2) 2px, transparent 2px); background-size: 60px 60px; transform: rotateX(55deg); animation: warpMove 4s linear infinite; }
         @keyframes warpMove { 0% { transform: rotateX(55deg) translateY(0); } 100% { transform: rotateX(55deg) translateY(60px); } }
-
         .container { width: 90%; max-width: 450px; z-index: 10; text-align: center; }
-        
-        .main-logo { width: 130px; height: 130px; margin: 0 auto 15px auto; display: block; filter: drop-shadow(0 0 15px rgba(147, 51, 234, 0.6)); object-fit: contain; }
-        .header { font-size: 1rem; margin-bottom: 25px; text-shadow: 0 0 8px #fff; letter-spacing: 2px; text-transform: uppercase; }
-        
-        .selection-box {
-            background: rgba(20, 20, 20, 0.95);
-            border: 2px solid #333;
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 10px 40px rgba(0,0,0,1);
-            margin-bottom: 10px;
-        }
-
-        .dropdown-grid { display: flex; gap: 12px; margin-bottom: 20px; }
+        .main-logo { width: 120px; height: 120px; margin: 0 auto 15px auto; display: block; filter: drop-shadow(0 0 15px rgba(147, 51, 234, 0.6)); object-fit: contain; }
+        .header { font-size: 0.9rem; margin-bottom: 20px; letter-spacing: 2px; }
+        .selection-box { background: rgba(20, 20, 20, 0.95); border: 2px solid #333; border-radius: 20px; padding: 25px; box-shadow: 0 10px 40px rgba(0,0,0,1); }
+        .dropdown-grid { display: flex; gap: 10px; margin-bottom: 20px; }
         .field { flex: 1; display: flex; flex-direction: column; text-align: left; }
-        .label { font-size: 0.65rem; color: #777; margin-bottom: 8px; letter-spacing: 1px; padding-left: 2px; }
-
-        select {
-            width: 100%;
-            background: #000;
-            color: #00ff41;
-            border: 1px solid #00ff41;
-            padding: 15px 5px;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.9rem;
-            border-radius: 10px;
-            outline: none;
-            text-align: center;
-        }
-
-        .main-btn { 
-            background: #b00; 
-            color: #fff; 
-            border: none; 
-            padding: 22px; 
-            font-size: 1.2rem; 
-            border-radius: 50px; 
-            width: 100%; 
-            cursor: pointer; 
-            font-family: 'Orbitron', sans-serif; 
-            font-weight: bold; 
-            box-shadow: 0 8px #600; 
-            transition: 0.2s;
-            -webkit-appearance: none;
-        }
-        .main-btn:active { transform: translateY(4px); box-shadow: 0 2px #300; }
-
-        #result-panel { 
-            background: rgba(5, 5, 5, 0.98); 
-            border: 1px solid #444;
-            border-left: 5px solid #00ff41;
-            padding: 25px; 
-            border-radius: 15px; 
-            min-height: 180px; 
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 400;
-            font-size: 1.15rem; 
-            line-height: 1.8; 
-            color: #fff; 
-            display: none; 
-            text-align: left;
-            margin-top: 15px;
-            box-shadow: 0 0 30px rgba(0,0,0,1);
-        }
+        .label { font-size: 0.6rem; color: #777; margin-bottom: 5px; padding-left: 2px; }
+        select { width: 100%; background: #000; color: #00ff41; border: 1px solid #00ff41; padding: 12px 2px; font-family: 'Orbitron'; font-size: 0.85rem; border-radius: 10px; outline: none; text-align: center; }
+        .main-btn { background: #b00; color: #fff; border: none; padding: 20px; font-size: 1.1rem; border-radius: 50px; width: 100%; cursor: pointer; font-family: 'Orbitron'; font-weight: bold; box-shadow: 0 6px #600; transition: 0.2s; }
+        .main-btn:active { transform: translateY(3px); box-shadow: 0 2px #300; }
         
-        .date-badge { 
-            color: #00ff41; 
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.8rem; 
-            display: block; 
-            margin-bottom: 15px; 
-            opacity: 0.8; 
-            letter-spacing: 1px; 
-            border-bottom: 1px solid #222; 
-            padding-bottom: 8px; 
-        }
+        #result-panel { background: rgba(5, 5, 5, 0.98); border: 1px solid #444; border-left: 5px solid #00ff41; padding: 20px; border-radius: 15px; min-height: 150px; font-family: 'Montserrat', sans-serif; font-size: 1.1rem; line-height: 1.6; color: #fff; display: none; text-align: left; margin-top: 15px; box-shadow: 0 0 30px rgba(0,0,0,1); }
+        .kur-badge { display: block; background: rgba(0, 255, 65, 0.1); border: 1px border-style: dotted; border-color: #00ff41; padding: 8px; border-radius: 8px; font-size: 0.85rem; color: #00ff41; margin-bottom: 12px; font-family: 'Orbitron'; }
+        .date-badge { color: #aaa; font-size: 0.75rem; margin-bottom: 5px; display: block; }
     </style>
 </head>
 <body>
     <div class="warp-bg"><div class="lines"></div></div>
-
     <div class="container">
-        <img src="icon.png" alt="" class="main-logo" onerror="this.style.display='none'">
+        <img src="icon.png" class="main-logo" onerror="this.style.display='none'">
         <h1 class="header">KONTROL MERKEZİ</h1>
-        
         <div class="selection-box">
             <div class="dropdown-grid">
-                <div class="field">
-                    <span class="label">GÜN</span>
-                    <select id="sel-day"></select>
-                </div>
-                <div class="field">
-                    <span class="label">AY</span>
-                    <select id="sel-month"></select>
-                </div>
-                <div class="field">
-                    <span class="label">YIL</span>
-                    <select id="sel-year"></select>
-                </div>
+                <div class="field"><span class="label">GÜN</span><select id="sel-day"></select></div>
+                <div class="field"><span class="label">AY</span><select id="sel-month"></select></div>
+                <div class="field"><span class="label">YIL</span><select id="sel-year"></select></div>
             </div>
-            
             <button class="main-btn" onclick="fetchHistory()">O TARİHE GİT</button>
         </div>
-
         <div id="result-panel"></div>
     </div>
 
     <script src="data.js"></script>
-    
     <script>
-        const monthsTR = ["OCAK", "SUBAT", "MART", "NISAN", "MAYIS", "HAZIRAN", "TEMMUZ", "AGUSTOS", "EYLUL", "EKIM", "KASIM", "ARALIK"];
+        // Yaklaşık Ay Başı Döviz Kurları (Dolar bazlı örnek tablo)
+        const kurTablosu = {
+            "1990": { "01": "2.315", "06": "2.600", "12": "2.900" },
+            "1991": { "01": "3.000", "06": "4.100", "12": "5.000" },
+            "1992": { "01": "5.200", "06": "6.800", "12": "8.500" },
+            "1993": { "01": "8.600", "06": "10.500", "12": "14.500" },
+            "1994": { "01": "15.000", "04": "32.000", "10": "35.000" }, // Kriz yılı
+            "1995": { "01": "38.000", "06": "43.000", "12": "59.000" },
+            "1996": { "01": "60.000", "06": "80.000", "12": "100.000" },
+            "1997": { "01": "110.000", "06": "145.000", "12": "200.000" },
+            "1998": { "01": "210.000", "06": "260.000", "12": "310.000" },
+            "1999": { "01": "320.000", "06": "400.000", "12": "540.000" }
+        };
+
+        const monthsTR = ["OCAK", "ŞUBAT", "MART", "NİSAN", "MAYIS", "HAZİRAN", "TEMMUZ", "AĞUSTOS", "EYLÜL", "EKİM", "KASIM", "ARALIK"];
 
         function setup() {
             const d = document.getElementById('sel-day');
             d.innerHTML = '<option value="" disabled selected>GÜN</option>';
-            for(let i=1; i<=31; i++) { 
-                let v = i < 10 ? '0'+i : i; 
-                d.innerHTML += `<option value="${v}">${i}</option>`; 
-            }
-            
+            for(let i=1; i<=31; i++) { let v = i < 10 ? '0'+i : i; d.innerHTML += `<option value="${v}">${i}</option>`; }
             const m = document.getElementById('sel-month');
             m.innerHTML = '<option value="" disabled selected>AY</option>';
-            monthsTR.forEach((name, i) => { 
-                let v = (i+1) < 10 ? '0'+(i+1) : (i+1); 
-                m.innerHTML += `<option value="${v}">${name}</option>`; 
-            });
-
+            monthsTR.forEach((name, i) => { let v = (i+1) < 10 ? '0'+(i+1) : (i+1); m.innerHTML += `<option value="${v}">${name}</option>`; });
             const y = document.getElementById('sel-year');
             y.innerHTML = '<option value="" disabled selected>YIL</option>';
-            for(let i=1990; i<=1999; i++) { 
-                y.innerHTML += `<option value="${i}">${i}</option>`; 
-            }
+            for(let i=1990; i<=1999; i++) { y.innerHTML += `<option value="${i}">${i}</option>`; }
         }
 
         function fetchHistory() {
             const d = document.getElementById('sel-day').value;
             const m = document.getElementById('sel-month').value;
             const y = document.getElementById('sel-year').value;
-
-            if(!d || !m || !y) {
-                alert("Lütfen önce GÜN, AY ve YIL seçin.");
-                return;
-            }
+            if(!d || !m || !y) return;
 
             const key = `${y}-${m}-${d}`;
             const panel = document.getElementById('result-panel');
             panel.style.display = 'block';
 
-            const jenerik = {
-                "1990": "Yeni bir on yılın şafağı. Analog hayatın en saf hali. Sokaklarda 80'lerin izi olsa da gelecek heyecan verici.",
-                "1991": "Pop müziğin ayak sesleri... Özel kanalların renkli dünyası ve kasetçalarların kalemle sarıldığı bir gün.",
-                "1992": "Tarkan rüzgarı esmeye başladı. Renkli ceketler, kabarık saçlar ve değişim rüzgarları her yerde.",
-                "1993": "Barış Manço'lu pazar sabahlarının samimiyeti sokaklara taşıyor. Zamanın yavaş ama derin aktığı bir an.",
-                "1994": "Pop müziğin patladığı yıl. Walkman sesleri sokaklara karışıyor, her köşe başında bir melodi yükseliyor.",
-                "1995": "Windows 95 heyecanı evlerde. Analog dünyadan dijital dünyaya geçişin o keskin ve meraklı eşiği.",
-                "1996": "Müzik kanalları ve sabah şekerleri dönemi. Hayatın hızlandığı ama komşuluğun hala bitmediği bir tarih.",
-                "1997": "İnternet kafelerin mahalle aralarına sızdığı günler. Bilginin kablolardan aktığı o ilk büyük merak dönemi.",
-                "1998": "Doksanların efsane dizilerinin herkesi akşamları ekran başına kilitlediği, stat gösterilerinin zirve yaptığı bir yıl.",
-                "1999": "Milenyumun kapısı. Gelecek bin yıla dair büyük bir merak ve analog dünyanın son görkemli vedası."
-            };
+            // Döviz kurunu çek (yoksa o yıla ait en yakın veriyi al)
+            const yilKurlari = kurTablosu[y] || {};
+            const dolarKur = yilKurlari[m] || yilKurlari["01"] || "---";
 
-            let metin = (typeof zamanVerisi !== 'undefined' && zamanVerisi[key]) ? zamanVerisi[key] : (jenerik[y] || "Doksanların ruhu bu tarihin her detayında hissediliyor.");
+            let metin = (typeof zamanVerisi !== 'undefined' && zamanVerisi[key]) ? zamanVerisi[key] : "Doksanların büyüleyici atmosferi bu güne eşlik ediyor.";
             
-            panel.innerHTML = `<span class="date-badge">${d} ${monthsTR[parseInt(m)-1]} ${y}</span>${metin}`;
+            panel.innerHTML = `
+                <span class="date-badge">${d} ${monthsTR[parseInt(m)-1]} ${y}</span>
+                <div class="kur-badge">💵 USD: ${dolarKur} TL</div>
+                ${metin}
+            `;
             
             setTimeout(() => { panel.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 150);
         }
-
         window.onload = setup;
     </script>
 </body>
