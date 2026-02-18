@@ -1,6 +1,4 @@
-const zamanVerisi = Object.freeze({
 
-  
  ", 1990-01-01": "90'lar başladı! Dolar: 2.315 TL. TRT'de yeni yıl neşesi. Bugün aktör J.B. Smoove doğdu, efsane Aliye Rona aramızda ", 
  ", 1990-01-02": "Dolar: 2.318 TL. Türkiye yeni yıla umutla bakıyor. Bugün usta oyuncu Belgin Doruk en verimli çağında ", 
  ", 1990-01-03": "Dolar: 2.320 TL. Panama'nın devrik lideri Noriega teslim oldu. Bugün Mel Gibson 34 yaşında ", 
@@ -3743,6 +3741,3 @@ const zamanVerisi = Object.freeze({
  ", 1999-12-29": "Milenyum Korkusu (Y2K) için son hazırlıklar; tüm sistemler yedeklendi. Bugün Jude Law 27 yaşında ", 
  ", 1999-12-30": "Saraybosna'da yılın son gününde barış kutlamaları hazırlığı. Bugün LeBron James 15 yaşında ", 
  ", 1999-12-31": "Güle güle 20. yüzyıl! Türkiye depremin acısını AB adaylığının umuduyla sararak 2000 yılına giriyor."
-
-
-});
