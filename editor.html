@@ -5,57 +5,70 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gültekin Bayır - Arşiv Editörü</title>
     <style>
-        /* Sizin Eski Tasarım Temelleriniz */
         body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #1a1a1a; /* Eski koyu tema */
-            color: #e0e0e0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
             margin: 0;
-            padding: 20px;
+            padding: 40px 20px;
             display: flex;
             justify-content: center;
         }
 
         .container {
             width: 100%;
-            max-width: 800px;
-            background: #262626;
+            max-width: 900px;
+            background: white;
             padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            border: 1px solid #333;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
         }
 
         h2 {
-            color: #e67e22; /* Sizin imza turuncunuz */
-            text-align: center;
-            margin-bottom: 25px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
+            color: #2c3e50;
+            margin-top: 0;
+            font-size: 24px;
+            border-bottom: 3px solid #e67e22;
+            padding-bottom: 10px;
         }
 
-        /* Yeni Seçici Grubu Düzeni */
-        .selector-wrapper {
+        /* Seçici ve Getir Butonu Kutusu */
+        .selection-area {
+            background-color: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+            margin-bottom: 25px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 15px;
         }
 
         .dropdowns {
             display: flex;
-            gap: 10px;
+            gap: 15px;
+        }
+
+        .select-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #495057;
         }
 
         select {
-            flex: 1;
-            padding: 12px;
-            background: #333;
-            color: #fff;
-            border: 1px solid #444;
-            border-radius: 4px;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
             font-size: 16px;
+            background-color: white;
             cursor: pointer;
+            transition: border-color 0.2s;
         }
 
         select:focus {
@@ -63,60 +76,62 @@
             outline: none;
         }
 
+        /* İstediğiniz Getir Butonu Yerleşimi */
         #fetch-btn {
-            width: 100%;
-            padding: 12px;
+            width: 100%; /* Tam genişlik */
+            padding: 14px;
             background-color: #e67e22;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 8px;
             font-weight: bold;
             font-size: 16px;
             cursor: pointer;
-            transition: background 0.3s;
+            text-transform: uppercase;
+            transition: background 0.3s ease;
         }
 
         #fetch-btn:hover {
             background-color: #d35400;
         }
 
-        /* Editör Alanı */
         textarea {
             width: 100%;
-            height: 300px;
-            padding: 15px;
-            background: #1e1e1e;
-            color: #dcdcdc;
-            border: 1px solid #444;
-            border-radius: 4px;
+            height: 350px;
+            padding: 20px;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
             box-sizing: border-box;
             font-size: 16px;
             line-height: 1.6;
+            color: #333;
+            background-color: #fff;
             resize: vertical;
         }
 
         #save-btn {
             width: 100%;
-            margin-top: 15px;
-            padding: 15px;
+            margin-top: 20px;
+            padding: 16px;
             background-color: #27ae60;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 10px;
             font-size: 18px;
             font-weight: bold;
             cursor: pointer;
+            text-transform: uppercase;
+            transition: background 0.3s;
         }
 
         #save-btn:hover {
-            background-color: #2ecc71;
+            background-color: #219150;
         }
 
         .status-msg {
             margin-top: 15px;
             text-align: center;
-            padding: 10px;
-            border-radius: 4px;
+            font-weight: 600;
             display: none;
         }
     </style>
@@ -124,31 +139,40 @@
 <body>
 
 <div class="container">
-    <h2>ARŞİV EDİTÖRÜ</h2>
+    <h2>Arşiv Veri Editörü</h2>
     
-    <div class="selector-wrapper">
+    <div class="selection-area">
         <div class="dropdowns">
-            <select id="day-select"></select>
-            <select id="month-select">
-                <option value="01">Ocak</option>
-                <option value="02">Şubat</option>
-                <option value="03">Mart</option>
-                <option value="04">Nisan</option>
-                <option value="05">Mayıs</option>
-                <option value="06">Haziran</option>
-                <option value="07">Temmuz</option>
-                <option value="08">Ağustos</option>
-                <option value="09">Eylül</option>
-                <option value="10">Ekim</option>
-                <option value="11">Kasım</option>
-                <option value="12">Aralık</option>
-            </select>
-            <select id="year-select"></select>
+            <div class="select-group">
+                <label>Gün</label>
+                <select id="day-select"></select>
+            </div>
+            <div class="select-group">
+                <label>Ay</label>
+                <select id="month-select">
+                    <option value="01">Ocak</option>
+                    <option value="02">Şubat</option>
+                    <option value="03">Mart</option>
+                    <option value="04">Nisan</option>
+                    <option value="05">Mayıs</option>
+                    <option value="06">Haziran</option>
+                    <option value="07">Temmuz</option>
+                    <option value="08">Ağustos</option>
+                    <option value="09">Eylül</option>
+                    <option value="10">Ekim</option>
+                    <option value="11">Kasım</option>
+                    <option value="12">Aralık</option>
+                </select>
+            </div>
+            <div class="select-group">
+                <label>Yıl</label>
+                <select id="year-select"></select>
+            </div>
         </div>
         <button id="fetch-btn">VERİYİ GETİR</button>
     </div>
 
-    <textarea id="data-editor" placeholder="Düzenlenecek veri..."></textarea>
+    <textarea id="data-editor" placeholder="Düzenlenecek veri buraya gelecek..."></textarea>
     
     <button id="save-btn">GÜNCELLEMEYİ KAYDET</button>
     
@@ -165,17 +189,17 @@
     const dataEditor = document.getElementById('data-editor');
     const status = document.getElementById('status');
 
-    // Dropdown'ları doldurma
     function initSelectors() {
+        // Günler 01-31
         for (let i = 1; i <= 31; i++) {
             let day = i.toString().padStart(2, '0');
             daySelect.innerHTML += `<option value="${day}">${day}</option>`;
         }
-        // Arşiviniz 1995-2005 arasını kapsayacak şekilde
+        // Yıllar 1995-2005
         for (let i = 1995; i <= 2005; i++) {
             yearSelect.innerHTML += `<option value="${i}">${i}</option>`;
         }
-        yearSelect.value = "1997"; // Başlangıç yılı
+        yearSelect.value = "1997";
     }
 
     function fetchData() {
@@ -185,10 +209,10 @@
             const content = dataJS[fullDate];
             if (content) {
                 dataEditor.value = content;
-                showStatus(fullDate + " verisi getirildi.", "#27ae60");
+                showStatus(fullDate + " verisi başarıyla yüklendi.", "#27ae60");
             } else {
                 dataEditor.value = "";
-                showStatus("Bu tarihe ait veri bulunamadı!", "#e67e22");
+                showStatus("Bu tarihe ait veri bulunamadı.", "#e67e22");
             }
         }
     }
@@ -197,14 +221,13 @@
         status.textContent = msg;
         status.style.display = "block";
         status.style.color = color;
-        status.style.border = "1px solid " + color;
         setTimeout(() => { status.style.display = "none"; }, 3000);
     }
 
     initSelectors();
     fetchBtn.addEventListener('click', fetchData);
 
-    // Klavye Enter desteği
+    // Enter tuşu dinleyicisi
     window.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') fetchData();
     });
