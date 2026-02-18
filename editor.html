@@ -18,12 +18,11 @@
         .old-data-view { width: 100%; height: 100px; padding: 12px; background: #f1f3f5; border: 1px solid #dee2e6; border-radius: 8px; overflow-y: auto; color: #333; font-size: 15px; box-sizing: border-box; border-left: 5px solid #e67e22; white-space: pre-wrap; }
         .toolbar { display: flex; gap: 8px; background: #34495e; padding: 8px; border-radius: 8px 8px 0 0; margin-top: 15px; }
         .tool-btn { background: none; border: 1px solid #5d6d7e; color: white; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
-        .tool-btn:hover { background: #e67e22; }
         textarea { width: 100%; box-sizing: border-box; padding: 15px; border: 1px solid #ced4da; font-size: 16px; line-height: 1.5; }
         #new-editor { height: 250px; border-radius: 0 0 8px 8px; margin-top: -1px; }
         #code-output { height: 150px; background: #1e1e1e; color: #2ecc71; font-family: 'Consolas', monospace; font-size: 11px; border-radius: 8px; margin-top: 5px; white-space: pre; overflow: auto; }
         .action-btns { display: flex; gap: 10px; margin-top: 15px; }
-        .btn-main { flex: 1; padding: 15px; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
+        .btn-main { flex: 1; padding: 15px; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
         #process-btn { background: #2980b9; color: white; }
         #generate-btn { background: #8e44ad; color: white; }
         #copy-all-btn { background: #27ae60; color: white; margin-top: 10px; width: 100%; }
@@ -53,7 +52,7 @@
     </div>
 
     <label class="panel-label">Mevcut Kayıt (Eski):</label>
-    <div id="old-view" class="old-data-view">Henüz tarih seçilmedi...</div>
+    <div id="old-view" class="old-data-view">Lütfen tarih seçip "Veriyi Getir"e basın...</div>
 
     <label class="panel-label">Düzenleme Paneli:</label>
     <div class="toolbar">
@@ -68,7 +67,7 @@
         <button id="generate-btn" class="btn-main">2. DOSYA KODUNU OLUŞTUR</button>
     </div>
 
-    <label class="panel-label">Yeni data.js Çıktısı (Kopyalayıp dosyanıza yapıştırın):</label>
+    <label class="panel-label">Yeni data.js Çıktısı (Tamamını kopyalayıp dosyanıza yapıştırın):</label>
     <textarea id="code-output" readonly placeholder="Kod burada oluşacak..."></textarea>
     <button id="copy-all-btn" class="btn-main">TÜM KODU KOPYALA</button>
 
@@ -76,97 +75,8 @@
 </div>
 
 <script>
-    let localData = {};
+    let archiveMemory = {}; // Dosyayı belleğe alacağımız yer
     const dayS = document.getElementById('day-select');
     const yearS = document.getElementById('year-select');
     const monthS = document.getElementById('month-select');
-    const oldView = document.getElementById('old-view');
-    const newEditor = document.getElementById('new-editor');
-    const codeOut = document.getElementById('code-output');
-
-    // Seçicileri doldur (1990-1999)
-    for (let i = 1; i <= 31; i++) {
-        let d = i.toString().padStart(2, '0');
-        dayS.innerHTML += `<option value="${d}">${d}</option>`;
-    }
-    for (let i = 1990; i <= 1999; i++) {
-        yearS.innerHTML += `<option value="${i}">${i}</option>`;
-    }
-
-    // VERİ GETİRME (Dosyayı doğrudan metin olarak analiz eden akıllı versiyon)
-    document.getElementById('fetch-btn').onclick = async () => {
-        if (!dayS.value || !monthS.value || !yearS.value) {
-            showMsg("Lütfen tarih seçin!", "#e74c3c");
-            return;
-        }
-        const key = `${yearS.value}-${monthS.value}-${dayS.value}`;
-        
-        try {
-            const resp = await fetch('data.js');
-            const rawText = await resp.text();
-            
-            // Dosyanın içindeki JSON kısmını bul ve temizle
-            const startIdx = rawText.indexOf('{');
-            const endIdx = rawText.lastIndexOf('}');
-            if (startIdx !== -1 && endIdx !== -1) {
-                const jsonStr = rawText.substring(startIdx, endIdx + 1);
-                localData = JSON.parse(jsonStr);
-                
-                if (localData[key]) {
-                    oldView.innerText = localData[key];
-                    newEditor.value = localData[key];
-                    showMsg(key + " yüklendi.", "#27ae60");
-                } else {
-                    oldView.innerText = "Kayıt bulunamadı.";
-                    newEditor.value = "";
-                    showMsg("Bu tarih boş.", "#e67e22");
-                }
-            }
-        } catch (e) {
-            oldView.innerText = "HATA: data.js dosyasındaki veriler okunabilir bir formatta değil. Lütfen dosyanızın sadece { ... } şeklinde veri içerdiğinden emin olun.";
-            showMsg("Dosya Hatası!", "red");
-        }
-    };
-
-    // 1. KODA İŞLE (Hafızada Güncelle)
-    document.getElementById('process-btn').onclick = () => {
-        const key = `${yearS.value}-${monthS.value}-${dayS.value}`;
-        if (key && localData) {
-            localData[key] = newEditor.value;
-            showMsg("Değişiklik hazırlandı. Şimdi kod oluşturun.", "#2980b9");
-        }
-    };
-
-    // 2. DOSYA KODUNU OLUŞTUR
-    document.getElementById('generate-btn').onclick = () => {
-        const fullCode = "const dataJS = " + JSON.stringify(localData, null, 4) + ";";
-        codeOut.value = fullCode;
-        showMsg("Yeni kod hazır!", "#8e44ad");
-    };
-
-    // TÜM KODU KOPYALA
-    document.getElementById('copy-all-btn').onclick = () => {
-        codeOut.select();
-        document.execCommand('copy');
-        showMsg("Kod kopyalandı! Artık data.js içine yapıştırabilirsiniz.", "#27ae60");
-    };
-
-    // ARAÇLAR
-    const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (Speech) {
-        const rec = new Speech(); rec.lang = 'tr-TR';
-        rec.onresult = (e) => { newEditor.value += " " + e.results[0][0].transcript; };
-        document.getElementById('mic-btn').onclick = () => { rec.start(); showMsg("Dinleniyor...", "#3498db"); };
-    }
-    document.getElementById('paste-btn').onclick = async () => { newEditor.value += await navigator.clipboard.readText(); };
-    document.getElementById('copy-btn').onclick = () => { newEditor.select(); document.execCommand('copy'); };
-
-    function showMsg(txt, color) {
-        const s = document.getElementById('status');
-        s.innerText = txt; s.style.backgroundColor = color; s.style.display = "block";
-        setTimeout(() => s.style.display = "none", 3000);
-    }
-</script>
-
-</body>
-</html>
+    const oldView = document.
