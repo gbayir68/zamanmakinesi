@@ -1,10 +1,10 @@
-i
-    
-,,,
-    
-    
-    
-    nda zorlanıyor.",
+const zamanVerisi = {
+    "1990-01-01": "90'lar başladı! Dolar: 2.315 TL. TRT'de yeni yıl neşesi. Bugün aktör J.B. Smoove doğdu, efsane Aliye Rona aramızda.",
+    "1990-01-02": "Dolar: 2.318 TL. Türkiye yeni yıla umutla bakıyor. Bugün usta oyuncu Belgin Doruk en verimli çağında.",
+    "1990-01-03": "Dolar: 2.320 TL. Panama'nın devrik lideri Noriega teslim oldu. Bugün Mel Gibson 34 yaşında.",
+    "1990-01-04": "Dolar: 2.322 TL. Pakistan'da tren kazası: 300 ölü. Bugün müzisyen Gökhan Özoğuz 14 yaşında bir genç.",
+    "1990-01-05": "Dolar: 2.325 TL. Edip Akbayram 'Hava Nasıl Oralarda' ile listelerde. Bugün aktör Bradley Cooper 15 yaşında.",
+    "1990-01-06": "Dolar: 2.328 TL. İstanbul'da yoğun sis trafiği aksatıyor. Bugün dünya futbolu Alex Ferguson'u konuşuyor.",
     "1990-01-07": "Pisa Kulesi güvenlik için kapatıldı. Bugün usta kalem Çetin Altan köşe yazısında.",
     "1990-01-08": "Turgut Özal Çankaya'da yoğun mesaide. Bugün David Bowie 43. yaşını kutluyor.",
     "1990-01-09": "Sinemalarda 'Zengin Mutfağı' rüzgarı. Bugün oyuncu JK Simmons 35 yaşında.",
