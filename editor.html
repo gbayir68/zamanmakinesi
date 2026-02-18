@@ -67,7 +67,7 @@
         <button id="generate-btn" class="btn-main">2. DOSYA KODUNU OLUŞTUR</button>
     </div>
 
-    <label class="panel-label">Yeni data.js Çıktısı (Tamamını kopyalayıp dosyanıza yapıştırın):</label>
+    <label class="panel-label">Yeni data.js Çıktısı (Kopyalayıp dosyaya yapıştırın):</label>
     <textarea id="code-output" readonly placeholder="Kod burada oluşacak..."></textarea>
     <button id="copy-all-btn" class="btn-main">TÜM KODU KOPYALA</button>
 
@@ -75,8 +75,107 @@
 </div>
 
 <script>
-    let archiveMemory = {}; // Dosyayı belleğe alacağımız yer
+    let archiveMemory = {}; 
     const dayS = document.getElementById('day-select');
     const yearS = document.getElementById('year-select');
     const monthS = document.getElementById('month-select');
-    const oldView = document.
+    const oldView = document.getElementById('old-view');
+    const newEditor = document.getElementById('new-editor');
+    const codeOut = document.getElementById('code-output');
+
+    // --- ÖNCE MENÜLERİ DOLDURUYORUZ (Her koşulda çalışır) ---
+    for (let i = 1; i <= 31; i++) {
+        let d = i.toString().padStart(2, '0');
+        dayS.innerHTML += `<option value="${d}">${d}</option>`;
+    }
+    for (let i = 1990; i <= 1999; i++) {
+        yearS.innerHTML += `<option value="${i}">${i}</option>`;
+    }
+
+    // --- VERİ GETİRME ---
+    document.getElementById('fetch-btn').onclick = async () => {
+        if (!dayS.value || !monthS.value || !yearS.value) {
+            showMsg("Lütfen tarih seçin!", "#e74c3c");
+            return;
+        }
+        const searchKey = `${yearS.value}-${monthS.value}-${dayS.value}`;
+        
+        try {
+            const resp = await fetch('data.js');
+            if (!resp.ok) throw new Error("Dosya bulunamadı");
+            const text = await resp.text();
+            
+            // Tarih ve metin çiftlerini ayıklayan geliştirilmiş regex
+            const regex = /"(\d{4}-\d{2}-\d{2})"\s*:\s*"([^"]+)"/g;
+            let match;
+            archiveMemory = {}; 
+
+            while ((match = regex.exec(text)) !== null) {
+                archiveMemory[match[1]] = match[2];
+            }
+
+            if (archiveMemory[searchKey]) {
+                oldView.innerText = archiveMemory[searchKey];
+                newEditor.value = archiveMemory[searchKey];
+                showMsg(searchKey + " yüklendi.", "#27ae60");
+            } else {
+                oldView.innerText = "Kayıt bulunamadı.";
+                newEditor.value = "";
+                showMsg("Arşivde bu tarih boş.", "#e67e22");
+            }
+        } catch (e) {
+            oldView.innerText = "Hata: data.js dosyası okunamadı veya bozuk.";
+            showMsg("Dosya Hatası!", "red");
+        }
+    };
+
+    // 1. KODA İŞLE
+    document.getElementById('process-btn').onclick = () => {
+        const key = `${yearS.value}-${monthS.value}-${dayS.value}`;
+        if (key && dayS.value) {
+            archiveMemory[key] = newEditor.value;
+            showMsg("Hafızaya alındı.", "#2980b9");
+        }
+    };
+
+    // 2. DOSYA KODUNU OLUŞTUR
+    document.getElementById('generate-btn').onclick = () => {
+        const sortedKeys = Object.keys(archiveMemory).sort();
+        let finalCode = "const dataJS = {\n";
+        sortedKeys.forEach((key, index) => {
+            const comma = (index === sortedKeys.length - 1) ? "" : ",";
+            finalCode += `    "${key}": "${archiveMemory[key]}"${comma}\n`;
+        });
+        finalCode += "};";
+        codeOut.value = finalCode;
+        showMsg("Kod pencerede hazır!", "#8e44ad");
+    };
+
+    // KOPYALA
+    document.getElementById('copy-all-btn').onclick = () => {
+        codeOut.select();
+        document.execCommand('copy');
+        showMsg("Kod kopyalandı!", "#27ae60");
+    };
+
+    // SESLE YAZ VE ARAÇLAR
+    const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (Speech) {
+        const rec = new Speech(); rec.lang = 'tr-TR';
+        rec.onresult = (e) => { newEditor.value += " " + e.results[0][0].transcript; };
+        document.getElementById('mic-btn').onclick = () => { rec.start(); showMsg("Dinleniyor...", "#3498db"); };
+    }
+    document.getElementById('paste-btn').onclick = async () => { 
+        newEditor.value += await navigator.clipboard.readText(); 
+    };
+    document.getElementById('copy-btn').onclick = () => { newEditor.select(); document.execCommand('copy'); };
+
+    function showMsg(txt, color) {
+        const s = document.getElementById('status');
+        s.innerText = txt; s.style.backgroundColor = color; s.style.display = "block";
+        setTimeout(() => s.style.display = "none", 3000);
+    }
+</script>
+
+</body>
+</html>
