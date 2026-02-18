@@ -6,49 +6,84 @@
     <title>Gültekin Bayır - Arşiv Terminali</title>
     <link rel="icon" type="image/png" href="https://img.icons8.com/color/48/000000/movie-projector.png">
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #121212; color: #e0e0e0; padding: 20px; display: flex; justify-content: center; }
-        .container { width: 100%; max-width: 900px; background: #1e1e1e; padding: 30px; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); display: none; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #121212; color: #e0e0e0; padding: 20px; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; }
         
-        #login-screen { text-align: center; margin-top: 100px; background: #1e1e1e; padding: 40px; border-radius: 15px; border: 1px solid #e67e22; }
-        #login-screen input { padding: 15px; border-radius: 8px; border: 1px solid #e67e22; background: #2c2c2c; color: white; font-size: 20px; text-align: center; margin-bottom: 20px; width: 200px; }
-        #login-screen button { padding: 15px 40px; background: #e67e22; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; }
+        /* Şifre Ekranı Tasarımı */
+        #login-screen { 
+            text-align: center; 
+            margin-top: 15vh; 
+            background: #1e1e1e; 
+            padding: 50px; 
+            border-radius: 20px; 
+            border: 2px solid #e67e22;
+            box-shadow: 0 0 30px rgba(230, 126, 34, 0.2);
+        }
+        #login-screen input { 
+            padding: 15px; 
+            border-radius: 8px; 
+            border: 1px solid #e67e22; 
+            background: #000; 
+            color: #fff; 
+            font-size: 24px; 
+            text-align: center; 
+            width: 250px; 
+            margin-bottom: 20px;
+            outline: none;
+        }
+        #login-screen button { 
+            padding: 15px 50px; 
+            background: #e67e22; 
+            color: white; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            font-size: 18px;
+            transition: 0.3s;
+        }
+        #login-screen button:hover { background: #d35400; }
+
+        /* Ana Panel (Başlangıçta Gizli) */
+        .container { 
+            width: 100%; 
+            max-width: 900px; 
+            background: #1e1e1e; 
+            padding: 30px; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5); 
+            display: none; 
+        }
 
         h2 { color: #e67e22; border-bottom: 2px solid #e67e22; padding-bottom: 10px; text-align: center; margin-top: 0; }
-        
         .selection-box { background: #2c2c2c; padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #3d3d3d; }
         .dropdowns { display: flex; gap: 10px; margin-bottom: 15px; }
         .select-group { flex: 1; display: flex; flex-direction: column; gap: 5px; }
-        select { padding: 12px; border-radius: 8px; border: 1px solid #444; background: #1e1e1e; color: #fff; }
+        select { padding: 12px; border-radius: 8px; border: 1px solid #444; background: #1e1e1e; color: #fff; font-size: 15px; }
         
         #fetch-btn { width: 100%; padding: 14px; background: #34495e; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
-
         .terminal-header { background: #333; color: #ccc; padding: 8px 15px; border-radius: 8px 8px 0 0; font-size: 12px; font-weight: bold; display: flex; justify-content: space-between; margin-top: 10px; }
         .terminal-view { width: 100%; height: 250px; background: #000; color: #2ecc71; padding: 15px; border-radius: 0 0 8px 8px; overflow-y: auto; font-family: 'Consolas', monospace; font-size: 14px; box-sizing: border-box; border: 1px solid #444; margin-bottom: 20px; border-left: 5px solid #2ecc71; line-height: 1.6; }
-
         .toolbar { display: flex; gap: 10px; margin-top: 10px; }
         .tool-btn { flex: 1; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; color: white; font-size: 14px; }
         .btn-mic { background: #c0392b; }
         .btn-paste { background: #2980b9; }
         .btn-clear { background: #7f8c8d; }
-        
         textarea { width: 100%; height: 200px; padding: 15px; border: 1px solid #444; background: #fff; color: #000; border-radius: 8px; font-size: 16px; box-sizing: border-box; margin-top: 10px; line-height: 1.4; }
-
         .output-box { background: #000; color: #f1c40f; padding: 20px; border-radius: 8px; font-family: 'Consolas', monospace; font-size: 14px; margin-top: 20px; border: 1px dashed #f1c40f; word-break: break-all; }
-        
         .btn-row { display: flex; gap: 10px; margin-top: 20px; }
         .btn-gen { flex: 2; padding: 18px; background: #e67e22; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 16px; }
         .btn-copy { flex: 1; padding: 18px; background: #27ae60; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; }
-        
         #status { margin-top: 15px; text-align: center; font-weight: bold; padding: 10px; border-radius: 5px; color: white; display: none; }
     </style>
 </head>
 <body>
 
     <div id="login-screen">
-        <h2 style="border:none;">SİSTEM ERİŞİMİ</h2>
-        <input type="password" id="pass-input" placeholder="Şifre" onkeypress="handleEnter(event)">
+        <h2 style="border:none; color:#e67e22;">GÜLTEKİN BAYIR ARŞİVİ</h2>
+        <p style="color:#7f8c8d; margin-bottom: 20px;">Güvenli Giriş Gerekli</p>
+        <input type="password" id="pass-input" placeholder="Şifre" autocomplete="off">
         <br>
-        <button id="login-btn" onclick="checkPass()">SİSTEME GİRİŞ</button>
+        <button id="login-btn">SİSTEME GİRİŞ</button>
     </div>
 
     <div class="container" id="main-panel">
@@ -78,7 +113,7 @@
             <button class="tool-btn btn-paste" id="paste-btn">📋 YAPIŞTIR</button>
             <button class="tool-btn btn-clear" id="clear-btn">🗑 TEMİZLE</button>
         </div>
-        <textarea id="editor" placeholder="Sana verdiğim listeyi buraya yapıştır..."></textarea>
+        <textarea id="editor" placeholder="Listeyi buraya yapıştırın..."></textarea>
         
         <div class="btn-row">
             <button id="generate-btn" class="btn-gen">Akıllı Formata Çevir</button>
@@ -90,23 +125,29 @@
     </div>
 
 <script>
-    // Şifre Fonksiyonları
+    // ŞİFRE MEKANİZMASI (PC İçin Optimize Edildi)
+    const loginBtn = document.getElementById('login-btn');
+    const passInput = document.getElementById('pass-input');
+    const loginScreen = document.getElementById('login-screen');
+    const mainPanel = document.getElementById('main-panel');
+
     function checkPass() {
-        const input = document.getElementById('pass-input').value;
-        if(input === "1923") {
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('main-panel').style.display = 'block';
+        if(passInput.value === "1923") {
+            loginScreen.style.display = 'none';
+            mainPanel.style.display = 'block';
             showMsg("Erişim Onaylandı!", "#27ae60");
         } else {
-            alert("Şifre Hatalı! Lütfen tekrar deneyin.");
+            alert("Şifre Hatalı!");
+            passInput.value = "";
         }
     }
 
-    function handleEnter(e) {
-        if(e.key === "Enter") { checkPass(); }
-    }
+    loginBtn.addEventListener('click', checkPass);
+    passInput.addEventListener('keypress', function(e) {
+        if(e.key === 'Enter') checkPass();
+    });
 
-    // Seçiciler ve Değişkenler
+    // SAYFA İŞLEMLERİ
     const dayS = document.getElementById('day-select');
     const monthS = document.getElementById('month-select');
     const yearS = document.getElementById('year-select');
@@ -114,11 +155,9 @@
     const editor = document.getElementById('editor');
     const output = document.getElementById('output-line');
 
-    // Menüleri doldur
     for(let i=1; i<=31; i++) { dayS.innerHTML += `<option value="${i.toString().padStart(2, '0')}">${i.toString().padStart(2, '0')}</option>`; }
     for(let i=1990; i<=1999; i++) { yearS.innerHTML += `<option value="${i}">${i}</option>`; }
 
-    // Veri Getirme
     document.getElementById('fetch-btn').onclick = async () => {
         const key = `${yearS.value}-${monthS.value}-${dayS.value}`;
         if(!dayS.value) return;
@@ -132,14 +171,12 @@
         } catch (e) { terminal.innerText = "> Dosya (data.js) okuma hatası."; }
     };
 
-    // Akıllı Formatlayıcı
     document.getElementById('generate-btn').onclick = () => {
         const d = dayS.value, m = monthS.value, y = yearS.value;
         if(!d || !m || !y) { showMsg("Lütfen tarih seçin!", "#c0392b"); return; }
         
         let lines = editor.value.split('\n');
         let formattedParts = [];
-
         lines.forEach(line => {
             let part = line.trim();
             if(part.length > 0) {
@@ -148,26 +185,26 @@
                     let header = segments[0].trim().toUpperCase();
                     let content = segments.slice(1).join(':').trim();
                     formattedParts.push(header + ": " + content);
-                } else {
-                    formattedParts.push(part);
-                }
+                } else { formattedParts.push(part); }
             }
         });
 
         let finalContent = formattedParts.join('. ').replace(/\.\./g, '.').replace(/"/g, "'");
         output.innerText = `"${y}-${m}-${d}": "${finalContent}.",`;
-        showMsg("Format başarıyla oluşturuldu!", "#27ae60");
+        showMsg("Format oluşturuldu!", "#27ae60");
     };
 
-    // Kopyalama
     document.getElementById('copy-btn').onclick = () => {
-        const text = output.innerText;
-        if(text === "...") return;
-        navigator.clipboard.writeText(text);
+        if(output.innerText === "...") return;
+        const tempText = document.createElement("textarea");
+        tempText.value = output.innerText;
+        document.body.appendChild(tempText);
+        tempText.select();
+        document.execCommand("copy");
+        document.body.removeChild(tempText);
         showMsg("Kod kopyalandı!", "#2980b9");
     };
 
-    // Araçlar
     const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (Speech) {
         const rec = new Speech(); rec.lang = 'tr-TR';
@@ -176,9 +213,11 @@
     }
 
     document.getElementById('paste-btn').onclick = async () => {
-        const text = await navigator.clipboard.readText();
-        editor.value = text;
-        showMsg("Yapıştırıldı.", "#34495e");
+        try {
+            const text = await navigator.clipboard.readText();
+            editor.value = text;
+            showMsg("Yapıştırıldı.", "#34495e");
+        } catch (err) { alert("Tarayıcı yapıştırma izni vermedi. Lütfen Ctrl+V kullanın."); }
     };
 
     document.getElementById('clear-btn').onclick = () => { editor.value = ""; output.innerText = "..."; terminal.innerText = "Sorgu bekleniyor..."; };
