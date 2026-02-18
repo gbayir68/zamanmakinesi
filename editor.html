@@ -7,20 +7,20 @@
     <style>
         body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; padding: 20px; display: flex; justify-content: center; }
         .container { width: 100%; max-width: 900px; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        h2 { color: #2c3e50; border-bottom: 3px solid #e67e22; padding-bottom: 10px; margin-top: 0; }
+        h2 { color: #2c3e50; border-bottom: 3px solid #e67e22; padding-bottom: 10px; margin: 0 0 20px 0; }
         
         .selection-box { background: #f8f9fa; padding: 25px; border-radius: 10px; border: 1px solid #e9ecef; margin-bottom: 25px; }
         .dropdowns { display: flex; gap: 15px; margin-bottom: 15px; }
         .select-group { flex: 1; display: flex; flex-direction: column; gap: 8px; }
         label { font-size: 14px; font-weight: 600; color: #495057; }
-        select { padding: 12px; border-radius: 8px; border: 1px solid #ced4da; font-size: 16px; background: white; }
+        select { padding: 12px; border-radius: 8px; border: 1px solid #ced4da; font-size: 16px; background: white; cursor: pointer; }
         
-        #fetch-btn { width: 100%; padding: 15px; background: #e67e22; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 16px; }
+        #fetch-btn { width: 100%; padding: 15px; background: #e67e22; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 16px; transition: background 0.3s; }
         #fetch-btn:hover { background: #d35400; }
 
         .panel-label { font-weight: bold; margin: 20px 0 8px 0; display: block; color: #34495e; font-size: 14px; }
-        .old-data-view { width: 100%; height: 120px; padding: 15px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; overflow-y: auto; color: #7f8c8d; font-size: 15px; box-sizing: border-box; border-left: 5px solid #e67e22; }
-        textarea { width: 100%; height: 300px; padding: 15px; border: 1px solid #ced4da; border-radius: 8px; font-size: 16px; line-height: 1.6; box-sizing: border-box; resize: vertical; }
+        .old-data-view { width: 100%; height: 100px; padding: 15px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; overflow-y: auto; color: #7f8c8d; font-size: 15px; box-sizing: border-box; border-left: 5px solid #e67e22; }
+        textarea { width: 100%; height: 300px; padding: 15px; border: 1px solid #ced4da; border-radius: 8px; font-size: 16px; line-height: 1.6; box-sizing: border-box; resize: vertical; margin-top: 5px; }
 
         #save-btn { width: 100%; margin-top: 20px; padding: 18px; background: #27ae60; color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
         #save-btn:hover { background: #219150; }
@@ -70,15 +70,17 @@
     const status = document.getElementById('status');
 
     function init() {
+        // Günleri doldur (01-31)
         for (let i = 1; i <= 31; i++) {
             let d = i.toString().padStart(2, '0');
             daySelect.innerHTML += `<option value="${d}">${d}</option>`;
         }
-        // Yıllar sadece 1990 - 1999 arası
+        // Yılları 1990'dan başlatarak 1999'a kadar doldur
         for (let i = 1990; i <= 1999; i++) {
             yearSelect.innerHTML += `<option value="${i}">${i}</option>`;
         }
-        yearSelect.value = "1997";
+        // Varsayılan başlangıç
+        yearSelect.value = "1990";
     }
 
     function fetchData() {
@@ -87,27 +89,25 @@
         const y = yearSelect.value;
         const dateKey = `${y}-${m}-${d}`;
         
-        // data.js yüklendiğinde içindeki dataJS nesnesini kontrol eder
+        // KONTROL: data.js yüklendi mi?
         if (typeof dataJS !== 'undefined') {
             const content = dataJS[dateKey];
             if (content) {
-                oldView.innerText = content;
-                newEditor.value = content;
-                showMsg(dateKey + " verisi başarıyla getirildi.", "#27ae60");
+                oldView.innerText = content; // Üst kutu
+                newEditor.value = content;   // Alt kutu (Düzenleme için)
+                showMsg(dateKey + " yüklendi.", "#27ae60");
             } else {
-                oldView.innerText = "Bu tarihe ait kayıt bulunamadı.";
+                oldView.innerText = "Kayıt bulunamadı.";
                 newEditor.value = "";
-                showMsg("Arşivde bu tarih bulunamadı.", "#e67e22");
+                showMsg("Bu tarihte veri yok.", "#e67e22");
             }
         } else {
-            showMsg("Hata: data.js dosyası okunabilir bir veri yapısı içermiyor!", "#c0392b");
+            showMsg("HATA: data.js bulunamadı veya değişken ismi eksik!", "#c0392b");
         }
     }
 
     function showMsg(txt, color) {
-        status.innerText = txt;
-        status.style.color = color;
-        status.style.display = "block";
+        status.innerText = txt; status.style.color = color; status.style.display = "block";
         setTimeout(() => status.style.display = "none", 4000);
     }
 
