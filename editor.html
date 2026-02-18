@@ -3,117 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZAMAN EDİTÖRÜ</title>
+    <title>ZAMAN EDİTÖRÜ V4</title>
     
     <link rel="apple-touch-icon" href="icon.png">
     <link rel="icon" href="icon.png">
-    
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
     
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        
-        body { 
-            background: #000; 
-            color: #fff; 
-            font-family: 'Montserrat', sans-serif; 
-            min-height: 100vh; 
-            display: flex; 
-            flex-direction: column;
-            align-items: center; 
-            padding: 40px 20px;
-            position: relative; 
-        }
-
-        /* ARKA PLAN (SİSTEMLE UYUMLU) */
+        body { background: #000; color: #fff; font-family: 'Montserrat', sans-serif; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 25px 15px; position: relative; }
         .warp-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, #1a0033 0%, #000 80%); z-index: -1; }
 
-        .container { 
-            width: 100%; 
-            max-width: 500px; 
-            z-index: 10; 
-            background: rgba(20, 20, 20, 0.95); 
-            padding: 25px; 
-            border-radius: 20px; 
-            border: 1px solid #333;
-            box-shadow: 0 10px 40px rgba(0,0,0,1);
-        }
-
-        h1 { 
-            font-family: 'Orbitron'; 
-            font-size: 1.1rem; 
-            text-align: center; 
-            color: #00ff41; 
-            margin-bottom: 25px; 
-            letter-spacing: 3px;
-        }
+        .container { width: 100%; max-width: 480px; z-index: 10; background: rgba(10, 10, 10, 0.98); padding: 20px; border-radius: 25px; border: 1px solid #333; box-shadow: 0 15px 50px rgba(0,0,0,1); }
+        h1 { font-family: 'Orbitron'; font-size: 0.9rem; text-align: center; color: #00ff41; margin-bottom: 20px; letter-spacing: 2px; }
         
-        .field { margin-bottom: 20px; }
-        label { display: block; font-size: 0.7rem; color: #777; margin-bottom: 8px; font-family: 'Orbitron'; }
+        .field { margin-bottom: 15px; }
+        label { display: block; font-size: 0.6rem; color: #666; margin-bottom: 6px; font-family: 'Orbitron'; letter-spacing: 1px; text-transform: uppercase; }
         
+        /* TAKVİM */
         input[type="date"] { 
-            width: 100%; 
-            padding: 15px; 
-            border-radius: 12px; 
-            border: 1px solid #00ff41; 
-            background: #000; 
-            color: #00ff41; 
-            font-family: 'Orbitron'; 
-            font-size: 1rem; 
-            outline: none;
+            width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #00ff41; background: #000; color: #00ff41; 
+            font-family: 'Orbitron'; font-size: 1rem; outline: none; cursor: pointer; text-align: center;
         }
 
+        /* METİN ALANI */
         textarea { 
-            width: 100%; 
-            height: 150px; 
-            padding: 15px; 
-            border-radius: 12px; 
-            border: 1px solid #444; 
-            background: #050505; 
-            color: #fff; 
-            font-family: 'Montserrat'; 
-            font-size: 1.1rem; 
-            line-height: 1.6;
-            resize: none; 
-            outline: none;
+            width: 100%; height: 160px; padding: 15px; border-radius: 15px; border: 1px solid #444; 
+            background: #050505; color: #fff; font-family: 'Montserrat'; font-size: 1.1rem; line-height: 1.6; resize: none; outline: none;
         }
 
-        .btn-group { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
+        /* HIZLI GİRİŞ ARAÇ ÇUBUĞU */
+        .toolbar { display: flex; justify-content: center; gap: 20px; margin-top: 10px; margin-bottom: 20px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 15px; }
         
-        button { 
-            padding: 18px; 
-            border-radius: 50px; 
-            border: none; 
-            font-family: 'Orbitron'; 
-            cursor: pointer; 
-            font-weight: bold; 
-            font-size: 1rem;
-            transition: 0.2s;
+        .tool-btn { 
+            display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; transition: 0.3s; color: #aaa;
         }
+        .tool-btn svg { width: 28px; height: 28px; fill: currentColor; }
+        .tool-btn span { font-size: 0.6rem; font-family: 'Orbitron'; }
+        
+        .tool-btn:active { transform: scale(0.9); color: #00ff41; }
+        .tool-btn.active { color: #ff3131; animation: pulse 1s infinite; }
 
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        /* ANA BUTONLAR */
+        .btn-group { display: flex; flex-direction: column; gap: 10px; }
+        button { padding: 18px; border-radius: 50px; border: none; font-family: 'Orbitron'; cursor: pointer; font-weight: bold; font-size: 0.9rem; }
         .btn-add { background: #00ff41; color: #000; }
-        .btn-copy { background: #b00; color: #fff; box-shadow: 0 5px #600; }
-        button:active { transform: translateY(3px); }
+        .btn-copy { background: #b00; color: #fff; box-shadow: 0 4px #600; }
+        button:active { transform: translateY(2px); }
 
-        #output-area { 
-            margin-top: 25px; 
-            background: #000; 
-            padding: 15px; 
-            border-radius: 12px; 
-            border: 1px dashed #333; 
-        }
-        
-        .status-header { font-size: 0.65rem; color: #00ff41; margin-bottom: 10px; display: block; font-family: 'Orbitron'; }
-        
-        pre { 
-            white-space: pre-wrap; 
-            word-wrap: break-word; 
-            font-size: 0.75rem; 
-            color: #666; 
-            max-height: 200px; 
-            overflow-y: auto;
-            font-family: monospace;
-        }
+        #output-area { margin-top: 20px; background: #000; padding: 10px; border-radius: 10px; border: 1px dashed #222; }
+        pre { white-space: pre-wrap; font-size: 0.6rem; color: #333; max-height: 100px; overflow: hidden; }
     </style>
 </head>
 <body>
@@ -130,7 +71,22 @@
 
     <div class="field">
         <label>GÜNÜN HİKAYESİ</label>
-        <textarea id="text-input" placeholder="O güne dair bilgileri buraya yazın..."></textarea>
+        <textarea id="text-input" placeholder="Veriyi buraya girin..."></textarea>
+        
+        <div class="toolbar">
+            <div class="tool-btn" onclick="startDictation()" id="mic-tool">
+                <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+                <span>MİKROFON</span>
+            </div>
+            <div class="tool-btn" onclick="focusKeyboard()">
+                <svg viewBox="0 0 24 24"><path d="M20 5H4c-1.1 0-1.99.9-1.99 2L2 17c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-9 3h2v2h-2V8zm0 3h2v2h-2v-2zM8 8h2v2H8V8zm0 3h2v2H8v-2zm-1 2H5v-2h2v2zm0-3H5V8h2v2zm9 7H8v-2h8v2zm0-4h-2v-2h2v2zm0-3h-2V8h2v2zm3 7h-2v-2h2v2zm0-4h-2v-2h2v2z"/></svg>
+                <span>KLAVYE</span>
+            </div>
+            <div class="tool-btn" onclick="pasteFromClipboard()">
+                <svg viewBox="0 0 24 24"><path d="M19 2h-4.18C14.4.84 13.3 0 12 0c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm7 18H5V4h2v3h10V4h2v16z"/></svg>
+                <span>YAPIŞTIR</span>
+            </div>
+        </div>
     </div>
 
     <div class="btn-group">
@@ -139,80 +95,85 @@
     </div>
 
     <div id="output-area">
-        <span class="status-header">GÜNCEL DATA.JS ÇIKTISI:</span>
-        <pre id="code-preview">const zamanVerisi = {
-};</pre>
+        <pre id="code-preview">const zamanVerisi = {};</pre>
     </div>
 </div>
 
 <script src="data.js"></script>
 
 <script>
-    // data.js yüklendiyse onu al, yoksa boş obje başlat
     let currentData = typeof zamanVerisi !== 'undefined' ? zamanVerisi : {};
 
     function checkExisting() {
         const date = document.getElementById('date-input').value;
         const textInput = document.getElementById('text-input');
-        
         if (currentData[date]) {
-            // Varsa metni getir ama [M] işaretini gösterme
             textInput.value = currentData[date].replace(" [M]", "");
-        } else {
-            textInput.value = "";
-        }
+        } else { textInput.value = ""; }
         updatePreview();
+    }
+
+    // 1. SESLE GİRİŞ
+    function startDictation() {
+        if (window.hasOwnProperty('webkitSpeechRecognition')) {
+            const recognition = new webkitSpeechRecognition();
+            const micTool = document.getElementById('mic-tool');
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = "tr-TR";
+            recognition.start();
+            micTool.classList.add('active');
+            recognition.onresult = function(e) {
+                document.getElementById('text-input').value += e.results[0][0].transcript;
+                recognition.stop();
+                micTool.classList.remove('active');
+            };
+            recognition.onerror = function() {
+                recognition.stop();
+                micTool.classList.remove('active');
+            };
+        } else { alert("Tarayıcı desteklemiyor."); }
+    }
+
+    // 2. KLAVYE ODAKLAMA
+    function focusKeyboard() {
+        document.getElementById('text-input').focus();
+    }
+
+    // 3. PANODAN YAPIŞTIRMA
+    async function pasteFromClipboard() {
+        try {
+            const text = await navigator.clipboard.readText();
+            document.getElementById('text-input').value += text;
+        } catch (err) {
+            alert("Yapıştırma izni verilmedi. Lütfen manuel yapıştırın.");
+        }
     }
 
     function saveToMemory() {
         const date = document.getElementById('date-input').value;
         const text = document.getElementById('text-input').value;
-
-        if (!date || !text) {
-            alert("Lütfen tarih ve metin alanlarını doldurun.");
-            return;
-        }
-
-        // El ile girildiğini belirten işareti ekle
+        if (!date || !text) { alert("Eksik veri!"); return; }
         currentData[date] = text + " [M]";
         updatePreview();
-        alert(date + " tarihi listeye eklendi!");
+        alert("Hafızaya Alındı!");
     }
 
     function updatePreview() {
         let code = "const zamanVerisi = {\n";
-        const sortedKeys = Object.keys(currentData).sort();
-        
-        sortedKeys.forEach((key, index) => {
-            const isLast = index === sortedKeys.length - 1;
-            // Çift tırnak ve kaçış karakterleri kontrolü
-            const cleanText = currentData[key].replace(/"/g, '\\"');
-            code += `    "${key}": "${cleanText}"${isLast ? "" : ","}\n`;
+        const keys = Object.keys(currentData).sort();
+        keys.forEach((k, i) => {
+            code += `    "${k}": "${currentData[k].replace(/"/g, '\\"')}"${i===keys.length-1?"":","}\n`;
         });
-        
         code += "};";
         document.getElementById('code-preview').innerText = code;
     }
 
     function copyToClipboard() {
         const code = document.getElementById('code-preview').innerText;
-        const btn = document.querySelector('.btn-copy');
-        
-        navigator.clipboard.writeText(code).then(() => {
-            const originalText = btn.innerText;
-            btn.innerText = "KOPYALANDI!";
-            btn.style.background = "#00ff41";
-            btn.style.color = "#000";
-            
-            setTimeout(() => {
-                btn.innerText = originalText;
-                btn.style.background = "#b00";
-                btn.style.color = "#fff";
-            }, 2000);
-        });
+        navigator.clipboard.writeText(code).then(() => { alert("Tüm Veri Bankası Kopyalandı!"); });
     }
 
-    // Başlangıçta listeyi gör
     window.onload = updatePreview;
 </script>
 </body>
