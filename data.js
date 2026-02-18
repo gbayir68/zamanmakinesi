@@ -309,7 +309,7 @@ const zamanVerisi = {
     "1990-11-04": "Sovyetler Birliği'nde ilk borsa açıldı. Bugün Matthew McConaughey 21 yaşında",
     "1990-11-05": "Irkçı Meir Kahane New York'ta suikastla öldürüldü. Bugün Bryan Adams 31 yaşında",
     "1990-11-06": "Macaristan, Avrupa Konseyi'ne üye olan ilk Doğu bloğu ülkesi oldu. Bugün Emma Stone 2 yaşında",
-    "1990-11-07": "Mary Robinson, İrlanda'nın ilk kadın başkanı seçildi. Bugün David Guetta 23 yaşında",
+    "1990-11-07": "Mary Robinson, İrlanda'nın ilk kadın başkanı seçildi. Bugün David Guetta 23 yaşında gültekin doğdu",
     "1990-11-08": "Bush, Körfez'e 150 bin ek asker gönderileceğini açıkladı. Bugün Gordon Ramsay 24 yaşında",
     "1990-11-09": "Almanya ve Rusya arasında büyük dostluk anlaşması. Bugün usta sanatçı Jale Öz vefat etti",
     "1990-11-10": "Mustafa Kemal Atatürk'ün ölümünün 52. yılı anılıyor. Bugün Brittany Murphy 13 yaşında",
