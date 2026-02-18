@@ -2386,7 +2386,7 @@ const zamanVerisi = {
     "1996-04-11": "İsrail, Lübnan'da 'Gazap Üzümleri' operasyonunu başlattı. Bugün Alessandra Ambrosio 15 yaşında.",
     "1996-04-12": "Türkiye'de üniversite harçları protestolarında öğrenci-polis çatışması. Bugün Claire Danes 17 yaşında.",
     "1996-04-13": "Hükümet ortağı DYP'de Mesut Yılmaz'a yönelik eleştiriler artıyor. Bugün usta oyuncu Münir Özkul sahnede.",
-    "1992-04-14": "Türkiye'de 'Tarkan' rüzgarı; yeni albüm beklentisi zirvede. Bugün Sarah Michelle Gellar 19 yaşında.",
+    "1996-04-14": "Türkiye'de 'Tarkan' rüzgarı; yeni albüm beklentisi zirvede. Bugün Sarah Michelle Gellar 19 yaşında.",
     "1996-04-15": "Türkiye genelinde lise sınav sonuçları heyecanı. Bugün Emma Watson 6 yaşında.",
     "1996-04-16": "Saraybosna'da savaşın izleri silinmeye çalışılıyor; sokaklar canlanıyor. Bugün Jon Cryer 31 yaşında.",
     "1996-04-17": "8. Cumhurbaşkanı Turgut Özal'ın vefatının 3. yılında anma törenleri. Bugün Jennifer Garner 24 yaşında.",
