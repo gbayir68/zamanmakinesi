@@ -3,15 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Zaman Makinesi">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#000000">
-
     <title>ZAMAN MAKİNESİ</title>
-    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
         
@@ -25,86 +18,102 @@
             height: 100vh;
             font-family: 'Orbitron', sans-serif;
             color: #fff;
-            touch-action: manipulation;
+            overflow: hidden;
         }
 
         .main-header { 
-            letter-spacing: 10px; 
+            letter-spacing: 5px; 
             text-shadow: 0 0 10px #fff;
-            margin-bottom: 20px;
-            font-size: 2rem;
+            margin-bottom: 2vh;
+            font-size: 5vw; /* Ekran genişliğine göre ayarlanır */
             text-align: center;
         }
 
         .circuit-board {
             background: #151515;
-            padding: 20px;
-            border: 8px solid #333;
-            border-radius: 20px;
-            width: 90%;
-            max-width: 600px;
-            box-shadow: 0 0 50px #000;
+            padding: 15px;
+            border: 4px solid #333;
+            border-radius: 15px;
+            width: 85vw; /* Sabit piksel yerine ekranın %85'i */
+            max-width: 400px;
+            box-shadow: 0 0 30px #000;
         }
 
         .display-row {
             background: #000;
             margin: 10px 0;
-            padding: 15px;
-            border: 3px solid #222;
-            border-radius: 10px;
+            padding: 10px;
+            border: 2px solid #222;
+            border-radius: 8px;
             text-align: center;
         }
 
         .label { 
             display: block; 
-            font-size: 0.8rem; 
-            margin-bottom: 10px; 
-            letter-spacing: 3px;
+            font-size: 2.5vw; 
+            max-font-size: 12px;
+            margin-bottom: 5px; 
+            letter-spacing: 2px;
         }
 
-        .red { color: #ff3131; text-shadow: 0 0 15px #ff3131; }
-        .green { color: #00ff41; text-shadow: 0 0 15px #00ff41; }
+        .red { color: #ff3131; text-shadow: 0 0 10px #ff3131; }
+        .green { color: #00ff41; text-shadow: 0 0 10px #00ff41; }
 
         .slot-window {
             display: flex;
-            justify-content: center;
-            gap: 15px;
-            font-size: 3rem;
-            height: 70px;
+            justify-content: space-between; /* Kutuları yayar */
+            align-items: center;
+            font-size: 8vw; /* Rakamlar ekrana göre küçülür */
+            height: 60px;
             overflow: hidden;
+            padding: 0 5px;
+        }
+
+        .slot-box {
+            flex: 1; /* Kutuların genişliği eşit dağılır */
+            display: flex;
+            justify-content: center;
         }
 
         .strip {
             position: relative;
-            top: 0;
             display: flex;
             flex-direction: column;
+            transition: transform 3s cubic-bezier(0.1, 0, 0.1, 1);
         }
 
         .slot-item {
-            height: 70px;
+            height: 60px;
             display: flex;
             align-items: center;
             justify-content: center;
+            width: 100%;
         }
 
-        .btn-panel { margin-top: 30px; }
+        .btn-panel { margin-top: 5vh; width: 100%; text-align: center; }
 
         button {
-            padding: 18px 50px;
-            font-size: 1.4rem;
+            padding: 15px 0;
+            font-size: 4vw;
             background: #b00;
             color: #fff;
             border: none;
             border-radius: 50px;
-            box-shadow: 0 8px #600;
+            box-shadow: 0 5px #600;
             cursor: pointer;
             font-weight: bold;
-            transition: 0.1s;
+            width: 70%;
+            max-width: 300px;
         }
 
-        button:active { transform: translateY(4px); box-shadow: 0 2px #300; }
-        button:disabled { background: #444; box-shadow: 0 4px #222; opacity: 0.7; }
+        button:active { transform: translateY(3px); box-shadow: 0 2px #300; }
+
+        #present-display {
+            font-size: 6vw;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
     </style>
 </head>
 <body>
@@ -123,7 +132,11 @@
         
         <div class="display-row green">
             <span class="label">ŞİMDİKİ TARİH</span>
-            <div id="present-display" class="slot-window"></div>
+            <div id="present-display">
+                <span id="p-month"></span>
+                <span id="p-day"></span>
+                <span id="p-year"></span>
+            </div>
         </div>
     </div>
 
@@ -133,30 +146,32 @@
 
     <script>
         const months = ["OCAK", "SUB", "MART", "NIS", "MAY", "HAZ", "TEM", "AGU", "EYL", "EKM", "KAS", "ARL"];
-        const ITEM_HEIGHT = 70;
-        const STRIP_COUNT = 40;
+        const ITEM_HEIGHT = 60;
+        const STRIP_COUNT = 30;
 
         function init() {
-            const mS = document.getElementById('m-strip');
-            const dS = document.getElementById('d-strip');
-            const yS = document.getElementById('y-strip');
+            const strips = ['m-strip', 'd-strip', 'y-strip'];
+            const data = [
+                months,
+                Array.from({length: 31}, (_, i) => i + 1),
+                Array.from({length: 10}, (_, i) => 1990 + i)
+            ];
 
-            const fill = (el, arr) => {
-                let h = "";
-                for(let i=0; i<STRIP_COUNT; i++) h += `<div class="slot-item">${arr[i % arr.length]}</div>`;
-                el.innerHTML = h;
-            };
-
-            fill(mS, months);
-            fill(dS, Array.from({length: 28}, (_, i) => i + 1));
-            fill(yS, Array.from({length: 10}, (_, i) => 1990 + i));
+            strips.forEach((id, idx) => {
+                const el = document.getElementById(id);
+                let html = "";
+                for(let i=0; i<STRIP_COUNT; i++) {
+                    html += `<div class="slot-item">${data[idx][i % data[idx].length]}</div>`;
+                }
+                el.innerHTML = html;
+            });
         }
 
         function startSpin() {
             const btn = document.getElementById('spinBtn');
             btn.disabled = true;
 
-            const targets = [
+            const targetVals = [
                 months[Math.floor(Math.random() * 12)],
                 Math.floor(Math.random() * 28) + 1,
                 Math.floor(Math.random() * 10) + 1990
@@ -164,38 +179,4 @@
 
             ['m-strip', 'd-strip', 'y-strip'].forEach((id, i) => {
                 const el = document.getElementById(id);
-                const stopIdx = STRIP_COUNT - 5;
-                
-                el.style.transition = "none";
-                el.style.transform = "translateY(0)";
-
-                setTimeout(() => {
-                    el.getElementsByClassName('slot-item')[stopIdx].innerText = targets[i];
-                    el.style.transition = `transform ${3000 + (i * 1000)}ms cubic-bezier(0.1, 0, 0.1, 1)`;
-                    el.style.transform = `translateY(-${stopIdx * ITEM_HEIGHT}px)`;
-                }, 50);
-            });
-
-            setTimeout(() => { btn.disabled = false; }, 5500);
-        }
-
-        function updateClock() {
-            const now = new Date();
-            document.getElementById('present-display').innerText = months[now.getMonth()] + " " + String(now.getDate()).padStart(2, '0') + " " + now.getFullYear();
-        }
-
-        init();
-        updateClock();
-        setInterval(updateClock, 1000);
-
-        // Service Worker Kaydı (Çevrimdışı Çalışma İçin)
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js').catch(() => {
-                    console.log("Çevrimdışı modu için hosting gereklidir.");
-                });
-            });
-        }
-    </script>
-</body>
-</html>
+                const stopIdx = STR
