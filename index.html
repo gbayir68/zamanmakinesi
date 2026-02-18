@@ -8,53 +8,16 @@
     <link rel="icon" href="icon.png">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
-        
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        
-        body { 
-            background: #000; 
-            color: #fff; 
-            font-family: 'Orbitron', sans-serif; 
-            height: 100vh; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            overflow: hidden; 
-            position: relative;
-        }
+        body { background: #000; color: #fff; font-family: 'Orbitron', sans-serif; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
 
-        /* PARABOLİK WARP TÜNELİ (CSS Tabanlı - En Stabil) */
-        .warp-bg {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, #1a0033 0%, #000 80%);
-            z-index: -1;
-            perspective: 600px;
-        }
+        /* ARKA PLAN TÜNEL */
+        .warp-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, #1a0033 0%, #000 80%); z-index: -1; perspective: 600px; }
+        .lines { position: absolute; width: 200%; height: 200%; top: -50%; left: -50%; background-image: linear-gradient(to right, rgba(147, 51, 234, 0.2) 2px, transparent 2px), linear-gradient(to bottom, rgba(147, 51, 234, 0.2) 2px, transparent 2px); background-size: 60px 60px; transform: rotateX(55deg); animation: warpMove 2s linear infinite; }
+        .fast-warp { animation: warpMove 0.4s linear infinite !important; }
+        @keyframes warpMove { 0% { transform: rotateX(55deg) translateY(0); } 100% { transform: rotateX(55deg) translateY(60px); } }
 
-        .lines {
-            position: absolute;
-            width: 200%; height: 200%;
-            top: -50%; left: -50%;
-            background-image: 
-                linear-gradient(to right, rgba(147, 51, 234, 0.2) 2px, transparent 2px),
-                linear-gradient(to bottom, rgba(147, 51, 234, 0.2) 2px, transparent 2px);
-            background-size: 60px 60px;
-            transform: rotateX(55deg);
-            animation: warpMove 2s linear infinite; /* Normal hız */
-        }
-
-        /* Çark Dönerken Hızlanma Efekti (CSS Class) */
-        .fast-warp {
-            animation: warpMove 0.4s linear infinite !important;
-        }
-
-        @keyframes warpMove {
-            0% { transform: rotateX(55deg) translateY(0); }
-            100% { transform: rotateX(55deg) translateY(60px); }
-        }
-
-        /* ANA PANEL */
+        /* PANEL */
         .container { width: 90%; max-width: 320px; text-align: center; position: relative; z-index: 10; }
         .header { font-size: 1.2rem; margin-bottom: 25px; text-shadow: 0 0 15px #fff; letter-spacing: 2px; }
         .box { background: rgba(5, 5, 5, 0.9); border: 2px solid #333; border-radius: 20px; padding: 20px 10px; box-shadow: 0 0 40px #000; backdrop-filter: blur(5px); }
@@ -65,18 +28,13 @@
         .slots { display: flex; justify-content: space-around; height: 40px; overflow: hidden; font-size: 1.1rem; line-height: 40px; }
         .strip { transition: transform 2.5s cubic-bezier(0.1, 0, 0.1, 1); }
         .item { height: 40px; min-width: 65px; text-align: center; }
-        
         .btn-box { margin-top: 40px; }
-        button { background: #b00; color: #fff; border: none; padding: 18px; font-size: 1.1rem; border-radius: 50px; box-shadow: 0 8px #600; cursor: pointer; font-family: 'Orbitron', sans-serif; width: 85%; font-weight: bold; -webkit-appearance: none; }
+        button { background: #b00; color: #fff; border: none; padding: 18px; font-size: 1.1rem; border-radius: 50px; box-shadow: 0 8px #600; cursor: pointer; font-family: 'Orbitron', sans-serif; width: 85%; font-weight: bold; -webkit-appearance: none; transition: 0.3s; }
         button:disabled { background: #222; box-shadow: 0 3px #000; color: #444; cursor: not-allowed; opacity: 0.8; }
     </style>
 </head>
 <body>
-
-    <div class="warp-bg">
-        <div id="warpLines" class="lines"></div>
-    </div>
-
+    <div class="warp-bg"><div id="warpLines" class="lines"></div></div>
     <div class="container">
         <h1 class="header">ZAMAN MAKİNESİ</h1>
         <div class="box">
@@ -92,3 +50,101 @@
                 <span class="label">ŞİMDİKİ TARİH</span>
                 <div id="present"><span id="p-d"></span> <span id="p-m"></span> <span id="p-y"></span></div>
             </div>
+        </div>
+        <div class="btn-box"><button id="spinBtn" onclick="runMachine()">ZAMANI DEĞİŞTİR</button></div>
+    </div>
+
+    <script>
+        const ms = ["OCAK", "SUB", "MART", "NIS", "MAY", "HAZ", "TEM", "AGU", "EYL", "EKM", "KAS", "ARL"];
+        const ITEM_H = 40; const COUNT = 30;
+        let isSpinning = false;
+
+        function fillSlots() {
+            const mData = ms;
+            const dData = Array.from({length: 31}, (_, i) => i + 1);
+            const yData = Array.from({length: 10}, (_, i) => 1990 + i);
+            
+            document.getElementById('m-strip').innerHTML = Array.from({length: COUNT}, (_, i) => `<div class="item">${mData[i % 12]}</div>`).join('');
+            document.getElementById('d-strip').innerHTML = Array.from({length: COUNT}, (_, i) => `<div class="item">${dData[i % 31]}</div>`).join('');
+            document.getElementById('y-strip').innerHTML = Array.from({length: COUNT}, (_, i) => `<div class="item">${yData[i % 10]}</div>`).join('');
+        }
+
+        function runMachine() {
+            if(isSpinning) return;
+            isSpinning = true;
+
+            const btn = document.getElementById('spinBtn');
+            const lines = document.getElementById('warpLines');
+            btn.disabled = true;
+            lines.classList.add('fast-warp');
+
+            const targets = [ms[Math.floor(Math.random()*12)], Math.floor(Math.random()*28)+1, Math.floor(Math.random()*10)+1990];
+            const ids = ['m-strip', 'd-strip', 'y-strip'];
+
+            ids.forEach((id, i) => {
+                const el = document.getElementById(id);
+                el.style.transition = "none";
+                el.style.transform = "translateY(0)";
+                
+                setTimeout(() => {
+                    el.getElementsByClassName('item')[COUNT-3].innerText = targets[i];
+                    el.style.transition = "transform 2.5s cubic-bezier(0.1, 0, 0.1, 1)";
+                    el.style.transform = `translateY(-${(COUNT-3) * ITEM_H}px)`;
+                }, 50);
+            });
+
+            setTimeout(() => {
+                isSpinning = false;
+                lines.classList.remove('fast-warp');
+                startCooldown(300); // 5 dakika
+            }, 2800);
+        }
+
+        function startCooldown(seconds) {
+            const btn = document.getElementById('spinBtn');
+            const endTime = Date.now() + (seconds * 1000);
+            localStorage.setItem('machineLock', endTime);
+
+            const timer = setInterval(() => {
+                const now = Date.now();
+                const distance = endTime - now;
+
+                if (distance <= 0) {
+                    clearInterval(timer);
+                    btn.disabled = false;
+                    btn.innerText = "ZAMANI DEĞİŞTİR";
+                    localStorage.removeItem('machineLock');
+                } else {
+                    btn.disabled = true;
+                    const mins = Math.floor(distance / 60000);
+                    const secs = Math.floor((distance % 60000) / 1000);
+                    btn.innerText = `${mins}:${secs < 10 ? '0' : ''}${secs} KALDI`;
+                }
+            }, 1000);
+        }
+
+        function checkCooldown() {
+            const saved = localStorage.getItem('machineLock');
+            if (saved) {
+                const remaining = Math.floor((saved - Date.now()) / 1000);
+                if (remaining > 0) startCooldown(remaining);
+            }
+        }
+
+        function clock() {
+            const n = new Date();
+            const months = ["OCAK", "SUB", "MART", "NIS", "MAY", "HAZ", "TEM", "AGU", "EYL", "EKM", "KAS", "ARL"];
+            document.getElementById('p-d').innerText = String(n.getDate()).padStart(2, '0');
+            document.getElementById('p-m').innerText = months[n.getMonth()];
+            document.getElementById('p-y').innerText = n.getFullYear();
+        }
+
+        window.onload = function() {
+            fillSlots();
+            clock();
+            checkCooldown();
+            setInterval(clock, 1000);
+        };
+    </script>
+</body>
+</html>
