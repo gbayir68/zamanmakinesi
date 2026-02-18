@@ -3,51 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>KONTROL MERKEZİ</title>
+    <title>OF-İS KONTROL MERKEZİ</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: #000; color: #fff; font-family: 'Orbitron', sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; overflow-x: hidden; position: relative; }
 
-        /* ARKA PLAN AYNI KALSIN */
+        /* ARKA PLAN */
         .warp-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, #1a0033 0%, #000 80%); z-index: -1; perspective: 600px; }
         .lines { position: absolute; width: 200%; height: 200%; top: -50%; left: -50%; background-image: linear-gradient(to right, rgba(147, 51, 234, 0.2) 2px, transparent 2px), linear-gradient(to bottom, rgba(147, 51, 234, 0.2) 2px, transparent 2px); background-size: 60px 60px; transform: rotateX(55deg); animation: warpMove 4s linear infinite; }
         @keyframes warpMove { 0% { transform: rotateX(55deg) translateY(0); } 100% { transform: rotateX(55deg) translateY(60px); } }
 
-        .container { width: 95%; max-width: 500px; padding: 20px; z-index: 10; }
-        .header { font-size: 1.2rem; margin-bottom: 20px; text-shadow: 0 0 10px #fff; text-align: center; }
+        .container { width: 95%; max-width: 500px; padding: 20px; z-index: 10; text-align: center; }
+        .header { font-size: 1.2rem; margin-bottom: 20px; text-shadow: 0 0 10px #fff; }
         
-        .selection-box { background: rgba(10, 10, 10, 0.9); border: 2px solid #333; border-radius: 20px; padding: 20px; box-shadow: 0 0 30px #000; }
+        .selection-box { background: rgba(10, 10, 10, 0.95); border: 2px solid #333; border-radius: 20px; padding: 25px; box-shadow: 0 0 30px #000; backdrop-filter: blur(10px); }
         
         .selectors { display: flex; gap: 10px; margin-bottom: 20px; }
-        select { flex: 1; background: #000; color: #00ff41; border: 1px solid #00ff41; padding: 15px 5px; font-family: 'Orbitron'; font-size: 0.9rem; border-radius: 10px; outline: none; }
+        select { flex: 1; background: #000; color: #00ff41; border: 1px solid #00ff41; padding: 15px 5px; font-family: 'Orbitron'; font-size: 0.8rem; border-radius: 10px; outline: none; appearance: none; text-align: center; }
 
-        button { background: #b00; color: #fff; border: none; padding: 20px; font-size: 1.1rem; border-radius: 50px; width: 100%; cursor: pointer; font-family: 'Orbitron'; font-weight: bold; box-shadow: 0 6px #600; margin-bottom: 20px; }
+        button { background: #b00; color: #fff; border: none; padding: 20px; font-size: 1.1rem; border-radius: 50px; width: 100%; cursor: pointer; font-family: 'Orbitron'; font-weight: bold; box-shadow: 0 6px #600; margin-bottom: 25px; transition: 0.3s; }
         button:active { transform: translateY(3px); box-shadow: 0 2px #300; }
 
-        /* BİLGİ EKRANI */
+        /* SONUÇ PANELİ */
         #result-panel { 
-            background: rgba(0, 0, 0, 0.95); 
+            background: rgba(0, 20, 0, 0.4); 
             border-left: 4px solid #00ff41; 
-            padding: 20px; 
+            padding: 25px; 
             border-radius: 10px; 
-            min-height: 150px; 
+            min-height: 200px; 
             font-family: 'Orbitron'; 
-            font-size: 1rem; 
-            line-height: 1.6; 
-            color: #ddd; 
+            font-size: 1.2rem; /* Okunaklı olması için büyütüldü */
+            line-height: 1.7; 
+            color: #eee; 
             display: none; 
             text-align: left;
-            animation: fadeIn 0.5s ease;
+            animation: fadeIn 0.6s ease;
+            box-shadow: inset 0 0 20px rgba(0,255,65,0.1);
         }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .date-badge { color: #00ff41; font-size: 0.75rem; display: block; margin-bottom: 15px; letter-spacing: 2px; border-bottom: 1px solid rgba(0,255,65,0.2); padding-bottom: 5px; }
     </style>
 </head>
 <body>
     <div class="warp-bg"><div class="lines"></div></div>
 
     <div class="container">
-        <h1 class="header">VERİ ERİŞİM PANELİ</h1>
+        <h1 class="header">OF-İS KONTROL PANELİ</h1>
         
         <div class="selection-box">
             <div class="selectors">
@@ -56,7 +58,7 @@
                 <select id="sel-year"></select>
             </div>
             
-            <button onclick="getData()">VERİYİ GETİR</button>
+            <button onclick="getData()">ZAMAN VERİSİNİ ÇEK</button>
 
             <div id="result-panel"></div>
         </div>
@@ -67,38 +69,6 @@
     <script>
         const months = ["OCAK", "SUBAT", "MART", "NISAN", "MAYIS", "HAZIRAN", "TEMMUZ", "AGUSTOS", "EYLUL", "EKIM", "KASIM", "ARALIK"];
 
-        function init() {
-            // Günler (1-31)
-            const dSel = document.getElementById('sel-day');
-            for(let i=1; i<=31; i++) dSel.innerHTML += `<option value="${i<10?'0'+i:i}">${i}</option>`;
-            
-            // Aylar
-            const mSel = document.getElementById('sel-month');
-            months.forEach((m, i) => { mSel.innerHTML += `<option value="${(i+1)<10?'0'+(i+1):(i+1)}">${m}</option>`; });
-
-            // Yıllar (1990-1999)
-            const ySel = document.getElementById('sel-year');
-            for(let i=1990; i<=1999; i++) ySel.innerHTML += `<option value="${i}">${i}</option>`;
-        }
-
-        function getData() {
-            const d = document.getElementById('sel-day').value;
-            const m = document.getElementById('sel-month').value;
-            const y = document.getElementById('sel-year').value;
-            const tarihKey = `${y}-${m}-${d}`;
-
-            const panel = document.getElementById('result-panel');
-            panel.style.display = 'block';
-
-            // data.js içindeki zamanVerisi objesinde ara
-            if (typeof zamanVerisi !== 'undefined' && zamanVerisi[tarihKey]) {
-                panel.innerHTML = `<span style="color:#00ff41; font-size:0.7rem;">TARİH: ${d}/${m}/${y}</span><br><br>${zamanVerisi[tarihKey]}`;
-            } else {
-                panel.innerHTML = `<span style="color:#ff3131;">VERİ BULUNAMADI</span><br><br>Bu tarihe ait henüz bir kayıt girilmemiş.`;
-            }
-        }
-
-        init();
-    </script>
-</body>
-</html>
+        // Eğer data.js boşsa veya hata verirse diye jenerik nostalji motoru
+        const jenerikVeriler = {
+            "1990": "Yeni bir on yılın şafağı. Sokaklarda hala 80'lerin izi var ama TRT ekranlarında Star 1 rüzgarları esiyor. Analog hayatın en saf hali.",
