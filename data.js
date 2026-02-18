@@ -1,5 +1,4 @@
 const zamanVerisi = {
-    // --- 1990 ---
     "1990-01-01": "90'ların ilk sabahı. TRT'de yeni yıl konserleri var. Bugün efsane oyuncu Aliye Rona aramızda.",
     "1990-01-07": "İtalya'daki Pisa Kulesi güvenlik gerekçesiyle ziyarete kapatıldı.",
     "1990-01-20": "Bakü'de Kanlı Ocak olayları yaşandı. Bugün ünlü oyuncu Hazal Kaya dünyaya geldi.",
@@ -15,11 +14,10 @@ const zamanVerisi = {
     "1990-08-02": "Irak, Kuveyt'i işgal etti. Körfez Krizi kapıda.",
     "1990-09-04": "Yazar Turan Dursun suikasta kurban gitti. Türkiye laiklik tartışmalarıyla sarsılıyor.",
     "1990-10-03": "Doğu ve Batı Almanya birleşti. Berlin Duvarı artık sadece bir hatıra.",
+    "1990-11-07": "Gültekinin doğum günü [M]",
     "1990-11-21": "Super Nintendo (SNES) Japonya'da çıktı. Bir oyun nesli bu kutuyla büyüyecek.",
     "1990-12-09": "Lech Walesa Polonya'nın başkanı seçildi. Doğu bloğu tamamen çözülüyor.",
     "1990-12-24": "Nartugan bayramı. Geceyle gündüzün kadim savaşı ve ışığın doğuşu.",
-
-    // --- 1991 ---
     "1991-01-17": "Çöl Fırtınası Harekatı başladı. Türkiye ilk kez bir savaşı CNN'den canlı izledi.",
     "1991-02-10": "Boksör Mike Tyson hapse girdi. Dünyanın en tehlikeli adamı artık parmaklıklar ardında.",
     "1991-03-15": "Halkın sanatçısı Yavuzer Çetinkaya aramızdan ayrıldı.",
@@ -31,8 +29,6 @@ const zamanVerisi = {
     "1991-10-20": "Genel seçimler yapıldı. Koalisyon hükümetleri kapıda.",
     "1991-11-24": "Freddie Mercury veda etti. 'The Show Must Go On' son kez yankılandı.",
     "1991-12-08": "SSCB dağıldı. 15 yeni ülke dünya haritasına eklendi.",
-
-    // --- 1992 ---
     "1992-02-25": "Hocalı Katliamı yaşandı. Türk dünyasının kalbine ateş düştü.",
     "1992-03-13": "Erzincan Depremi. 6.8 şiddetinde sarsıldık. Yaralar sarılmaya çalışılıyor.",
     "1992-04-10": "Maraga Katliamı. Bugün ünlü model Adriana Lima henüz 11 yaşında.",
@@ -42,8 +38,6 @@ const zamanVerisi = {
     "1992-09-01": "Show TV yayına başladı. Özel televizyonculukta rekabet kızışıyor.",
     "1992-10-20": "Tarkan'ın 'Kıl Oldum Abi' kaseti çıktı. Pop dünyası bir daha eskisi gibi olmayacak.",
     "1992-12-03": "İlk SMS gönderildi: 'Merry Christmas'. Telefonların kaderi değişti.",
-
-    // --- 1993 ---
     "1993-01-24": "Uğur Mumcu suikastı. 'Vurulduk ey halkım, unutma bizi' feryatları her yerde.",
     "1993-02-26": "Dünya Ticaret Merkezi'ne ilk saldırı. İkiz kuleler ilk kez hedefte.",
     "1993-04-17": "Turgut Özal vefat etti. Türkiye şokta, milyonlar Ankara'da toplandı.",
@@ -55,8 +49,6 @@ const zamanVerisi = {
     "1993-08-31": "Popçu Berkay bugün doğdu. Serdar Ortaç 'Karabiberim' klibini çekiyor.",
     "1993-10-29": "Cumhuriyet 70 yaşında. Bugün efsane oyuncu Jale Öz vefat etti.",
     "1993-12-11": "Schindler'in Listesi vizyona girdi. Sinema tarihinin en büyük dramlarından biri.",
-
-    // --- 1994 ---
     "1994-01-05": "Ekonomik kriz: Türk Lirası devalüe edildi. Kemer sıkma politikaları başladı.",
     "1994-01-20": "Usta oyuncu Bedia Muvahhit aramızdan ayrıldı.",
     "1994-03-27": "Yerel seçimlerde Recep Tayyip Erdoğan İstanbul Belediye Başkanı seçildi.",
@@ -67,8 +59,6 @@ const zamanVerisi = {
     "1994-09-22": "Friends dizisi yayınlanmaya başladı. Bir nesil bu kafede büyüyecek.",
     "1994-11-22": "Popun kralı Tarkan 'A-acayipsin' albümüyle ortalığı yıkıyor.",
     "1994-12-03": "PlayStation satışa çıktı. Atari salonlarının sonu, evlerin yeni eğlencesi.",
-
-    // --- 1995 ---
     "1995-01-17": "Japonya'da Büyük Kobe Depremi. Binlerce can kaybı.",
     "1995-03-12": "Gazi Mahallesi olayları. Toplumsal gerilim zirve yaptı.",
     "1995-03-18": "Efsanevi oyuncu Sadri Alışık vefat etti. Selamın kaldı üzerimizde Turist Ömer.",
@@ -78,8 +68,6 @@ const zamanVerisi = {
     "1995-10-24": "Türkiye Gümrük Birliği'ne girmeye hazırlanıyor. 'Avrupa kapısı' manşetlerde.",
     "1995-11-04": "İzak Rabin suikastı. Ortadoğu barış umudu yine kana bulandı.",
     "1995-12-25": "Kardak Krizi. Türkiye ve Yunanistan savaşın eşiğinde.",
-
-    // --- 1996 ---
     "1996-01-31": "SAT komandoları Kardak'a çıktı. 'O bayrak inecek, o asker gidecek!'",
     "1996-02-10": "Satrançta milat: Bilgisayar Deep Blue, Kasparov'u ilk kez yendi.",
     "1996-05-15": "Fatih Terim Galatasaray'ın başında. 4 yıllık efsane bugün başlıyor.",
@@ -88,8 +76,6 @@ const zamanVerisi = {
     "1996-09-13": "Rap yıldızı Tupac Shakur öldü. Mafya-müzik hesaplaşması manşetlerde.",
     "1996-11-03": "Susurluk Kazası. Mercedes içinden fırlayan karanlık ilişkiler ülkeyi sarstı.",
     "1996-12-15": "Sertab Erener 'Lâ'l' albümüyle popu sanata dönüştürüyor.",
-
-    // --- 1997 ---
     "1997-02-28": "28 Şubat MGK kararları. 'Post-modern darbe' süreci başladı.",
     "1997-04-01": "Harry Potter'ın ilk kitabı yazılıyor. Dünyayı değiştirecek sihir yolda.",
     "1997-05-11": "Deep Blue, Kasparov'u finalde mağlup etti. İnsan zekası makineye yenildi.",
@@ -97,8 +83,6 @@ const zamanVerisi = {
     "1997-08-31": "Prenses Diana Paris'te kaza yaptı ve vefat etti. Dünya şokta.",
     "1997-09-05": "Rahibe Teresa vefat etti. Bugün futbolcu Çağlar Söyüncü çocukluk çağında.",
     "1997-12-19": "Titanic vizyona girdi. 'I'm the king of the world!' repliği her yerde.",
-
-    // --- 1998 ---
     "1998-01-12": "Avrupa'da insan klonlanması yasaklandı. Etik tartışmalar büyüyor.",
     "1998-05-14": "Frank Sinatra hayata gözlerini yumdu. 'My Way' son kez çalındı.",
     "1998-06-10": "Dünya Kupası Fransa'da. Ricky Martin 'La Copa de la Vida' ile dünyayı dans ettiriyor.",
@@ -106,8 +90,6 @@ const zamanVerisi = {
     "1998-09-04": "Google kuruldu. Artık bilgiye ulaşmak bir tık uzağımızda.",
     "1998-10-29": "Cumhuriyet 75 yaşında. Meşaleli yürüyüşler tüm Türkiye'yi sardı.",
     "1998-12-31": "Euro para birimi hazırlıkları bitti. Yarın Avrupa'da yeni bir dönem başlıyor.",
-
-    // --- 1999 ---
     "1999-01-11": "Büyük usta Barış Manço'nun vefatına günler kaldı. Bugün hüzünlü bir kış sabahı.",
     "1999-02-01": "Barış Manço hayata veda etti. '7'den 77'ye' herkes yasta. Güle güle Barış Abi.",
     "1999-02-16": "Öcalan Kenya'da yakalanıp Türkiye'ye getirildi. Sokaklar bayram yeri.",
@@ -118,7 +100,5 @@ const zamanVerisi = {
     "1999-08-17": "Büyük Marmara Depremi. 'Sesimi duyan var mı?' feryatları... Zaman dondu.",
     "1999-10-12": "Dünya nüfusu 6 milyara ulaştı. Kalabalıklaşan gezegen, daralan umutlar.",
     "1999-12-31": "Milenyum gecesi. Y2K korkusuyla beklenen son. Yarın yeni bir bin yıl!",
-
-    // --- Jenerik ve Özel Günler (Listeyi dolduran diğer günler) ---
     "VAR_SAYILAN": "Zamanın bu kesitinde her şey olması gerektiği gibiydi. Sessiz ama derin bir 90'lar günü."
 };
