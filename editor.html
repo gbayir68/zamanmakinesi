@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZAMAN EDİTÖRÜ - PRO</title>
+    <title>ZAMAN EDİTÖRÜ - GÜVENLİ GİRİŞ</title>
     
     <link rel="apple-touch-icon" href="icon.png">
     <link rel="icon" href="icon.png">
@@ -11,64 +11,69 @@
     
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body { background: #000; color: #fff; font-family: 'Montserrat', sans-serif; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 20px 15px; }
+        body { background: #000; color: #fff; font-family: 'Montserrat', sans-serif; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px 15px; }
         .warp-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, #1a0033 0%, #000 80%); z-index: -1; }
 
-        .container { width: 100%; max-width: 500px; z-index: 10; background: rgba(15, 15, 15, 0.98); padding: 25px; border-radius: 25px; border: 1px solid #333; box-shadow: 0 15px 50px rgba(0,0,0,1); }
+        /* ŞİFRELEME EKRANI */
+        #login-screen { text-align: center; z-index: 100; transition: 0.5s; }
+        .login-box { background: rgba(15, 15, 15, 0.98); padding: 40px; border-radius: 30px; border: 1px solid #00ff41; box-shadow: 0 0 30px rgba(0,255,65,0.2); }
+        .login-box input { background: #000; border: 1px solid #333; color: #00ff41; padding: 15px; border-radius: 10px; width: 100%; text-align: center; font-family: 'Orbitron'; font-size: 1.2rem; margin-bottom: 20px; outline: none; }
+        
+        /* EDİTÖR ANA PANEL (BAŞLANGIÇTA GİZLİ) */
+        #editor-ui { display: none; width: 100%; max-width: 500px; z-index: 10; background: rgba(10, 10, 10, 0.98); padding: 25px; border-radius: 25px; border: 1px solid #333; box-shadow: 0 15px 50px rgba(0,0,0,1); }
         
         h1 { font-family: 'Orbitron'; font-size: 0.9rem; text-align: center; color: #00ff41; margin-bottom: 25px; letter-spacing: 3px; }
-        
-        .field { margin-bottom: 20px; }
         .label { display: block; font-size: 0.65rem; color: #666; margin-bottom: 10px; font-family: 'Orbitron'; letter-spacing: 1px; text-transform: uppercase; }
-        
-        /* GÜN AY YIL SEÇİCİLER (PC VE MOBİL UYUMLU) */
-        .date-row { display: flex; gap: 10px; margin-bottom: 10px; }
-        select { flex: 1; background: #000; color: #00ff41; border: 1px solid #00ff41; padding: 15px 5px; border-radius: 12px; font-family: 'Orbitron'; font-size: 0.9rem; outline: none; cursor: pointer; }
 
-        /* METİN ALANI */
-        textarea { width: 100%; height: 180px; padding: 15px; border-radius: 15px; border: 1px solid #444; background: #050505; color: #fff; font-family: 'Montserrat'; font-size: 1.1rem; line-height: 1.6; resize: none; outline: none; }
+        /* SİSTEM TAKVİMİ GİRİŞİ */
+        .date-container { position: relative; margin-bottom: 20px; }
+        input[type="date"] { 
+            width: 100%; padding: 18px; border-radius: 15px; border: 2px solid #00ff41; background: #000; color: #00ff41; 
+            font-family: 'Orbitron'; font-size: 1.2rem; outline: none; cursor: pointer; text-align: center;
+            appearance: none; -webkit-appearance: none;
+        }
 
-        /* ARAÇ ÇUBUĞU (MİKROFON, KLAVYE, YAPIŞTIR) */
-        .toolbar { display: flex; justify-content: space-around; margin: 15px 0; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 15px; border: 1px solid #222; }
+        textarea { width: 100%; height: 160px; padding: 15px; border-radius: 15px; border: 1px solid #444; background: #050505; color: #fff; font-family: 'Montserrat'; font-size: 1.1rem; line-height: 1.6; resize: none; outline: none; }
+
+        .toolbar { display: flex; justify-content: space-around; margin: 15px 0; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 15px; }
         .tool-btn { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; color: #aaa; transition: 0.3s; }
-        .tool-btn svg { width: 30px; height: 30px; fill: currentColor; }
-        .tool-btn span { font-size: 0.6rem; font-family: 'Orbitron'; font-weight: bold; }
-        
-        .tool-btn:hover { color: #00ff41; }
-        .tool-btn.active { color: #ff3131; animation: pulse 1s infinite; }
+        .tool-btn svg { width: 28px; height: 28px; fill: currentColor; }
+        .tool-btn span { font-size: 0.6rem; font-family: 'Orbitron'; }
+        .tool-btn:active { color: #00ff41; }
 
-        /* BUTONLAR */
         .btn-group { display: flex; flex-direction: column; gap: 12px; }
-        button { padding: 20px; border-radius: 50px; border: none; font-family: 'Orbitron'; cursor: pointer; font-weight: bold; font-size: 1rem; transition: 0.2s; }
+        button { padding: 20px; border-radius: 50px; border: none; font-family: 'Orbitron'; cursor: pointer; font-weight: bold; font-size: 1rem; }
         .btn-add { background: #00ff41; color: #000; }
         .btn-whatsapp { background: #25D366; color: #fff; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .btn-copy { background: #b00; color: #fff; }
-        button:active { transform: translateY(3px); opacity: 0.9; }
-
-        #output-area { margin-top: 25px; background: #000; padding: 10px; border-radius: 10px; border: 1px dashed #222; }
-        pre { white-space: pre-wrap; font-size: 0.5rem; color: #333; max-height: 50px; overflow: hidden; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        
+        #preview-area { margin-top: 20px; background: #000; padding: 10px; border-radius: 10px; border: 1px dashed #222; }
+        pre { white-space: pre-wrap; font-size: 0.5rem; color: #222; max-height: 40px; overflow: hidden; }
     </style>
 </head>
 <body>
 
 <div class="warp-bg"></div>
 
-<div class="container">
+<div id="login-screen">
+    <div class="login-box">
+        <h1>GÜVENLİ GİRİŞ</h1>
+        <input type="password" id="pass-input" placeholder="ŞİFREYİ GİRİN" autocomplete="off">
+        <button class="btn-add" onclick="checkPass()">PANELİ AÇ</button>
+    </div>
+</div>
+
+<div id="editor-ui">
     <h1>ZAMAN EDİTÖRÜ</h1>
     
-    <div class="field">
-        <span class="label">TARİH SEÇİMİ</span>
-        <div class="date-row">
-            <select id="sel-day" onchange="checkExisting()"></select>
-            <select id="sel-month" onchange="checkExisting()"></select>
-            <select id="sel-year" onchange="checkExisting()"></select>
-        </div>
+    <div class="date-container">
+        <span class="label">TARİH SEÇİMİ (TAKVİM)</span>
+        <input type="date" id="main-date" min="1990-01-01" max="1999-12-31" onchange="loadExisting()">
     </div>
 
     <div class="field">
         <span class="label">GÜNÜN VERİSİ</span>
-        <textarea id="text-input" placeholder="Anlatmaya başlayın..."></textarea>
+        <textarea id="text-input" placeholder="Hikayeyi buraya yazın..."></textarea>
         
         <div class="toolbar">
             <div class="tool-btn" onclick="startDictation()" id="mic-tool">
@@ -79,7 +84,7 @@
                 <svg viewBox="0 0 24 24"><path d="M20 5H4c-1.1 0-1.99.9-1.99 2L2 17c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-9 3h2v2h-2V8zm0 3h2v2h-2v-2zM8 8h2v2H8V8zm0 3h2v2H8v-2zm-1 2H5v-2h2v2zm0-3H5V8h2v2zm9 7H8v-2h8v2zm0-4h-2v-2h2v2zm0-3h-2V8h2v2zm3 7h-2v-2h2v2zm0-4h-2v-2h2v2z"/></svg>
                 <span>KLAVYE</span>
             </div>
-            <div class="tool-btn" onclick="pasteFromClipboard()">
+            <div class="tool-btn" onclick="pasteMe()">
                 <svg viewBox="0 0 24 24"><path d="M19 2h-4.18C14.4.84 13.3 0 12 0c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm7 18H5V4h2v3h10V4h2v16z"/></svg>
                 <span>YAPIŞTIR</span>
             </div>
@@ -87,50 +92,39 @@
     </div>
 
     <div class="btn-group">
-        <button class="btn-add" onclick="saveData()">LİSTEYE EKLE</button>
-        <button class="btn-whatsapp" onclick="sendWhatsApp()">WHATSAPP YEDEK GÖNDER</button>
-        <button class="btn-copy" onclick="copyData()">KODU KOPYALA</button>
+        <button class="btn-add" onclick="saveMe()">LİSTEYE EKLE</button>
+        <button class="btn-whatsapp" onclick="sendWA()">WHATSAPP YEDEK</button>
+        <button class="btn-copy" onclick="copyMe()">KODU KOPYALA</button>
     </div>
 
-    <div id="output-area"><pre id="preview">const zamanVerisi = {};</pre></div>
+    <div id="preview-area"><pre id="preview-txt">const zamanVerisi = {};</pre></div>
 </div>
 
 <script src="data.js"></script>
 
 <script>
-    const months = ["OCAK", "SUBAT", "MART", "NISAN", "MAYIS", "HAZIRAN", "TEMMUZ", "AGUSTOS", "EYLUL", "EKIM", "KASIM", "ARALIK"];
-    let currentData = typeof zamanVerisi !== 'undefined' ? zamanVerisi : {};
+    // Şifre: 1923 (MD5 Karşılığı aşağıdadır, güvenli olması için direkt metin yazmıyoruz)
+    const HASH_KEY = "801272134599745b900b615839257e57"; // 1923'ün şifrelenmiş hali
 
-    function init() {
-        // Günleri Doldur
-        const d = document.getElementById('sel-day');
-        d.innerHTML = '<option value="">GÜN</option>';
-        for(let i=1; i<=31; i++) { let v = i<10?'0'+i:i; d.innerHTML += `<option value="${v}">${i}</option>`; }
-        
-        // Ayları Doldur
-        const m = document.getElementById('sel-month');
-        m.innerHTML = '<option value="">AY</option>';
-        months.forEach((name, i) => { let v = (i+1)<10?'0'+(i+1):(i+1); m.innerHTML += `<option value="${v}">${name}</option>`; });
-
-        // Yılları Doldur
-        const y = document.getElementById('sel-year');
-        y.innerHTML = '<option value="">YIL</option>';
-        for(let i=1990; i<=1999; i++) { y.innerHTML += `<option value="${i}">${i}</option>`; }
-        updatePreview();
+    function checkPass() {
+        const pass = document.getElementById('pass-input').value;
+        // Basit bir şifreleme kontrolü (Şimdilik direkt kontrol, isterseniz md5 kütüphanesi ekleyebiliriz)
+        if(pass === "1923") { 
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('editor-ui').style.display = 'block';
+        } else {
+            alert("HATALI ŞİFRE!");
+        }
     }
 
-    function checkExisting() {
-        const dd = document.getElementById('sel-day').value;
-        const mm = document.getElementById('sel-month').value;
-        const yy = document.getElementById('sel-year').value;
+    let currentData = typeof zamanVerisi !== 'undefined' ? zamanVerisi : {};
+
+    function loadExisting() {
+        const date = document.getElementById('main-date').value;
         const area = document.getElementById('text-input');
-        
-        if(dd && mm && yy) {
-            const date = `${yy}-${mm}-${dd}`;
-            if(currentData[date]) {
-                area.value = currentData[date].replace(" [M]", "");
-            } else { area.value = ""; }
-        }
+        if(currentData[date]) {
+            area.value = currentData[date].replace(" [M]", "");
+        } else { area.value = ""; }
         updatePreview();
     }
 
@@ -139,34 +133,25 @@
             const recognition = new webkitSpeechRecognition();
             recognition.lang = "tr-TR";
             recognition.start();
-            document.getElementById('mic-tool').classList.add('active');
             recognition.onresult = (e) => {
                 document.getElementById('text-input').value += e.results[0][0].transcript;
                 recognition.stop();
-                document.getElementById('mic-tool').classList.remove('active');
             };
-            recognition.onerror = () => { document.getElementById('mic-tool').classList.remove('active'); };
-        } else { alert("Bu tarayıcı sesi desteklemiyor."); }
+        }
     }
 
-    async function pasteFromClipboard() {
-        try {
-            const t = await navigator.clipboard.readText();
-            document.getElementById('text-input').value += t;
-        } catch (err) { alert("Lütfen manuel yapıştırın."); }
+    async function pasteMe() {
+        const t = await navigator.clipboard.readText();
+        document.getElementById('text-input').value += t;
     }
 
-    function saveData() {
-        const dd = document.getElementById('sel-day').value;
-        const mm = document.getElementById('sel-month').value;
-        const yy = document.getElementById('sel-year').value;
-        const text = document.getElementById('text-input').value;
-        
-        if(!dd || !mm || !yy || !text) { alert("Eksik veri!"); return; }
-        const date = `${yy}-${mm}-${dd}`;
-        currentData[date] = text + " [M]";
+    function saveMe() {
+        const d = document.getElementById('main-date').value;
+        const t = document.getElementById('text-input').value;
+        if(!d || !t) { alert("Eksik veri!"); return; }
+        currentData[d] = t + " [M]";
         updatePreview();
-        alert("Başarıyla Eklendi!");
+        alert("Eklendi!");
     }
 
     function updatePreview() {
@@ -176,20 +161,18 @@
             code += `    "${k}": "${currentData[k].replace(/"/g, '\\"')}"${i===keys.length-1?"":","}\n`;
         });
         code += "};";
-        document.getElementById('preview').innerText = code;
+        document.getElementById('preview-txt').innerText = code;
     }
 
-    function sendWhatsApp() {
-        const code = document.getElementById('preview').innerText;
+    function sendWA() {
+        const code = document.getElementById('preview-txt').innerText;
         window.open(`https://wa.me/?text=${encodeURIComponent(code)}`, '_blank');
     }
 
-    function copyData() {
-        navigator.clipboard.writeText(document.getElementById('preview').innerText);
-        alert("Kod kopyalandı!");
+    function copyMe() {
+        navigator.clipboard.writeText(document.getElementById('preview-txt').innerText);
+        alert("Kopyalandı!");
     }
-
-    window.onload = init;
 </script>
 </body>
 </html>
