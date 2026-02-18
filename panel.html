@@ -18,7 +18,7 @@
             flex-direction: column;
             align-items: center; 
             padding: 20px 0;
-            overflow-x: hidden;
+            overflow: hidden;
             position: relative; 
         }
 
@@ -27,104 +27,97 @@
         .lines { position: absolute; width: 200%; height: 200%; top: -50%; left: -50%; background-image: linear-gradient(to right, rgba(147, 51, 234, 0.2) 2px, transparent 2px), linear-gradient(to bottom, rgba(147, 51, 234, 0.2) 2px, transparent 2px); background-size: 60px 60px; transform: rotateX(55deg); animation: warpMove 4s linear infinite; }
         @keyframes warpMove { 0% { transform: rotateX(55deg) translateY(0); } 100% { transform: rotateX(55deg) translateY(60px); } }
 
-        .container { width: 95%; max-width: 500px; z-index: 10; text-align: center; }
+        .container { width: 90%; max-width: 450px; z-index: 10; text-align: center; }
         
-        /* LOGO YERLEŞİMİ */
+        /* LOGO */
         .main-logo { 
-            width: 150px; 
-            height: 150px; 
-            margin: 0 auto 15px auto; 
+            width: 100px; 
+            height: 100px; 
+            margin: 0 auto 10px auto; 
             display: block; 
-            filter: drop-shadow(0 0 15px rgba(147, 51, 234, 0.6));
+            filter: drop-shadow(0 0 10px rgba(147, 51, 234, 0.5));
             object-fit: contain;
         }
 
-        .header { font-size: 1.2rem; margin-bottom: 25px; text-shadow: 0 0 10px #fff; text-transform: uppercase; }
+        .header { font-size: 1rem; margin-bottom: 20px; text-shadow: 0 0 5px #fff; letter-spacing: 2px; }
         
-        .selection-group { 
-            background: rgba(15, 15, 15, 0.95); 
-            border: 1px solid #333; 
-            border-radius: 20px; 
-            padding: 15px; 
-            margin-bottom: 15px; 
-            box-shadow: 0 5px 20px rgba(0,0,0,0.8);
+        /* KOMPAKT SEÇİM ALANI */
+        .selection-container {
+            background: rgba(15, 15, 15, 0.9);
+            border: 1px solid #333;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
         }
 
-        .label { font-size: 0.7rem; color: #666; margin-bottom: 10px; display: block; text-align: left; padding-left: 5px; letter-spacing: 1px; }
-
-        /* KAYDIRILABİLİR BUTONLAR */
-        .scroll-picker { 
-            display: flex; 
-            overflow-x: auto; 
-            gap: 8px; 
-            padding: 5px; 
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-        }
-        .scroll-picker::-webkit-scrollbar { display: none; }
-
-        .pick-btn { 
-            min-width: 70px; 
-            height: 70px; 
-            background: #0a0a0a; 
-            border: 1px solid #222; 
-            border-radius: 12px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 1.1rem; 
-            color: #888; 
-            flex-shrink: 0;
-            transition: 0.2s;
+        .dropdown-grid {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
         }
 
-        .pick-btn.active { 
-            background: #00ff41; 
-            color: #000; 
-            border-color: #fff; 
-            box-shadow: 0 0 15px rgba(0, 255, 65, 0.4);
-            transform: scale(1.05);
+        .select-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
         }
 
-        .month-btn { min-width: 120px; font-size: 0.9rem; }
+        .label { font-size: 0.6rem; color: #666; margin-bottom: 5px; letter-spacing: 1px; }
+
+        select {
+            width: 100%;
+            background: #000;
+            color: #00ff41;
+            border: 1px solid #444;
+            padding: 12px 5px;
+            font-family: 'Orbitron';
+            font-size: 0.9rem;
+            border-radius: 8px;
+            outline: none;
+            text-align: center;
+            appearance: none; /* Standart ok işaretini kaldırır */
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300ff41' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 5px center;
+            background-size: 12px;
+        }
 
         /* O TARİHE GİT BUTONU */
         .main-btn { 
             background: #b00; 
             color: #fff; 
             border: none; 
-            padding: 22px; 
-            font-size: 1.3rem; 
-            border-radius: 50px; 
+            padding: 18px; 
+            font-size: 1.1rem; 
+            border-radius: 10px; 
             width: 100%; 
             cursor: pointer; 
             font-family: 'Orbitron'; 
             font-weight: bold; 
-            box-shadow: 0 8px #600; 
-            margin: 15px 0;
-            -webkit-appearance: none;
+            box-shadow: 0 5px #600; 
+            transition: 0.2s;
         }
-        .main-btn:active { transform: translateY(4px); box-shadow: 0 2px #300; }
+        .main-btn:active { transform: translateY(3px); box-shadow: 0 2px #300; }
 
         /* SONUÇ PANELİ */
         #result-panel { 
-            background: rgba(0, 0, 0, 0.98); 
-            border: 1px solid #444; 
-            border-left: 5px solid #00ff41;
-            padding: 25px; 
-            border-radius: 15px; 
-            min-height: 180px; 
+            background: rgba(0, 0, 0, 0.95); 
+            border-top: 3px solid #00ff41;
+            padding: 20px; 
+            border-radius: 0 0 15px 15px; 
+            min-height: 150px; 
             font-family: 'Orbitron'; 
-            font-size: 1.2rem; 
-            line-height: 1.7; 
+            font-size: 1.1rem; 
+            line-height: 1.6; 
             color: #fff; 
             display: none; 
             text-align: left;
-            margin-top: 10px;
-            animation: slideUp 0.4s ease-out;
+            margin-top: -10px; /* Üst kutuyla birleşik görünmesi için */
+            animation: fadeIn 0.3s ease;
         }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .date-badge { color: #00ff41; font-size: 0.75rem; display: block; margin-bottom: 12px; opacity: 0.8; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .date-badge { color: #00ff41; font-size: 0.7rem; display: block; margin-bottom: 10px; border-bottom: 1px solid #222; padding-bottom: 5px; }
     </style>
 </head>
 <body>
@@ -132,25 +125,26 @@
 
     <div class="container">
         <img src="icon.png" alt="Logo" class="main-logo" onerror="this.style.display='none'">
-        
         <h1 class="header">OF-İS KONTROL PANELİ</h1>
         
-        <div class="selection-group">
-            <span class="label">GÜN</span>
-            <div id="day-picker" class="scroll-picker"></div>
+        <div class="selection-container">
+            <div class="dropdown-grid">
+                <div class="select-wrapper">
+                    <span class="label">GÜN</span>
+                    <select id="sel-day"></select>
+                </div>
+                <div class="select-wrapper">
+                    <span class="label">AY</span>
+                    <select id="sel-month"></select>
+                </div>
+                <div class="select-wrapper">
+                    <span class="label">YIL</span>
+                    <select id="sel-year"></select>
+                </div>
+            </div>
+            
+            <button class="main-btn" onclick="getData()">O TARİHE GİT</button>
         </div>
-
-        <div class="selection-group">
-            <span class="label">AY</span>
-            <div id="month-picker" class="scroll-picker"></div>
-        </div>
-
-        <div class="selection-group">
-            <span class="label">YIL</span>
-            <div id="year-picker" class="scroll-picker"></div>
-        </div>
-        
-        <button class="main-btn" onclick="getData()">O TARİHE GİT</button>
 
         <div id="result-panel"></div>
     </div>
@@ -159,26 +153,53 @@
     
     <script>
         const months = ["OCAK", "SUBAT", "MART", "NISAN", "MAYIS", "HAZIRAN", "TEMMUZ", "AGUSTOS", "EYLUL", "EKIM", "KASIM", "ARALIK"];
-        let selD = "01", selM = "01", selY = "1990";
 
         function init() {
-            const dp = document.getElementById('day-picker');
+            const dSel = document.getElementById('sel-day');
             for(let i=1; i<=31; i++) {
                 let val = i < 10 ? '0'+i : i;
-                dp.innerHTML += `<div class="pick-btn ${i==1?'active':''}" onclick="sel(this, 'd', '${val}')">${i}</div>`;
+                dSel.innerHTML += `<option value="${val}">${i}</option>`;
             }
-            const mp = document.getElementById('month-picker');
+            
+            const mSel = document.getElementById('sel-month');
             months.forEach((m, i) => {
                 let val = (i+1) < 10 ? '0'+(i+1) : (i+1);
-                mp.innerHTML += `<div class="pick-btn month-btn ${i==0?'active':''}" onclick="sel(this, 'm', '${val}')">${m}</div>`;
+                mSel.innerHTML += `<option value="${val}">${m}</option>`;
             });
-            const yp = document.getElementById('year-picker');
+
+            const ySel = document.getElementById('sel-year');
             for(let i=1990; i<=1999; i++) {
-                yp.innerHTML += `<div class="pick-btn ${i==1990?'active':''}" onclick="sel(this, 'y', '${i}')">${i}</div>`;
+                ySel.innerHTML += `<option value="${i}">${i}</option>`;
             }
         }
 
-        function sel(el, type, val) {
-            const btns = el.parentElement.querySelectorAll('.pick-btn');
-            btns.forEach(b => b.classList.remove('active'));
-            el.classList.add('
+        function getData() {
+            const d = document.getElementById('sel-day').value;
+            const m = document.getElementById('sel-month').value;
+            const y = document.getElementById('sel-year').value;
+            const key = `${y}-${m}-${d}`;
+            
+            const panel = document.getElementById('result-panel');
+            panel.style.display = 'block';
+
+            const jenerik = {
+                "1990": "Yeni bir on yılın şafağı. Analog hayatın en saf hali.",
+                "1991": "Pop müziğin ayak sesleri... Özel kanalların renkli dünyası.",
+                "1992": "Tarkan'ın rüzgarı esmeye başladı. Renkli ceketler dönemi.",
+                "1993": "Barış Manço'lu pazar sabahlarının şenlendiği bir dönem.",
+                "1994": "Pop müziğin patladığı yıl. Walkman sesleri sokaklarda.",
+                "1995": "Windows 95 heyecanı evlerde. Analogdan dijitale geçiş.",
+                "1996": "Müzik kanalları ve sabah şekerleri dönemi.",
+                "1997": "İnternet kafelerin mahalle aralarına sızdığı günler.",
+                "1998": "Doksanların efsane dizilerinin herkesi kilitlediği yıl.",
+                "1999": "Milenyumun kapısı. Gelecek bin yıla dair büyük merak."
+            };
+
+            let txt = (typeof zamanVerisi !== 'undefined' && zamanVerisi[key]) ? zamanVerisi[key] : (jenerik[y] || "90'ların ruhu her yerde.");
+            panel.innerHTML = `<span class="date-badge">${d} ${months[parseInt(m)-1]} ${y}</span>${txt}`;
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
