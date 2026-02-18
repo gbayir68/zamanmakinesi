@@ -2,177 +2,202 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZAMAN EDİTÖRÜ - GÜVENLİ GİRİŞ</title>
-    
-    <link rel="apple-touch-icon" href="icon.png">
-    <link rel="icon" href="icon.png">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gültekin Bayır - Arşiv Editörü</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body { background: #000; color: #fff; font-family: 'Montserrat', sans-serif; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px 15px; }
-        .warp-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, #1a0033 0%, #000 80%); z-index: -1; }
-
-        /* ŞİFRELEME EKRANI */
-        #login-screen { text-align: center; z-index: 100; transition: 0.5s; }
-        .login-box { background: rgba(15, 15, 15, 0.98); padding: 40px; border-radius: 30px; border: 1px solid #00ff41; box-shadow: 0 0 30px rgba(0,255,65,0.2); }
-        .login-box input { background: #000; border: 1px solid #333; color: #00ff41; padding: 15px; border-radius: 10px; width: 100%; text-align: center; font-family: 'Orbitron'; font-size: 1.2rem; margin-bottom: 20px; outline: none; }
-        
-        /* EDİTÖR ANA PANEL (BAŞLANGIÇTA GİZLİ) */
-        #editor-ui { display: none; width: 100%; max-width: 500px; z-index: 10; background: rgba(10, 10, 10, 0.98); padding: 25px; border-radius: 25px; border: 1px solid #333; box-shadow: 0 15px 50px rgba(0,0,0,1); }
-        
-        h1 { font-family: 'Orbitron'; font-size: 0.9rem; text-align: center; color: #00ff41; margin-bottom: 25px; letter-spacing: 3px; }
-        .label { display: block; font-size: 0.65rem; color: #666; margin-bottom: 10px; font-family: 'Orbitron'; letter-spacing: 1px; text-transform: uppercase; }
-
-        /* SİSTEM TAKVİMİ GİRİŞİ */
-        .date-container { position: relative; margin-bottom: 20px; }
-        input[type="date"] { 
-            width: 100%; padding: 18px; border-radius: 15px; border: 2px solid #00ff41; background: #000; color: #00ff41; 
-            font-family: 'Orbitron'; font-size: 1.2rem; outline: none; cursor: pointer; text-align: center;
-            appearance: none; -webkit-appearance: none;
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #e67e22;
+            --bg-color: #ecf0f1;
         }
 
-        textarea { width: 100%; height: 160px; padding: 15px; border-radius: 15px; border: 1px solid #444; background: #050505; color: #fff; font-family: 'Montserrat'; font-size: 1.1rem; line-height: 1.6; resize: none; outline: none; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
 
-        .toolbar { display: flex; justify-content: space-around; margin: 15px 0; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 15px; }
-        .tool-btn { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; color: #aaa; transition: 0.3s; }
-        .tool-btn svg { width: 28px; height: 28px; fill: currentColor; }
-        .tool-btn span { font-size: 0.6rem; font-family: 'Orbitron'; }
-        .tool-btn:active { color: #00ff41; }
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
 
-        .btn-group { display: flex; flex-direction: column; gap: 12px; }
-        button { padding: 20px; border-radius: 50px; border: none; font-family: 'Orbitron'; cursor: pointer; font-weight: bold; font-size: 1rem; }
-        .btn-add { background: #00ff41; color: #000; }
-        .btn-whatsapp { background: #25D366; color: #fff; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .btn-copy { background: #b00; color: #fff; }
-        
-        #preview-area { margin-top: 20px; background: #000; padding: 10px; border-radius: 10px; border: 1px dashed #222; }
-        pre { white-space: pre-wrap; font-size: 0.5rem; color: #222; max-height: 40px; overflow: hidden; }
+        h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        .control-group {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        input[type="date"] {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            flex: 1;
+            min-width: 200px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        #fetch-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        #fetch-btn:hover {
+            background-color: #34495e;
+        }
+
+        #save-btn {
+            background-color: #27ae60;
+            color: white;
+            width: 100%;
+            margin-top: 15px;
+            font-size: 18px;
+        }
+
+        #save-btn:hover {
+            background-color: #2ecc71;
+        }
+
+        textarea {
+            width: 100%;
+            height: 300px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 16px;
+            line-height: 1.5;
+            resize: vertical;
+            background-color: #fafafa;
+        }
+
+        .status-msg {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 6px;
+            display: none;
+        }
+
+        .hint {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
 
-<div class="warp-bg"></div>
-
-<div id="login-screen">
-    <div class="login-box">
-        <h1>GÜVENLİ GİRİŞ</h1>
-        <input type="password" id="pass-input" placeholder="ŞİFREYİ GİRİN" autocomplete="off">
-        <button class="btn-add" onclick="checkPass()">PANELİ AÇ</button>
-    </div>
-</div>
-
-<div id="editor-ui">
-    <h1>ZAMAN EDİTÖRÜ</h1>
+<div class="container">
+    <h2>Arşiv Veri Editörü</h2>
     
-    <div class="date-container">
-        <span class="label">TARİH SEÇİMİ (TAKVİM)</span>
-        <input type="date" id="main-date" min="1990-01-01" max="1999-12-31" onchange="loadExisting()">
+    <div class="control-group">
+        <input type="date" id="date-picker">
+        <button id="fetch-btn">Veriyi Getir</button>
     </div>
+    <p class="hint">İpucu: Tarihi seçip "Getir"e basın veya klavyeden Enter tuşunu kullanın.</p>
 
-    <div class="field">
-        <span class="label">GÜNÜN VERİSİ</span>
-        <textarea id="text-input" placeholder="Hikayeyi buraya yazın..."></textarea>
-        
-        <div class="toolbar">
-            <div class="tool-btn" onclick="startDictation()" id="mic-tool">
-                <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
-                <span>SES</span>
-            </div>
-            <div class="tool-btn" onclick="document.getElementById('text-input').focus()">
-                <svg viewBox="0 0 24 24"><path d="M20 5H4c-1.1 0-1.99.9-1.99 2L2 17c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-9 3h2v2h-2V8zm0 3h2v2h-2v-2zM8 8h2v2H8V8zm0 3h2v2H8v-2zm-1 2H5v-2h2v2zm0-3H5V8h2v2zm9 7H8v-2h8v2zm0-4h-2v-2h2v2zm0-3h-2V8h2v2zm3 7h-2v-2h2v2zm0-4h-2v-2h2v2z"/></svg>
-                <span>KLAVYE</span>
-            </div>
-            <div class="tool-btn" onclick="pasteMe()">
-                <svg viewBox="0 0 24 24"><path d="M19 2h-4.18C14.4.84 13.3 0 12 0c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm7 18H5V4h2v3h10V4h2v16z"/></svg>
-                <span>YAPIŞTIR</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="btn-group">
-        <button class="btn-add" onclick="saveMe()">LİSTEYE EKLE</button>
-        <button class="btn-whatsapp" onclick="sendWA()">WHATSAPP YEDEK</button>
-        <button class="btn-copy" onclick="copyMe()">KODU KOPYALA</button>
-    </div>
-
-    <div id="preview-area"><pre id="preview-txt">const zamanVerisi = {};</pre></div>
+    <textarea id="data-editor" placeholder="Düzenlenecek veri burada görünecek..."></textarea>
+    
+    <button id="save-btn">Değişiklikleri Veritabanına Yaz</button>
+    
+    <div id="status" class="status-msg"></div>
 </div>
 
 <script src="data.js"></script>
 
 <script>
-    // Şifre: 1923 (MD5 Karşılığı aşağıdadır, güvenli olması için direkt metin yazmıyoruz)
-    const HASH_KEY = "801272134599745b900b615839257e57"; // 1923'ün şifrelenmiş hali
+    const datePicker = document.getElementById('date-picker');
+    const fetchBtn = document.getElementById('fetch-btn');
+    const dataEditor = document.getElementById('data-editor');
+    const saveBtn = document.getElementById('save-btn');
+    const status = document.getElementById('status');
 
-    function checkPass() {
-        const pass = document.getElementById('pass-input').value;
-        // Basit bir şifreleme kontrolü (Şimdilik direkt kontrol, isterseniz md5 kütüphanesi ekleyebiliriz)
-        if(pass === "1923") { 
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('editor-ui').style.display = 'block';
+    // Veriyi Getirme Fonksiyonu
+    function fetchData() {
+        const date = datePicker.value;
+        if (!date) {
+            showStatus("Lütfen önce bir tarih seçin!", "orange");
+            return;
+        }
+
+        // data.js içindeki nesnenin adının 'dataJS' olduğunu varsayıyorum 
+        // Eğer nesne adı farklıysa (örn: 'arsivData') aşağıyı güncelleyin
+        if (typeof dataJS !== 'undefined') {
+            const content = dataJS[date];
+            if (content) {
+                dataEditor.value = content;
+                showStatus(date + " verisi başarıyla getirildi.", "#27ae60");
+            } else {
+                dataEditor.value = "";
+                showStatus("Bu tarihe ait bir kayıt bulunamadı.", "#e67e22");
+            }
         } else {
-            alert("HATALI ŞİFRE!");
+            showStatus("Hata: data.js dosyası veya veri yapısı yüklenemedi!", "#c0392b");
         }
     }
 
-    let currentData = typeof zamanVerisi !== 'undefined' ? zamanVerisi : {};
-
-    function loadExisting() {
-        const date = document.getElementById('main-date').value;
-        const area = document.getElementById('text-input');
-        if(currentData[date]) {
-            area.value = currentData[date].replace(" [M]", "");
-        } else { area.value = ""; }
-        updatePreview();
+    // Durum Mesajı Gösterme
+    function showStatus(msg, color) {
+        status.textContent = msg;
+        status.style.display = "block";
+        status.style.backgroundColor = color + "22"; // Transparan versiyon
+        status.style.color = color;
+        status.style.border = "1px solid " + color;
+        
+        setTimeout(() => { status.style.display = "none"; }, 4000);
     }
 
-    function startDictation() {
-        if (window.hasOwnProperty('webkitSpeechRecognition')) {
-            const recognition = new webkitSpeechRecognition();
-            recognition.lang = "tr-TR";
-            recognition.start();
-            recognition.onresult = (e) => {
-                document.getElementById('text-input').value += e.results[0][0].transcript;
-                recognition.stop();
-            };
+    // Olay Dinleyicileri
+    fetchBtn.addEventListener('click', fetchData);
+
+    // Enter tuşu desteği
+    datePicker.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') fetchData();
+    });
+
+    // Kaydetme Butonu (Simülasyon - Burayı sunucu tarafına bağlayabilirsiniz)
+    saveBtn.addEventListener('click', () => {
+        const date = datePicker.value;
+        const newText = dataEditor.value;
+
+        if (!date || !newText) {
+            showStatus("Kaydedilecek veri bulunamadı!", "#c0392b");
+            return;
         }
-    }
 
-    async function pasteMe() {
-        const t = await navigator.clipboard.readText();
-        document.getElementById('text-input').value += t;
-    }
-
-    function saveMe() {
-        const d = document.getElementById('main-date').value;
-        const t = document.getElementById('text-input').value;
-        if(!d || !t) { alert("Eksik veri!"); return; }
-        currentData[d] = t + " [M]";
-        updatePreview();
-        alert("Eklendi!");
-    }
-
-    function updatePreview() {
-        let code = "const zamanVerisi = {\n";
-        const keys = Object.keys(currentData).sort();
-        keys.forEach((k, i) => {
-            code += `    "${k}": "${currentData[k].replace(/"/g, '\\"')}"${i===keys.length-1?"":","}\n`;
-        });
-        code += "};";
-        document.getElementById('preview-txt').innerText = code;
-    }
-
-    function sendWA() {
-        const code = document.getElementById('preview-txt').innerText;
-        window.open(`https://wa.me/?text=${encodeURIComponent(code)}`, '_blank');
-    }
-
-    function copyMe() {
-        navigator.clipboard.writeText(document.getElementById('preview-txt').innerText);
-        alert("Kopyalandı!");
-    }
+        // Burada veriyi yerel olarak güncelliyoruz (Sayfa yenilenince gider)
+        // Kalıcı olması için bir PHP veya Node.js servisine POST etmelisiniz.
+        if (typeof dataJS !== 'undefined') {
+            dataJS[date] = newText;
+            console.log("Güncel Veri:", dataJS); // Konsolda kontrol edebilirsiniz
+            showStatus("Değişiklikler yerel hafızaya alındı. (Kalıcı kayıt için sunucu bağlantısı gerekir)", "#27ae60");
+        }
+    });
 </script>
+
 </body>
 </html>
