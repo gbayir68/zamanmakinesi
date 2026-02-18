@@ -2070,7 +2070,7 @@ const zamanVerisi = {
  "1995-08-31": "Sırp ağır silahlarının Saraybosna çevresinden çekilmesi için NATO baskısı sürüyor. Bugün Richard Gere 46 yaşında ", 
  "1995-09-01": "Dünya Barış Günü; NATO bombardımanı Bosna'da barışın kapısını aralıyor. Bugün Zendaya dünyaya geldi ", 
  "1995-09-02": "Türkiye'de okulların açılmasına on gün kaldı; önlükten formaya geçiş telaşı. Bugün Keanu Reeves 31 yaşında ", 
- "1995-09-03": "eBay (AuctionWeb) kuruldu; internetten alışveriş çağı başlıyor. Bugün Charlie Sheen 30 yaşında ", 
+ "1995-09-03": "USD: 47.950 TL. BENZİN: 34.500 TL. EKMEK: 8.000 TL. MÜZİK: Mirkelam - Her Gece. LİG: Trabzonspor lider. DOĞUM: Niklas Süle. MAGAZİN: Çılgın Bediş hazırlıkları. GÜNDEM: Gümrük Birliği ve seçim sesleri. MODA: Oduncu gömleği ve yüksek taban. VİZYON: Waterworld (Su Dünyası). SANSASYON: Mirkelam Koşuyor!. DÜNYADAN: eBay kuruldu.",
  "1995-09-04": "Dördüncü Dünya Kadın Konferansı Pekin'de başladı. Bugün Beyoncé 14 yaşında ", 
  "1995-09-05": "Fransa, Mururoa Atolü'nde nükleer deneme yaptı; dünyadan tepki yağıyor. Bugün usta oyuncu Metin Akpınar sahnede ", 
  "1995-09-06": "Türkiye'de asgari ücret tespit komisyonu kış öncesi toplandı. Bugün Idris Elba 23 yaşında ", 
