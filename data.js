@@ -453,8 +453,8 @@ const zamanVerisi = {
     "1991-03-28": "Türkiye'de 'huzur' operasyonları başlatıldı. Bugün Lady Gaga 5 yaşında.",
     "1991-03-29": "Mülteci kampı görüntüleri dünyayı sarstı. Bugün Brendan Gleeson 36 yaşında.",
     "1991-03-30": "Saddam ordusu Kerkük'ü geri aldığını duyurdu. Bugün Sergio Ramos 5 yaşında.",
-    "1991-03-31": "Varşova Paktı'nın askeri kanadı resmen feshedildi. Bugün Ewan McGregor 20 yaşında."
-"1991-04-01": "Türkiye sınırına yığılan Iraklı mülteci sayısı 250 bini aştı. Bugün usta oyuncu Tuncel Kurtiz sahnede.",
+    "1991-03-31": "Varşova Paktı'nın askeri kanadı resmen feshedildi. Bugün Ewan McGregor 20 yaşında.",
+    "1991-04-01": "Türkiye sınırına yığılan Iraklı mülteci sayısı 250 bini aştı. Bugün usta oyuncu Tuncel Kurtiz sahnede.",
     "1991-04-02": "BM Güvenlik Konseyi, Irak'taki mülteciler için 'Güvenli Bölge' tartışıyor. Bugün Michael Fassbender 14 yaşında.",
     "1991-04-03": "Irak, BM'nin ateşkes şartlarını resmen kabul etti. Bugün Eddie Murphy 30. yaş gününü kutluyor.",
     "1991-04-04": "Türkiye mülteciler için sınırlarını açmaya başladı. Bugün Robert Downey Jr. 26 yaşında.",
