@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gültekin Bayır - Arşiv Editörü</title>
+    <title>Gültekin Bayır - Hızlı Arşiv Editörü</title>
     <style>
         :root {
             --primary-color: #2c3e50;
@@ -22,7 +22,7 @@
 
         .container {
             width: 100%;
-            max-width: 800px;
+            max-width: 900px;
             background: white;
             padding: 30px;
             border-radius: 12px;
@@ -36,38 +36,50 @@
             margin-top: 0;
         }
 
-        .control-group {
+        .selector-group {
             display: flex;
             gap: 10px;
             margin: 20px 0;
-            flex-wrap: wrap;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            align-items: flex-end;
+            border: 1px solid #dee2e6;
         }
 
-        input[type="date"] {
+        .select-box {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        select {
             padding: 10px;
-            border: 1px solid #ddd;
+            border: 1px solid #ccc;
             border-radius: 6px;
-            flex: 1;
-            min-width: 200px;
             font-size: 16px;
+            background: white;
+            cursor: pointer;
+            min-width: 100px;
         }
 
         button {
-            padding: 10px 20px;
+            padding: 10px 25px;
             border: none;
             border-radius: 6px;
             cursor: pointer;
             font-weight: bold;
             transition: all 0.3s;
+            height: 42px;
         }
 
         #fetch-btn {
-            background-color: var(--primary-color);
+            background-color: var(--accent-color);
             color: white;
         }
 
         #fetch-btn:hover {
-            background-color: #34495e;
+            background-color: #d35400;
         }
 
         #save-btn {
@@ -78,21 +90,18 @@
             font-size: 18px;
         }
 
-        #save-btn:hover {
-            background-color: #2ecc71;
-        }
-
         textarea {
             width: 100%;
-            height: 300px;
+            height: 350px;
             padding: 15px;
             border: 1px solid #ddd;
             border-radius: 6px;
             box-sizing: border-box;
             font-size: 16px;
-            line-height: 1.5;
+            line-height: 1.6;
             resize: vertical;
-            background-color: #fafafa;
+            background-color: #fff;
+            color: #333;
         }
 
         .status-msg {
@@ -100,12 +109,8 @@
             padding: 10px;
             border-radius: 6px;
             display: none;
-        }
-
-        .hint {
-            font-size: 12px;
-            color: #7f8c8d;
-            margin-top: 5px;
+            text-align: center;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -114,15 +119,38 @@
 <div class="container">
     <h2>Arşiv Veri Editörü</h2>
     
-    <div class="control-group">
-        <input type="date" id="date-picker">
-        <button id="fetch-btn">Veriyi Getir</button>
+    <div class="selector-group">
+        <div class="select-box">
+            <label>Gün</label>
+            <select id="day-select"></select>
+        </div>
+        <div class="select-box">
+            <label>Ay</label>
+            <select id="month-select">
+                <option value="01">Ocak</option>
+                <option value="02">Şubat</option>
+                <option value="03">Mart</option>
+                <option value="04">Nisan</option>
+                <option value="05">Mayıs</option>
+                <option value="06">Haziran</option>
+                <option value="07">Temmuz</option>
+                <option value="08">Ağustos</option>
+                <option value="09">Eylül</option>
+                <option value="10">Ekim</option>
+                <option value="11">Kasım</option>
+                <option value="12">Aralık</option>
+            </select>
+        </div>
+        <div class="select-box">
+            <label>Yıl</label>
+            <select id="year-select"></select>
+        </div>
+        <button id="fetch-btn">VERİYİ GETİR</button>
     </div>
-    <p class="hint">İpucu: Tarihi seçip "Getir"e basın veya klavyeden Enter tuşunu kullanın.</p>
 
-    <textarea id="data-editor" placeholder="Düzenlenecek veri burada görünecek..."></textarea>
+    <textarea id="data-editor" placeholder="Düzenlenecek veri buraya gelecek..."></textarea>
     
-    <button id="save-btn">Değişiklikleri Veritabanına Yaz</button>
+    <button id="save-btn">GÜNCELLEMEYİ KAYDET</button>
     
     <div id="status" class="status-msg"></div>
 </div>
@@ -130,73 +158,72 @@
 <script src="data.js"></script>
 
 <script>
-    const datePicker = document.getElementById('date-picker');
+    const daySelect = document.getElementById('day-select');
+    const monthSelect = document.getElementById('month-select');
+    const yearSelect = document.getElementById('year-select');
     const fetchBtn = document.getElementById('fetch-btn');
     const dataEditor = document.getElementById('data-editor');
-    const saveBtn = document.getElementById('save-btn');
     const status = document.getElementById('status');
 
-    // Veriyi Getirme Fonksiyonu
-    function fetchData() {
-        const date = datePicker.value;
-        if (!date) {
-            showStatus("Lütfen önce bir tarih seçin!", "orange");
-            return;
+    // Seçenekleri Doldur
+    function initSelectors() {
+        // Günler (1-31)
+        for (let i = 1; i <= 31; i++) {
+            let day = i.toString().padStart(2, '0');
+            daySelect.innerHTML += `<option value="${day}">${day}</option>`;
         }
+        // Yıllar (1990 - 2000 arası, ihtiyaca göre artırılabilir)
+        for (let i = 1995; i <= 2005; i++) {
+            yearSelect.innerHTML += `<option value="${i}">${i}</option>`;
+        }
+        // Varsayılan olarak 1997'yi seçelim (Arşivinizin başladığı yer)
+        yearSelect.value = "1997";
+    }
 
-        // data.js içindeki nesnenin adının 'dataJS' olduğunu varsayıyorum 
-        // Eğer nesne adı farklıysa (örn: 'arsivData') aşağıyı güncelleyin
+    function fetchData() {
+        const fullDate = `${yearSelect.value}-${monthSelect.value}-${daySelect.value}`;
+        
+        // data.js dosyanızdaki değişken adının dataJS olduğunu varsayıyorum
         if (typeof dataJS !== 'undefined') {
-            const content = dataJS[date];
+            const content = dataJS[fullDate];
             if (content) {
                 dataEditor.value = content;
-                showStatus(date + " verisi başarıyla getirildi.", "#27ae60");
+                showStatus(fullDate + " verisi getirildi.", "#27ae60");
             } else {
                 dataEditor.value = "";
-                showStatus("Bu tarihe ait bir kayıt bulunamadı.", "#e67e22");
+                showStatus("Bu tarihe ait veri bulunamadı!", "#e67e22");
             }
         } else {
-            showStatus("Hata: data.js dosyası veya veri yapısı yüklenemedi!", "#c0392b");
+            showStatus("Hata: data.js bulunamadı!", "#c0392b");
         }
     }
 
-    // Durum Mesajı Gösterme
     function showStatus(msg, color) {
         status.textContent = msg;
         status.style.display = "block";
-        status.style.backgroundColor = color + "22"; // Transparan versiyon
+        status.style.backgroundColor = color + "22";
         status.style.color = color;
-        status.style.border = "1px solid " + color;
-        
-        setTimeout(() => { status.style.display = "none"; }, 4000);
+        setTimeout(() => { status.style.display = "none"; }, 3000);
     }
 
-    // Olay Dinleyicileri
+    // Başlat
+    initSelectors();
+
+    // Olaylar
     fetchBtn.addEventListener('click', fetchData);
 
-    // Enter tuşu desteği
-    datePicker.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') fetchData();
+    // Herhangi bir seçim değiştiğinde de otomatik getirebilir (İsteğe bağlı)
+    // daySelect.addEventListener('change', fetchData);
+    // monthSelect.addEventListener('change', fetchData);
+    // yearSelect.addEventListener('change', fetchData);
+
+    // Enter tuşu desteği (Seçim kutularından birindeyken Enter'a basılırsa)
+    [daySelect, monthSelect, yearSelect].forEach(el => {
+        el.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') fetchData();
+        });
     });
 
-    // Kaydetme Butonu (Simülasyon - Burayı sunucu tarafına bağlayabilirsiniz)
-    saveBtn.addEventListener('click', () => {
-        const date = datePicker.value;
-        const newText = dataEditor.value;
-
-        if (!date || !newText) {
-            showStatus("Kaydedilecek veri bulunamadı!", "#c0392b");
-            return;
-        }
-
-        // Burada veriyi yerel olarak güncelliyoruz (Sayfa yenilenince gider)
-        // Kalıcı olması için bir PHP veya Node.js servisine POST etmelisiniz.
-        if (typeof dataJS !== 'undefined') {
-            dataJS[date] = newText;
-            console.log("Güncel Veri:", dataJS); // Konsolda kontrol edebilirsiniz
-            showStatus("Değişiklikler yerel hafızaya alındı. (Kalıcı kayıt için sunucu bağlantısı gerekir)", "#27ae60");
-        }
-    });
 </script>
 
 </body>
