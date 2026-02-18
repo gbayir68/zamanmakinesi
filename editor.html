@@ -4,22 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gültekin Bayır - Arşiv Editörü</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; padding: 20px; display: flex; justify-content: center; }
         .container { width: 100%; max-width: 900px; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
         h2 { color: #2c3e50; border-bottom: 3px solid #e67e22; padding-bottom: 10px; margin-top: 0; }
+        
         .selection-box { background: #f8f9fa; padding: 25px; border-radius: 10px; border: 1px solid #e9ecef; margin-bottom: 25px; }
         .dropdowns { display: flex; gap: 15px; margin-bottom: 15px; }
         .select-group { flex: 1; display: flex; flex-direction: column; gap: 8px; }
         label { font-size: 14px; font-weight: 600; color: #495057; }
         select { padding: 12px; border-radius: 8px; border: 1px solid #ced4da; font-size: 16px; background: white; cursor: pointer; }
-        #fetch-btn { width: 100%; padding: 15px; background: #e67e22; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 16px; }
+        
+        #fetch-btn { width: 100%; padding: 15px; background: #e67e22; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 16px; transition: background 0.3s; }
         #fetch-btn:hover { background: #d35400; }
+
         .panel-label { font-weight: bold; margin: 20px 0 8px 0; display: block; color: #34495e; font-size: 14px; }
-        .old-data-view { width: 100%; height: 120px; padding: 15px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; overflow-y: auto; color: #7f8c8d; font-size: 15px; box-sizing: border-box; border-left: 5px solid #e67e22; white-space: pre-wrap; }
-        textarea { width: 100%; height: 300px; padding: 15px; border: 1px solid #ced4da; border-radius: 8px; font-size: 16px; line-height: 1.6; box-sizing: border-box; resize: vertical; }
+        .old-data-view { width: 100%; height: 100px; padding: 15px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; overflow-y: auto; color: #7f8c8d; font-size: 15px; box-sizing: border-box; border-left: 5px solid #e67e22; }
+
+        /* Araç Çubuğu ve İkonlar */
+        .toolbar { display: flex; gap: 10px; background: #34495e; padding: 10px; border-radius: 8px 8px 0 0; margin-top: 10px; }
+        .tool-btn { background: none; border: 1px solid #5d6d7e; color: white; padding: 8px 12px; border-radius: 4px; cursor: pointer; transition: 0.3s; font-size: 18px; }
+        .tool-btn:hover { background: #e67e22; border-color: #e67e22; }
+        .tool-btn.active { color: #ff0000; animation: pulse 1.5s infinite; }
+
+        textarea { width: 100%; height: 280px; padding: 15px; border: 1px solid #ced4da; border-radius: 0 0 8px 8px; font-size: 16px; line-height: 1.6; box-sizing: border-box; resize: vertical; margin-top: -1px; }
+
         #save-btn { width: 100%; margin-top: 20px; padding: 18px; background: #27ae60; color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+        
         #status { margin-top: 15px; text-align: center; font-weight: bold; padding: 10px; border-radius: 6px; display: none; }
+        
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
     </style>
 </head>
 <body>
@@ -46,77 +61,91 @@
     <div id="old-view" class="old-data-view">Henüz veri çağrılmadı...</div>
 
     <label class="panel-label">Yeni Veri / Güncelleme Paneli:</label>
+    <div class="toolbar">
+        <button class="tool-btn" title="Mikrofonla Kaydet" id="mic-btn"><i class="fas fa-microphone"></i></button>
+        <button class="tool-btn" title="Yapıştır" id="paste-btn"><i class="fas fa-paste"></i></button>
+        <button class="tool-btn" title="Kopyala" id="copy-btn"><i class="fas fa-copy"></i></button>
+        <button class="tool-btn" title="Klavyeye Odaklan" id="kb-btn"><i class="fas fa-keyboard"></i></button>
+    </div>
     <textarea id="new-editor" placeholder="Düzenlemek istediğiniz içeriği buraya yazın..."></textarea>
     
-    <button id="save-btn" onclick="alert('Yerel düzenleme yapıldı. Kalıcı kayıt için sunucu bağlantısı gereklidir.')">GÜNCELLEMEYİ KAYDET</button>
+    <button id="save-btn">GÜNCELLEMEYİ KAYDET</button>
     <div id="status"></div>
 </div>
 
 <script>
-    // 1. ADIM: Menüleri hemen doldur (Hata olsa bile menüler çalışır kalır)
     const daySelect = document.getElementById('day-select');
     const yearSelect = document.getElementById('year-select');
     const monthSelect = document.getElementById('month-select');
+    const newEditor = document.getElementById('new-editor');
 
-    // Günleri doldur (01-31)
+    // Seçicileri doldur (1990-1999)
     for (let i = 1; i <= 31; i++) {
         let d = i.toString().padStart(2, '0');
-        let opt = document.createElement('option');
-        opt.value = d; opt.textContent = d;
-        daySelect.appendChild(opt);
+        daySelect.innerHTML += `<option value="${d}">${d}</option>`;
     }
-
-    // Yılları doldur (1990-1999)
     for (let i = 1990; i <= 1999; i++) {
-        let opt = document.createElement('option');
-        opt.value = i; opt.textContent = i;
-        yearSelect.appendChild(opt);
+        yearSelect.innerHTML += `<option value="${i}">${i}</option>`;
     }
     yearSelect.value = "1990";
 
-    // 2. ADIM: Veri Getirme Fonksiyonu
-    async function fetchData() {
-        const d = daySelect.value;
-        const m = monthSelect.value;
-        const y = yearSelect.value;
-        const dateKey = `${y}-${m}-${d}`;
-        const status = document.getElementById('status');
-        const oldView = document.getElementById('old-view');
-        const newEditor = document.getElementById('new-editor');
+    // --- Fonksiyonlar ---
 
+    // Veri Getirme
+    async function fetchData() {
+        const dateKey = `${yearSelect.value}-${monthSelect.value}-${daySelect.value}`;
         try {
-            // data.js dosyasını metin olarak oku
             const response = await fetch('data.js');
-            if (!response.ok) throw new Error("Dosya bulunamadı");
             const text = await response.text();
-            
-            // Tarihi bulmak için arama yap
             const regex = new RegExp(`"${dateKey}"\\s*:\\s*"([^"]+)"`);
             const match = text.match(regex);
-
-            if (match && match[1]) {
-                oldView.innerText = match[1];
+            if (match) {
+                document.getElementById('old-view').innerText = match[1];
                 newEditor.value = match[1];
-                showMsg(dateKey + " yüklendi.", "#27ae60");
+                showMsg("Veri getirildi.", "#27ae60");
             } else {
-                oldView.innerText = "Kayıt bulunamadı.";
-                newEditor.value = "";
-                showMsg("Arşivde bu tarih yok.", "#e67e22");
+                showMsg("Kayıt bulunamadı.", "#e67e22");
             }
-        } catch (err) {
-            showMsg("Hata: data.js okunamadı.", "#c0392b");
-        }
+        } catch (e) { showMsg("Hata!", "red"); }
     }
+
+    // Sesli Yazma (Mikrofon)
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'tr-TR';
+        recognition.onresult = (event) => {
+            newEditor.value += " " + event.results[0][0].transcript;
+        };
+        document.getElementById('mic-btn').onclick = () => {
+            recognition.start();
+            showMsg("Dinleniyor...", "#3498db");
+        };
+    }
+
+    // Yapıştır
+    document.getElementById('paste-btn').onclick = async () => {
+        const text = await navigator.clipboard.readText();
+        newEditor.value += text;
+    };
+
+    // Kopyala
+    document.getElementById('copy-btn').onclick = () => {
+        newEditor.select();
+        document.execCommand('copy');
+        showMsg("Kopyalandı!", "#2ecc71");
+    };
+
+    // Klavye Odaklanma
+    document.getElementById('kb-btn').onclick = () => newEditor.focus();
 
     function showMsg(txt, color) {
-        const status = document.getElementById('status');
-        status.innerText = txt; status.style.color = color; status.style.display = "block";
-        setTimeout(() => status.style.display = "none", 3000);
+        const s = document.getElementById('status');
+        s.innerText = txt; s.style.color = color; s.style.display = "block";
+        setTimeout(() => s.style.display = "none", 3000);
     }
 
-    // Dinleyiciler
-    document.getElementById('fetch-btn').addEventListener('click', fetchData);
-    window.addEventListener('keypress', (e) => { if (e.key === 'Enter') fetchData(); });
+    document.getElementById('fetch-btn').onclick = fetchData;
 </script>
 
 </body>
