@@ -8,107 +8,28 @@
     <link rel="icon" href="icon.png">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
-        
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        
-        body { 
-            background: #000; 
-            color: #fff; 
-            font-family: 'Orbitron', sans-serif; 
-            height: 100vh; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            overflow: hidden; 
-            position: relative;
-        }
-
-        /* IŞIK HIZI (STARFIELD) EFEKTİ */
-        #starfield {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1;
-        }
-
-        /* ANA PANEL TASARIMI */
-        .container { 
-            width: 90%; 
-            max-width: 320px; 
-            text-align: center; 
-            position: relative; 
-            z-index: 10; 
-        }
-
-        .header { 
-            font-size: 1.2rem; 
-            margin-bottom: 25px; 
-            text-shadow: 0 0 15px #fff; 
-            letter-spacing: 2px; 
-        }
-
-        .box { 
-            background: rgba(15, 15, 15, 0.85); 
-            border: 2px solid rgba(255, 255, 255, 0.1); 
-            border-radius: 20px; 
-            padding: 20px 10px; 
-            box-shadow: 0 0 40px rgba(0,0,0,1); 
-            backdrop-filter: blur(8px); /* Arkadaki yıldızları yumuşatır */
-        }
-
-        .display { 
-            background: rgba(0, 0, 0, 0.95); 
-            border: 1px solid #222; 
-            border-radius: 12px; 
-            margin: 12px 0; 
-            padding: 15px 5px; 
-            min-height: 80px; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; 
-        }
-
-        .label { font-size: 0.65rem; color: #666; margin-bottom: 5px; display: block; letter-spacing: 1px; }
-        .red { color: #ff3131; text-shadow: 0 0 12px #ff3131; }
-        .green { color: #00ff41; text-shadow: 0 0 12px #00ff41; }
-
+        body { background: #000; color: #fff; font-family: 'Orbitron', sans-serif; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+        #starfield { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        .container { width: 90%; max-width: 320px; text-align: center; position: relative; z-index: 10; }
+        .header { font-size: 1.2rem; margin-bottom: 25px; text-shadow: 0 0 15px #fff; letter-spacing: 2px; }
+        .box { background: rgba(10, 10, 10, 0.8); border: 2px solid rgba(255, 255, 255, 0.15); border-radius: 20px; padding: 20px 10px; box-shadow: 0 0 50px rgba(0,0,0,1); backdrop-filter: blur(10px); }
+        .display { background: rgba(0, 0, 0, 0.95); border: 1px solid #333; border-radius: 12px; margin: 12px 0; padding: 15px 5px; min-height: 80px; display: flex; flex-direction: column; justify-content: center; }
+        .label { font-size: 0.65rem; color: #777; margin-bottom: 5px; display: block; letter-spacing: 1px; }
+        .red { color: #ff3131; text-shadow: 0 0 15px #ff3131; }
+        .green { color: #00ff41; text-shadow: 0 0 15px #00ff41; }
         .slots { display: flex; justify-content: space-around; height: 40px; overflow: hidden; font-size: 1.1rem; line-height: 40px; }
         .strip { transition: transform 2.5s cubic-bezier(0.1, 0, 0.1, 1); }
         .item { height: 40px; min-width: 65px; text-align: center; }
-
         .btn-box { margin-top: 40px; }
-        
-        button { 
-            background: #b00; 
-            color: #fff; 
-            border: none; 
-            padding: 18px; 
-            font-size: 1.1rem; 
-            border-radius: 50px; 
-            box-shadow: 0 8px #600; 
-            cursor: pointer; 
-            font-family: 'Orbitron', sans-serif; 
-            width: 85%; 
-            font-weight: bold; 
-            -webkit-appearance: none; 
-            transition: 0.3s;
-        }
-
-        button:disabled { 
-            background: #222; 
-            box-shadow: 0 3px #000; 
-            color: #444; 
-            cursor: not-allowed; 
-            opacity: 0.7; 
-        }
-
+        button { background: #b00; color: #fff; border: none; padding: 18px; font-size: 1.1rem; border-radius: 50px; box-shadow: 0 8px #600; cursor: pointer; font-family: 'Orbitron', sans-serif; width: 85%; font-weight: bold; -webkit-appearance: none; transition: 0.3s; }
+        button:disabled { background: #222; box-shadow: 0 3px #000; color: #444; cursor: not-allowed; opacity: 0.7; }
         button:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 2px #300; }
         #present { font-size: 0.9rem; display: flex; justify-content: center; gap: 8px; }
     </style>
 </head>
 <body>
-
     <canvas id="starfield"></canvas>
-
     <div class="container">
         <h1 class="header">ZAMAN MAKİNESİ</h1>
         <div class="box">
@@ -133,12 +54,13 @@
         const ITEM_H = 40; const COUNT = 30;
         let isSpinning = false;
 
-        // --- STARFIELD LOGIC ---
+        // --- GELİŞMİŞ HYPER-STARFIELD LOGIC ---
         const canvas = document.getElementById('starfield');
         const ctx = canvas.getContext('2d');
         let stars = [];
-        let numStars = 400;
-        let speed = 0.5; // Normal bekleme hızı
+        let numStars = 250; // Daha büyük ve etkili oldukları için sayıyı biraz azalttık
+        let speed = 2; // Normal akış hızı (Artık daha hızlı)
+        let warpSpeed = 2;
 
         function setupStars() {
             canvas.width = window.innerWidth;
@@ -149,29 +71,38 @@
                     x: Math.random() * canvas.width - canvas.width / 2,
                     y: Math.random() * canvas.height - canvas.height / 2,
                     z: Math.random() * canvas.width,
-                    o: Math.random() // Opacity için rastgelelik
+                    px: 0, py: 0 // Önceki konum takibi için
                 });
             }
         }
 
         function drawStars() {
-            ctx.fillStyle = "black";
+            ctx.fillStyle = "rgba(0, 0, 0, 0.3)"; // Hafif trail (iz) bırakması için
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.translate(canvas.width / 2, canvas.height / 2);
 
             for (let i = 0; i < numStars; i++) {
                 let s = stars[i];
-                s.z -= speed;
-                if (s.z <= 0) s.z = canvas.width;
+                s.z -= warpSpeed;
+                if (s.z <= 0) {
+                    s.z = canvas.width;
+                    s.x = Math.random() * canvas.width - canvas.width / 2;
+                    s.y = Math.random() * canvas.height - canvas.height / 2;
+                    s.px = 0; s.py = 0;
+                }
 
                 let sx = s.x / (s.z / canvas.width);
                 let sy = s.y / (s.z / canvas.width);
-                let r = 1.5 * (1 - s.z / canvas.width);
                 
-                ctx.beginPath();
-                ctx.fillStyle = `rgba(255, 255, 255, ${s.o})`;
-                ctx.arc(sx, sy, r, 0, Math.PI * 2);
-                ctx.fill();
+                if (s.px !== 0) {
+                    ctx.strokeStyle = `rgba(255, 255, 255, ${Math.min(1, (canvas.width - s.z) / 500)})`;
+                    ctx.lineWidth = Math.min(5, (canvas.width - s.z) / 100); // Yaklaştıkça kalınlaşır
+                    ctx.beginPath();
+                    ctx.moveTo(sx, sy);
+                    ctx.lineTo(s.px, s.py);
+                    ctx.stroke();
+                }
+                s.px = sx; s.py = sy;
             }
             ctx.translate(-canvas.width / 2, -canvas.height / 2);
             requestAnimationFrame(drawStars);
@@ -181,8 +112,7 @@
         function fillSlots() {
             const data = [ms, Array.from({length: 31}, (_, i) => i + 1), Array.from({length: 10}, (_, i) => 1990 + i)];
             ['m-strip', 'd-strip', 'y-strip'].forEach((id, idx) => {
-                const el = document.getElementById(id);
-                el.innerHTML = Array.from({length: COUNT}, (_, i) => `<div class="item">${data[idx][i % data[idx].length]}</div>`).join('');
+                document.getElementById(id).innerHTML = Array.from({length: COUNT}, (_, i) => `<div class="item">${data[idx][i % data[idx].length]}</div>`).join('');
             });
         }
 
@@ -192,8 +122,7 @@
             const btn = document.getElementById('spinBtn');
             btn.disabled = true;
 
-            // Döndürme anında hızı artır (Işık hızı efekti)
-            speed = 15; 
+            warpSpeed = 45; // HİPER UZAY HIZI!
             
             const targets = [ms[Math.floor(Math.random()*12)], Math.floor(Math.random()*28)+1, Math.floor(Math.random()*10)+1990];
             ['m-strip', 'd-strip', 'y-strip'].forEach((id, i) => {
@@ -209,7 +138,7 @@
 
             setTimeout(() => {
                 isSpinning = false;
-                speed = 0.5; // Hızı normale düşür
+                warpSpeed = 2; // Normal hıza dön
                 startCooldown(300);
             }, 2800);
         }
@@ -257,7 +186,6 @@
             checkCooldown();
             setInterval(clock, 1000);
         };
-
         window.onresize = setupStars;
     </script>
 </body>
