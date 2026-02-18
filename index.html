@@ -9,15 +9,36 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: #000; color: #fff; font-family: 'Orbitron', sans-serif; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+        
+        body { 
+            background: #000; 
+            color: #fff; 
+            font-family: 'Orbitron', sans-serif; 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column; /* Dikey hizalama için */
+            align-items: center; 
+            justify-content: center; 
+            overflow: hidden; 
+            position: relative; 
+        }
 
+        /* ARKA PLAN TÜNEL */
         .warp-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, #1a0033 0%, #000 80%); z-index: -1; perspective: 600px; }
         .lines { position: absolute; width: 200%; height: 200%; top: -50%; left: -50%; background-image: linear-gradient(to right, rgba(147, 51, 234, 0.2) 2px, transparent 2px), linear-gradient(to bottom, rgba(147, 51, 234, 0.2) 2px, transparent 2px); background-size: 60px 60px; transform: rotateX(55deg); animation: warpMove 2s linear infinite; }
         .fast-warp { animation: warpMove 0.4s linear infinite !important; }
         @keyframes warpMove { 0% { transform: rotateX(55deg) translateY(0); } 100% { transform: rotateX(55deg) translateY(60px); } }
 
         .container { width: 90%; max-width: 320px; text-align: center; position: relative; z-index: 10; }
-        .main-logo { width: 140px; height: 140px; margin: 0 auto 10px auto; display: block; filter: drop-shadow(0 0 10px rgba(147, 51, 234, 0.5)); }
+        
+        /* LOGO: %25 BÜYÜTÜLDÜ VE ORTALANDI */
+        .main-logo { 
+            width: 175px; 
+            height: 175px; 
+            margin: 0 auto 15px auto; 
+            display: block; 
+            filter: drop-shadow(0 0 15px rgba(147, 51, 234, 0.6)); 
+        }
 
         .header { font-size: 1.4rem; line-height: 1.2; margin-bottom: 20px; text-shadow: 0 0 15px #fff; letter-spacing: 2px; text-transform: uppercase; }
         .header span { display: block; font-size: 1rem; opacity: 0.9; }
@@ -30,16 +51,20 @@
         .slots { display: flex; justify-content: space-around; height: 40px; overflow: hidden; font-size: 1rem; line-height: 40px; }
         .strip { transition: transform 2.5s cubic-bezier(0.1, 0, 0.1, 1); }
         .item { height: 40px; min-width: 65px; text-align: center; white-space: nowrap; }
-        .btn-box { margin-top: 30px; }
+        
+        .btn-box { margin-top: 25px; }
         button { background: #b00; color: #fff; border: none; padding: 18px; font-size: 1.1rem; border-radius: 50px; box-shadow: 0 8px #600; cursor: pointer; font-family: 'Orbitron', sans-serif; width: 85%; font-weight: bold; -webkit-appearance: none; transition: 0.3s; }
         button:disabled { background: #222; box-shadow: 0 3px #000; color: #444; cursor: not-allowed; opacity: 0.8; }
     </style>
 </head>
 <body>
     <div class="warp-bg"><div id="warpLines" class="lines"></div></div>
+    
     <div class="container">
         <img src="icon.png" alt="Logo" class="main-logo">
+        
         <h1 class="header" id="mainTitle">OF-İS<span>ZAMAN MAKİNESİ</span></h1>
+        
         <div class="box">
             <div class="display red">
                 <span class="label" id="targetLabel">HEDEF TARİH</span>
@@ -54,108 +79,12 @@
                 <div id="present"></div>
             </div>
         </div>
+        
         <div class="btn-box"><button id="spinBtn" onclick="runMachine()">ZAMANI DEĞİŞTİR</button></div>
     </div>
 
     <script>
         const userLang = navigator.language || navigator.userLanguage;
-        
-        // Yerelleştirme Ayarları
         const i18n = {
             tr: { title: "OF-İS<span>ZAMAN MAKİNESİ</span>", target: "HEDEF TARİH", current: "ŞİMDİKİ TARİH", btn: "ZAMANI DEĞİŞTİR", day: "GÜN", month: "AY", year: "YIL", wait: "KALDI" },
-            en: { title: "OF-IS<span>TIME MACHINE</span>", target: "TARGET DATE", current: "PRESENT DATE", btn: "CHANGE TIME", day: "DAY", month: "MONTH", year: "YEAR", wait: "LEFT" }
-        };
-
-        const lang = userLang.startsWith('tr') ? i18n.tr : i18n.en;
-        const months = Array.from({length: 12}, (_, i) => new Date(2023, i, 1).toLocaleString(userLang, {month: 'short'}).toUpperCase());
-
-        const ITEM_H = 40; 
-        const COUNT = 40; 
-        let isSpinning = false;
-
-        function initUI() {
-            document.getElementById('mainTitle').innerHTML = lang.title;
-            document.getElementById('targetLabel').innerText = lang.target;
-            document.getElementById('currentLabel').innerText = lang.current;
-            document.getElementById('spinBtn').innerText = lang.btn;
-
-            // İlk açılışta GÜN / AY / YIL yazması için
-            document.getElementById('d-strip').innerHTML = `<div class="item">${lang.day}</div>` + Array.from({length: COUNT-1}, (_, i) => `<div class="item">${(i % 31) + 1}</div>`).join('');
-            document.getElementById('m-strip').innerHTML = `<div class="item">${lang.month}</div>` + Array.from({length: COUNT-1}, (_, i) => `<div class="item">${months[i % 12]}</div>`).join('');
-            document.getElementById('y-strip').innerHTML = `<div class="item">${lang.year}</div>` + Array.from({length: COUNT-1}, (_, i) => `<div class="item">${1990 + (i % 10)}</div>`).join('');
-        }
-
-        function runMachine() {
-            if(isSpinning) return;
-            isSpinning = true;
-            const btn = document.getElementById('spinBtn');
-            const lines = document.getElementById('warpLines');
-            btn.disabled = true;
-            lines.classList.add('fast-warp');
-
-            const tD = Math.floor(Math.random() * 28) + 1;
-            const tM = months[Math.floor(Math.random() * 12)];
-            const tY = Math.floor(Math.random() * 10) + 1990;
-            const targets = [tD, tM, tY];
-            const ids = ['d-strip', 'm-strip', 'y-strip'];
-
-            ids.forEach((id, i) => {
-                const el = document.getElementById(id);
-                el.getElementsByClassName('item')[COUNT - 3].innerText = targets[i];
-                el.style.transition = "none";
-                el.style.transform = "translateY(0)";
-                setTimeout(() => {
-                    el.style.transition = "transform 2.5s cubic-bezier(0.1, 0, 0.1, 1)";
-                    el.style.transform = `translateY(-${(COUNT - 3) * ITEM_H}px)`;
-                }, 50);
-            });
-
-            setTimeout(() => {
-                isSpinning = false;
-                lines.classList.remove('fast-warp');
-                startCooldown(300); 
-            }, 2800);
-        }
-
-        function startCooldown(seconds) {
-            const btn = document.getElementById('spinBtn');
-            const endTime = Date.now() + (seconds * 1000);
-            localStorage.setItem('machineLock', endTime);
-            const timer = setInterval(() => {
-                const distance = endTime - Date.now();
-                if (distance <= 0) {
-                    clearInterval(timer);
-                    btn.disabled = false;
-                    btn.innerText = lang.btn;
-                    localStorage.removeItem('machineLock');
-                } else {
-                    btn.disabled = true;
-                    const mins = Math.floor(distance / 60000);
-                    const secs = Math.floor((distance % 60000) / 1000);
-                    btn.innerText = `${mins}:${secs < 10 ? '0' : ''}${secs} ${lang.wait}`;
-                }
-            }, 1000);
-        }
-
-        function checkCooldown() {
-            const saved = localStorage.getItem('machineLock');
-            if (saved) {
-                const remaining = Math.floor((saved - Date.now()) / 1000);
-                if (remaining > 0) startCooldown(remaining);
-            }
-        }
-
-        function clock() {
-            const now = new Date();
-            document.getElementById('present').innerText = now.toLocaleDateString(userLang, { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase();
-        }
-
-        window.onload = () => {
-            initUI();
-            clock();
-            checkCooldown();
-            setInterval(clock, 1000);
-        };
-    </script>
-</body>
-</html>
+            en: { title: "OF-
