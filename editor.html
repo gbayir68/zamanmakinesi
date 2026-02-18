@@ -3,31 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gültekin Bayır - Pratik Arşiv Paneli</title>
+    <title>Gültekin Bayır - Arşiv Yönetim Paneli</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; padding: 20px; display: flex; justify-content: center; }
         .container { width: 100%; max-width: 850px; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        h2 { color: #2c3e50; border-bottom: 3px solid #e67e22; padding-bottom: 10px; }
+        h2 { color: #2c3e50; border-bottom: 3px solid #e67e22; padding-bottom: 10px; margin-top: 0; }
         
         .selection-box { background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #e9ecef; }
         .dropdowns { display: flex; gap: 10px; margin-bottom: 15px; }
-        .select-group { flex: 1; display: flex; flex-direction: column; }
-        select { padding: 10px; border-radius: 8px; border: 1px solid #ced4da; }
+        .select-group { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+        select { padding: 12px; border-radius: 8px; border: 1px solid #ced4da; font-size: 15px; }
         
-        #fetch-btn { width: 100%; padding: 12px; background: #34495e; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        #fetch-btn { width: 100%; padding: 12px; background: #34495e; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        #fetch-btn:hover { background: #2c3e50; }
         
-        .panel-label { font-weight: bold; margin: 15px 0 5px 0; display: block; font-size: 13px; color: #7f8c8d; }
-        textarea { width: 100%; height: 180px; padding: 15px; border: 1px solid #ced4da; border-radius: 8px; font-size: 16px; box-sizing: border-box; resize: vertical; }
+        .panel-label { font-weight: bold; margin: 20px 0 5px 0; display: block; font-size: 13px; color: #7f8c8d; }
+        
+        /* Araç Çubuğu */
+        .toolbar { display: flex; gap: 8px; background: #34495e; padding: 10px; border-radius: 8px 8px 0 0; }
+        .tool-btn { background: none; border: 1px solid #5d6d7e; color: white; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 13px; }
+        .tool-btn:hover { background: #e67e22; border-color: #e67e22; }
+        
+        textarea { width: 100%; height: 200px; padding: 15px; border: 1px solid #ced4da; border-radius: 0 0 8px 8px; font-size: 16px; box-sizing: border-box; resize: vertical; margin-top: -1px; }
 
-        /* Yeni Satır Alanı */
-        .output-box { background: #2c3e50; color: #2ecc71; padding: 15px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 14px; margin-top: 10px; border-left: 5px solid #27ae60; word-break: break-all; }
+        .output-box { background: #1e1e1e; color: #2ecc71; padding: 20px; border-radius: 8px; font-family: 'Consolas', monospace; font-size: 14px; margin-top: 10px; border-left: 5px solid #27ae60; word-break: break-all; min-height: 40px; }
         
-        .btn-row { display: flex; gap: 10px; margin-top: 15px; }
-        .btn-gen { flex: 1; padding: 15px; background: #e67e22; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
-        .btn-copy { padding: 15px; background: #27ae60; color: white; border: none; border-radius: 8px; cursor: pointer; width: 150px; font-weight: bold; }
+        .btn-row { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-gen { flex: 2; padding: 18px; background: #e67e22; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 16px; }
+        .btn-copy { flex: 1; padding: 18px; background: #27ae60; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; }
         
-        #status { margin-top: 10px; text-align: center; font-weight: bold; display: none; padding: 8px; border-radius: 5px; color: white; }
+        #status { margin-top: 15px; text-align: center; font-weight: bold; display: none; padding: 10px; border-radius: 5px; color: white; }
     </style>
 </head>
 <body>
@@ -48,25 +54,30 @@
             </div>
             <div class="select-group"><label>Yıl</label><select id="year-select"><option value="">Yıl</option></select></div>
         </div>
-        <button id="fetch-btn">ESKİ VERİYİ GÖSTER (OPSİYONEL)</button>
+        <button id="fetch-btn"><i class="fas fa-search"></i> ESKİ VERİYİ GÖSTER</button>
     </div>
 
     <label class="panel-label">Düzenleme Alanı:</label>
-    <textarea id="editor" placeholder="Açıklamanızı buraya yazın..."></textarea>
+    <div class="toolbar">
+        <button class="tool-btn" id="mic-btn"><i class="fas fa-microphone"></i> Sesle Yaz</button>
+        <button class="tool-btn" id="paste-btn"><i class="fas fa-paste"></i> Yapıştır</button>
+        <button class="tool-btn" id="clear-btn"><i class="fas fa-trash"></i> Temizle</button>
+    </div>
+    <textarea id="editor" placeholder="Açıklamanızı buraya yazın, sesle söyleyin veya yapıştırın..."></textarea>
     
     <div class="btn-row">
         <button id="generate-btn" class="btn-gen">Mükemmel Koda Çevir</button>
+        <button id="copy-btn" class="btn-copy"><i class="fas fa-copy"></i> SATIRI KOPYALA</button>
     </div>
 
     <label class="panel-label">Yapıştırılmaya Hazır Satır:</label>
-    <div id="output-line" class="output-box">Kod burada oluşacak...</div>
-    
-    <button id="copy-btn" class="btn-copy"><i class="fas fa-copy"></i> SATIRI KOPYALA</button>
+    <div id="output-line" class="output-box">...</div>
 
     <div id="status"></div>
 </div>
 
 <script src="data.js"></script>
+
 <script>
     const dayS = document.getElementById('day-select');
     const monthS = document.getElementById('month-select');
@@ -74,44 +85,88 @@
     const editor = document.getElementById('editor');
     const output = document.getElementById('output-line');
 
-    // Menüleri doldur
+    // Menüleri doldur (1990-1999)
     for(let i=1; i<=31; i++) dayS.innerHTML += `<option value="${i.toString().padStart(2,'0')}">${i.toString().padStart(2,'0')}</option>`;
     for(let i=1990; i<=1999; i++) yearS.innerHTML += `<option value="${i}">${i}</option>`;
 
-    // Eski veriyi getir (Sadece bakmak için)
+    // --- ESKİ VERİYİ GÖSTERME FONKSİYONU ---
     document.getElementById('fetch-btn').onclick = () => {
         const key = `${yearS.value}-${monthS.value}-${dayS.value}`;
-        if(typeof dataJS !== 'undefined' && dataJS[key]) {
-            editor.value = dataJS[key];
-            showMsg("Eski veri düzenleme alanına yüklendi.", "#34495e");
+        
+        // Tarayıcıdaki veriyi isme bakmaksızın bulan akıllı arama
+        let archiveData = null;
+        for (let prop in window) {
+            if (window[prop] !== null && typeof window[prop] === 'object' && !Array.isArray(window[prop])) {
+                if (Object.keys(window[prop]).some(k => /^\d{4}-\d{2}-\d{2}$/.test(k))) {
+                    archiveData = window[prop];
+                    break;
+                }
+            }
+        }
+
+        if (archiveData && archiveData[key]) {
+            editor.value = archiveData[key];
+            showMsg("Eski veri başarıyla yüklendi.", "#27ae60");
+        } else {
+            showMsg("Bu tarihe ait eski bir kayıt bulunamadı.", "#e67e22");
+            editor.value = "";
         }
     };
 
-    // KODA ÇEVİR (Asıl sihir burada)
+    // --- MÜKEMMEL KODA ÇEVİR ---
     document.getElementById('generate-btn').onclick = () => {
         if(!dayS.value || !monthS.value || !yearS.value) {
-            showMsg("Lütfen önce tarih seçin!", "#c0392b");
+            showMsg("Lütfen önce tarihi seçin!", "#c0392b");
             return;
         }
 
         const key = `${yearS.value}-${monthS.value}-${dayS.value}`;
-        // Tırnakları ve Enterları temizle
-        let temizMetin = editor.value
-            .replace(/"/g, "'")    // Çift tırnakları tek tırnağa çevirir
-            .replace(/\n/g, " ")   // Satır sonlarını boşluğa çevirir
+        let text = editor.value
+            .replace(/"/g, "'")    // Çift tırnak -> Tek tırnak (Hata önleyici)
+            .replace(/\n/g, " ")   // Enter -> Boşluk (Hata önleyici)
+            .replace(/\r/g, "")    // Windows satır sonu temizliği
             .trim();
 
-        const finalLine = `"${key}": "${temizMetin}",`;
+        if(!text) {
+            showMsg("Lütfen bir açıklama yazın!", "#c0392b");
+            return;
+        }
+
+        // Mükemmel format: "Tarih": "Mesaj",
+        const finalLine = `"${key}": "${text}",`;
         output.innerText = finalLine;
-        showMsg("Kod hazır! Kopyalayıp yapıştırabilirsiniz.", "#27ae60");
+        showMsg("Mükemmel kod oluşturuldu!", "#27ae60");
     };
 
-    // KOPYALA
+    // --- KOPYALAMA ---
     document.getElementById('copy-btn').onclick = () => {
         const text = output.innerText;
-        navigator.clipboard.writeText(text);
-        showMsg("Satır başarıyla kopyalandı!", "#2ecc71");
+        if(text === "...") return;
+        navigator.clipboard.writeText(text).then(() => {
+            showMsg("Satır kopyalandı! data.js içine yapıştırabilirsiniz.", "#2980b9");
+        });
     };
+
+    // --- ARAÇLAR ---
+    // Sesle Yazma
+    const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (Speech) {
+        const rec = new Speech(); rec.lang = 'tr-TR';
+        rec.onresult = (e) => { editor.value += (editor.value ? " " : "") + e.results[0][0].transcript; };
+        document.getElementById('mic-btn').onclick = () => { rec.start(); showMsg("Dinleniyor... Konuşun.", "#3498db"); };
+    }
+
+    // Yapıştır
+    document.getElementById('paste-btn').onclick = async () => {
+        try {
+            const clipText = await navigator.clipboard.readText();
+            editor.value += (editor.value ? " " : "") + clipText;
+            showMsg("Hafızadaki metin eklendi.", "#34495e");
+        } catch (err) { showMsg("Yapıştırma izni reddedildi.", "red"); }
+    };
+
+    // Temizle
+    document.getElementById('clear-btn').onclick = () => { editor.value = ""; output.innerText = "..."; };
 
     function showMsg(txt, color) {
         const s = document.getElementById('status');
