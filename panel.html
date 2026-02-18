@@ -66,4 +66,152 @@
             color: #fff; 
             flex-shrink: 0;
             scroll-snap-align: center;
-            transition: all 0
+            transition: all 0.2s;
+        }
+
+        .pick-btn.active { 
+            background: #00ff41; 
+            color: #000; 
+            border-color: #fff; 
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+            transform: scale(1.1);
+        }
+
+        .month-btn { min-width: 140px; font-size: 1rem; }
+
+        /* DEV GETİR BUTONU */
+        .main-btn { 
+            background: #b00; 
+            color: #fff; 
+            border: none; 
+            padding: 25px; 
+            font-size: 1.4rem; 
+            border-radius: 100px; 
+            width: 90%; 
+            cursor: pointer; 
+            font-family: 'Orbitron'; 
+            font-weight: bold; 
+            box-shadow: 0 10px #600; 
+            margin: 20px 0;
+            transition: 0.2s;
+        }
+        .main-btn:active { transform: translateY(5px); box-shadow: 0 4px #300; }
+
+        /* SONUÇ PANELİ */
+        #result-panel { 
+            background: rgba(0, 0, 0, 0.95); 
+            border: 2px solid #00ff41; 
+            padding: 25px; 
+            border-radius: 20px; 
+            min-height: 200px; 
+            font-family: 'Orbitron'; 
+            font-size: 1.3rem; 
+            line-height: 1.8; 
+            color: #eee; 
+            display: none; 
+            text-align: left;
+            margin-top: 20px;
+            box-shadow: 0 0 30px rgba(0,255,65,0.2);
+        }
+        .date-badge { color: #00ff41; font-size: 0.8rem; display: block; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="warp-bg"><div class="lines"></div></div>
+
+    <div class="container">
+        <h1 class="header">KONTROL PANELİ</h1>
+        
+        <div class="selection-group">
+            <span class="label">GÜN SEÇİN</span>
+            <div id="day-picker" class="scroll-picker"></div>
+        </div>
+
+        <div class="selection-group">
+            <span class="label">AY SEÇİN</span>
+            <div id="month-picker" class="scroll-picker"></div>
+        </div>
+
+        <div class="selection-group">
+            <span class="label">YIL SEÇİN</span>
+            <div id="year-picker" class="scroll-picker"></div>
+        </div>
+        
+        <button class="main-btn" onclick="getData()">VERİYİ SORGULA</button>
+
+        <div id="result-panel"></div>
+    </div>
+
+    <script src="data.js"></script>
+    
+    <script>
+        const months = ["OCAK", "SUBAT", "MART", "NISAN", "MAYIS", "HAZIRAN", "TEMMUZ", "AGUSTOS", "EYLUL", "EKIM", "KASIM", "ARALIK"];
+        let selD = "01", selM = "01", selY = "1990";
+
+        function createPickers() {
+            // Günler
+            const dp = document.getElementById('day-picker');
+            for(let i=1; i<=31; i++) {
+                let val = i < 10 ? '0'+i : i;
+                dp.innerHTML += `<div class="pick-btn ${i==1?'active':''}" onclick="selectItem(this, 'day', '${val}')">${i}</div>`;
+            }
+            // Aylar
+            const mp = document.getElementById('month-picker');
+            months.forEach((m, i) => {
+                let val = (i+1) < 10 ? '0'+(i+1) : (i+1);
+                mp.innerHTML += `<div class="pick-btn month-btn ${i==0?'active':''}" onclick="selectItem(this, 'month', '${val}')">${m}</div>`;
+            });
+            // Yıllar
+            const yp = document.getElementById('year-picker');
+            for(let i=1990; i<=1999; i++) {
+                yp.innerHTML += `<div class="pick-btn ${i==1990?'active':''}" onclick="selectItem(this, 'year', '${i}')">${i}</div>`;
+            }
+        }
+
+        function selectItem(el, type, val) {
+            // Önce aynı gruptaki aktifliği kaldır
+            const parent = el.parentElement;
+            parent.querySelectorAll('.pick-btn').forEach(b => b.classList.remove('active'));
+            el.classList.add('active');
+            
+            if(type === 'day') selD = val;
+            if(type === 'month') selM = val;
+            if(type === 'year') selY = val;
+            
+            // Seçilen öğeyi merkeze kaydır (Konfor için)
+            el.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        }
+
+        function getData() {
+            const tarihKey = `${selY}-${selM}-${selD}`;
+            const panel = document.getElementById('result-panel');
+            panel.style.display = 'block';
+
+            let finalMetin = "";
+            const jenerikVeriler = {
+                "1990": "Yeni bir on yılın şafağı. Analog hayatın en saf hali. Sokaklarda hala 80'lerin izi var.",
+                "1991": "Pop müziğin ayak sesleri... Özel kanalların renkli dünyası yeni yeni keşfediliyor.",
+                "1992": "Tarkan'ın rüzgarı esmeye başladı. Renkli ceketler ve kabarık saçlar dönemi.",
+                "1993": "Barış Manço'nun '7'den 77'ye' programıyla pazar sabahlarının şenlendiği bir dönem.",
+                "1994": "Pop müziğin patladığı yıl. Walkman kulaklıklarından sızan ezgiler sokaklara karışıyor.",
+                "1995": "Windows 95 heyecanı evlere girmeye başlamış. Analogdan dijitale geçişin ortasındayız.",
+                "1996": "Müzik kanalları ve sabah şekerleri dönemi. Hayatın iyice hızlandığı bir zaman.",
+                "1997": "İnternet kafelerin mahalle aralarına sızdığı günler. Bilginin kablolardan aktığı bir tarih.",
+                "1998": "Doksanların efsane dizilerinin herkesi akşamları ekran başına kilitlediği bir yıl.",
+                "1999": "Milenyumun kapısı. Gelecek bin yıla dair hem korku hem de devasa bir merak var."
+            };
+
+            if (typeof zamanVerisi !== 'undefined' && zamanVerisi[tarihKey]) {
+                finalMetin = zamanVerisi[tarihKey];
+            } else {
+                finalMetin = jenerikVeriler[selY] || "Zamanın bu kesitinde her şey olması gerektiği gibiydi.";
+            }
+
+            panel.innerHTML = `<span class="date-badge">${selD} ${months[parseInt(selM)-1]} ${selY}</span>${finalMetin}`;
+            panel.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        window.onload = createPickers;
+    </script>
+</body>
+</html>
