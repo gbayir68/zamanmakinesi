@@ -21,8 +21,32 @@
         .strip { transition: transform 2.5s cubic-bezier(0.1, 0, 0.1, 1); }
         .item { height: 40px; min-width: 65px; text-align: center; }
         .btn-box { margin-top: 40px; }
-        button { background: #b00; color: #fff; border: none; padding: 18px; font-size: 1.1rem; border-radius: 50px; box-shadow: 0 6px #600; cursor: pointer; font-family: 'Orbitron', sans-serif; width: 85%; font-weight: bold; -webkit-appearance: none; }
-        button:active { transform: translateY(3px); box-shadow: 0 2px #300; }
+        
+        button { 
+            background: #b00; 
+            color: #fff; 
+            border: none; 
+            padding: 18px; 
+            font-size: 1.1rem; 
+            border-radius: 50px; 
+            box-shadow: 0 6px #600; 
+            cursor: pointer; 
+            font-family: 'Orbitron', sans-serif; 
+            width: 100%; 
+            font-weight: bold; 
+            -webkit-appearance: none; 
+            transition: all 0.3s;
+        }
+
+        button:disabled { 
+            background: #333; 
+            box-shadow: 0 3px #111; 
+            color: #777; 
+            cursor: not-allowed;
+            transform: translateY(3px);
+        }
+
+        button:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 2px #300; }
         #present { font-size: 0.9rem; display: flex; justify-content: center; gap: 8px; }
     </style>
 </head>
@@ -43,36 +67,18 @@
                 <div id="present"><span id="p-d"></span> <span id="p-m"></span> <span id="p-y"></span></div>
             </div>
         </div>
-        <div class="btn-box"><button onclick="spin()">ZAMANI DEĞİŞTİR</button></div>
+        <div class="btn-box">
+            <button id="spinBtn" onclick="startSpin()">ZAMANI DEĞİŞTİR</button>
+        </div>
     </div>
     <script>
         const ms = ["OCAK", "SUB", "MART", "NIS", "MAY", "HAZ", "TEM", "AGU", "EYL", "EKM", "KAS", "ARL"];
         const ITEM_H = 40; const COUNT = 30;
+        let cooldownActive = false;
+
         function init() {
             const data = [ms, Array.from({length: 31}, (_, i) => i + 1), Array.from({length: 10}, (_, i) => 1990 + i)];
             ['m-strip', 'd-strip', 'y-strip'].forEach((id, idx) => {
                 document.getElementById(id).innerHTML = Array.from({length: COUNT}, (_, i) => `<div class="item">${data[idx][i % data[idx].length]}</div>`).join('');
             });
-        }
-        function spin() {
-            const targets = [ms[Math.floor(Math.random()*12)], Math.floor(Math.random()*28)+1, Math.floor(Math.random()*10)+1990];
-            ['m-strip', 'd-strip', 'y-strip'].forEach((id, i) => {
-                const el = document.getElementById(id);
-                el.style.transition = "none"; el.style.transform = "translateY(0)";
-                setTimeout(() => {
-                    el.getElementsByClassName('item')[COUNT-3].innerText = targets[i];
-                    el.style.transition = "transform 2.5s cubic-bezier(0.1, 0, 0.1, 1)";
-                    el.style.transform = `translateY(-${(COUNT-3) * ITEM_H}px)`;
-                }, 50);
-            });
-        }
-        function clock() {
-            const n = new Date();
-            document.getElementById('p-d').innerText = String(n.getDate()).padStart(2, '0');
-            document.getElementById('p-m').innerText = ms[n.getMonth()];
-            document.getElementById('p-y').innerText = n.getFullYear();
-        }
-        init(); clock(); setInterval(clock, 1000);
-    </script>
-</body>
-</html>
+            check
