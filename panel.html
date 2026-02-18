@@ -78,14 +78,25 @@
         }
 
         function fetchHistory() {
-            const d = document.getElementById('sel-day').value;
-            const m = document.getElementById('sel-month').value;
-            const y = document.getElementById('sel-year').value;
-            if(!d || !m || !y) return;
+    const d = document.getElementById('sel-day').value;
+    const m = document.getElementById('sel-month').value;
+    const y = document.getElementById('sel-year').value;
+    if(!d || !m || !y) return;
 
-            const key = `${y}-${m}-${d}`;
-            const panel = document.getElementById('result-panel');
-            panel.style.display = 'block';
+    const key = `${y}-${m}-${d}`;
+    const panel = document.getElementById('result-panel');
+    panel.style.display = 'block';
+
+    // ÖNEMLİ: Eğer data.js'de veri varsa onu al, yoksa uyarı ver.
+    let metin = "";
+    if (typeof zamanVerisi !== 'undefined' && zamanVerisi[key]) {
+        metin = zamanVerisi[key];
+    } else {
+        metin = "Bu tarih için henüz özel veri girişi yapılmadı. (Sistem Arşivi Bekleniyor)";
+    }
+    
+    panel.innerHTML = `<span class="date-badge">${d} ${monthsTR[parseInt(m)-1]} ${y}</span>${metin}`;
+}
 
             // Döviz kurunu çek (yoksa o yıla ait en yakın veriyi al)
             const yilKurlari = kurTablosu[y] || {};
