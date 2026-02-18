@@ -18,7 +18,7 @@
         
         /* Buton Grubu */
         .toolbar { display: flex; gap: 10px; margin-top: 20px; }
-        .tool-btn { flex: 1; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; color: white; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .tool-btn { flex: 1; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; color: white; font-size: 14px; text-align: center; }
         .btn-mic { background: #e74c3c; }
         .btn-paste { background: #3498db; }
         .btn-clear { background: #95a5a6; }
@@ -44,10 +44,13 @@
             <div class="select-group"><label>Gün</label><select id="day-select"><option value="">Gün</option></select></div>
             <div class="select-group"><label>Ay</label>
                 <select id="month-select">
-                    <option value="">Ay</option><option value="01">Ocak</option><option value="02">Şubat</option>
-                    <option value="03">Mart</option><option value="04">Nisan</option><option value="05">Mayıs</option>
-                    <option value="06">Haziran</option><option value="07">Temmuz</option><option value="08">Ağustos</option>
-                    <option value="09">Eylül</option><option value="10">Ekim</option><option value="11">Kasım</option><option value="12">Aralık</option>
+                    <option value="">Ay</option>
+                    <option value="01">Ocak</option><option value="02">Şubat</option>
+                    <option value="03">Mart</option><option value="04">Nisan</option>
+                    <option value="05">Mayıs</option><option value="06">Haziran</option>
+                    <option value="07">Temmuz</option><option value="08">Ağustos</option>
+                    <option value="09">Eylül</option><option value="10">Ekim</option>
+                    <option value="11">Kasım</option><option value="12">Aralık</option>
                 </select>
             </div>
             <div class="select-group"><label>Yıl</label><select id="year-select"><option value="">Yıl</option></select></div>
@@ -72,8 +75,6 @@
     <div id="status"></div>
 </div>
 
-<script src="data.js"></script>
-
 <script>
     const dayS = document.getElementById('day-select');
     const monthS = document.getElementById('month-select');
@@ -81,7 +82,7 @@
     const editor = document.getElementById('editor');
     const output = document.getElementById('output-line');
 
-    // Menüleri doldur (1990-1999)
+    // Menüleri hemen doldur (1990-1999)
     for(let i=1; i<=31; i++) {
         let d = i.toString().padStart(2, '0');
         dayS.innerHTML += `<option value="${d}">${d}</option>`;
@@ -90,7 +91,7 @@
         yearS.innerHTML += `<option value="${i}">${i}</option>`;
     }
 
-    // ESKİ VERİYİ GETİR (Regex Modu - En Garantisi)
+    // ESKİ VERİYİ GETİR (Metin Tarama Modu)
     document.getElementById('fetch-btn').onclick = async () => {
         const d = dayS.value, m = monthS.value, y = yearS.value;
         if(!d || !m || !y) { showMsg("Lütfen tarih seçin!", "orange"); return; }
@@ -99,7 +100,8 @@
         try {
             const response = await fetch('data.js');
             const text = await response.text();
-            // Tırnak içindeki tarihi ve karşısındaki metni bulur
+            
+            // Regex ile metni tarar: "Tarih": "İçerik"
             const regex = new RegExp(`"${key}"\\s*:\\s*"([^"]+)"`);
             const match = text.match(regex);
             
@@ -107,11 +109,11 @@
                 editor.value = match[1];
                 showMsg("Eski veri getirildi.", "#27ae60");
             } else {
-                showMsg("Kayıt bulunamadı.", "#e67e22");
+                showMsg("Bu tarihe ait kayıt bulunamadı.", "#e67e22");
                 editor.value = "";
             }
         } catch (e) {
-            showMsg("Dosya okunamadı! (data.js)", "#c0392b");
+            showMsg("data.js dosyasına ulaşılamadı!", "red");
         }
     };
 
@@ -120,18 +122,19 @@
         const d = dayS.value, m = monthS.value, y = yearS.value;
         if(!d || !m || !y) { showMsg("Önce tarih seçin!", "red"); return; }
         
-        let text = editor.value.replace(/"/g, "'").replace(/\n/g, " ").trim();
-        if(!text) { showMsg("Metin boş olamaz!", "red"); return; }
+        let cleanText = editor.value.replace(/"/g, "'").replace(/\n/g, " ").trim();
+        if(!cleanText) { showMsg("Metin boş olamaz!", "red"); return; }
 
-        output.innerText = `"${y}-${m}-${d}": "${text}",`;
-        showMsg("Kod hazır!", "#27ae60");
+        output.innerText = `"${y}-${m}-${d}": "${cleanText}",`;
+        showMsg("Mükemmel kod hazır!", "#27ae60");
     };
 
     // KOPYALA
     document.getElementById('copy-btn').onclick = () => {
         if(output.innerText === "...") return;
-        navigator.clipboard.writeText(output.innerText);
-        showMsg("Kopyalandı!", "#2980b9");
+        navigator.clipboard.writeText(output.innerText).then(() => {
+            showMsg("Kopyalandı!", "#2980b9");
+        });
     };
 
     // MİKROFON
@@ -144,8 +147,10 @@
 
     // YAPIŞTIR
     document.getElementById('paste-btn').onclick = async () => {
-        const clip = await navigator.clipboard.readText();
-        editor.value += (editor.value ? " " : "") + clip;
+        try {
+            const clipText = await navigator.clipboard.readText();
+            editor.value += (editor.value ? " " : "") + clipText;
+        } catch(e) { showMsg("Yapıştırma izni gerekiyor.", "orange"); }
     };
 
     // TEMİZLE
