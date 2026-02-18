@@ -1,4 +1,8 @@
 const zamanVerisi = {
+    const dataJS = {
+ "1990-01-01": "1990 yılına merhaba...",
+ "1990-01-02": "Bugün olanlar...",
+ // ... 1999 sonuna kadar giden veriler ...
     "1990-01-01": "90'lar başladı! Dolar: 2.315 TL. TRT'de yeni yıl neşesi. Bugün aktör J.B. Smoove doğdu, efsane Aliye Rona aramızda",
     "1990-01-02": "Dolar: 2.318 TL. Türkiye yeni yıla umutla bakıyor. Bugün usta oyuncu Belgin Doruk en verimli çağında",
     "1990-01-03": "Dolar: 2.320 TL. Panama'nın devrik lideri Noriega teslim oldu. Bugün Mel Gibson 34 yaşında",
