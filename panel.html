@@ -3,72 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>OF-İS KONTROL MERKEZİ</title>
+    <title>OF-İS KONTROL PANELİ</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: #000; color: #fff; font-family: 'Orbitron', sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; overflow-x: hidden; position: relative; }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            background: #000; 
+            color: #fff; 
+            font-family: 'Orbitron', sans-serif; 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column;
+            align-items: center; 
+            padding-top: 20px;
+            overflow-x: hidden;
+            position: relative; 
+        }
 
         /* ARKA PLAN */
         .warp-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, #1a0033 0%, #000 80%); z-index: -1; perspective: 600px; }
         .lines { position: absolute; width: 200%; height: 200%; top: -50%; left: -50%; background-image: linear-gradient(to right, rgba(147, 51, 234, 0.2) 2px, transparent 2px), linear-gradient(to bottom, rgba(147, 51, 234, 0.2) 2px, transparent 2px); background-size: 60px 60px; transform: rotateX(55deg); animation: warpMove 4s linear infinite; }
         @keyframes warpMove { 0% { transform: rotateX(55deg) translateY(0); } 100% { transform: rotateX(55deg) translateY(60px); } }
 
-        .container { width: 95%; max-width: 500px; padding: 20px; z-index: 10; text-align: center; }
-        .header { font-size: 1.2rem; margin-bottom: 20px; text-shadow: 0 0 10px #fff; }
+        .container { width: 95%; max-width: 600px; z-index: 10; text-align: center; padding-bottom: 50px; }
+        .header { font-size: 1.4rem; margin-bottom: 20px; text-shadow: 0 0 10px #fff; color: #fff; }
         
-        .selection-box { background: rgba(10, 10, 10, 0.95); border: 2px solid #333; border-radius: 20px; padding: 25px; box-shadow: 0 0 30px #000; backdrop-filter: blur(10px); }
-        
-        .selectors { display: flex; gap: 10px; margin-bottom: 20px; }
-        select { flex: 1; background: #000; color: #00ff41; border: 1px solid #00ff41; padding: 15px 5px; font-family: 'Orbitron'; font-size: 0.8rem; border-radius: 10px; outline: none; appearance: none; text-align: center; }
-
-        button { background: #b00; color: #fff; border: none; padding: 20px; font-size: 1.1rem; border-radius: 50px; width: 100%; cursor: pointer; font-family: 'Orbitron'; font-weight: bold; box-shadow: 0 6px #600; margin-bottom: 25px; transition: 0.3s; }
-        button:active { transform: translateY(3px); box-shadow: 0 2px #300; }
-
-        /* SONUÇ PANELİ */
-        #result-panel { 
-            background: rgba(0, 20, 0, 0.4); 
-            border-left: 4px solid #00ff41; 
-            padding: 25px; 
-            border-radius: 10px; 
-            min-height: 200px; 
-            font-family: 'Orbitron'; 
-            font-size: 1.2rem; /* Okunaklı olması için büyütüldü */
-            line-height: 1.7; 
-            color: #eee; 
-            display: none; 
-            text-align: left;
-            animation: fadeIn 0.6s ease;
-            box-shadow: inset 0 0 20px rgba(0,255,65,0.1);
+        /* BÜYÜK SEÇİCİ ALANLARI */
+        .selection-group { 
+            background: rgba(20, 20, 20, 0.9); 
+            border: 2px solid #333; 
+            border-radius: 20px; 
+            padding: 15px; 
+            margin-bottom: 20px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-        .date-badge { color: #00ff41; font-size: 0.75rem; display: block; margin-bottom: 15px; letter-spacing: 2px; border-bottom: 1px solid rgba(0,255,65,0.2); padding-bottom: 5px; }
-    </style>
-</head>
-<body>
-    <div class="warp-bg"><div class="lines"></div></div>
 
-    <div class="container">
-        <h1 class="header">OF-İS KONTROL PANELİ</h1>
-        
-        <div class="selection-box">
-            <div class="selectors">
-                <select id="sel-day"></select>
-                <select id="sel-month"></select>
-                <select id="sel-year"></select>
-            </div>
-            
-            <button onclick="getData()">ZAMAN VERİSİNİ ÇEK</button>
+        .label { font-size: 0.8rem; color: #888; margin-bottom: 10px; display: block; text-align: left; padding-left: 10px; }
 
-            <div id="result-panel"></div>
-        </div>
-    </div>
+        /* YATAY KAYDIRILABİLİR BÜYÜK BUTONLAR */
+        .scroll-picker { 
+            display: flex; 
+            overflow-x: auto; 
+            gap: 10px; 
+            padding: 10px 5px; 
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none; /* Firefox */
+        }
+        .scroll-picker::-webkit-scrollbar { display: none; } /* Chrome/Safari */
 
-    <script src="data.js"></script>
-    
-    <script>
-        const months = ["OCAK", "SUBAT", "MART", "NISAN", "MAYIS", "HAZIRAN", "TEMMUZ", "AGUSTOS", "EYLUL", "EKIM", "KASIM", "ARALIK"];
-
-        // Eğer data.js boşsa veya hata verirse diye jenerik nostalji motoru
-        const jenerikVeriler = {
-            "1990": "Yeni bir on yılın şafağı. Sokaklarda hala 80'lerin izi var ama TRT ekranlarında Star 1 rüzgarları esiyor. Analog hayatın en saf hali.",
+        .pick-btn { 
+            min-width: 80px; 
+            height: 80px; 
+            background: #111; 
+            border: 2px solid #444; 
+            border-radius: 15px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 1.2rem; 
+            color: #fff; 
+            flex-shrink: 0;
+            scroll-snap-align: center;
+            transition: all 0
