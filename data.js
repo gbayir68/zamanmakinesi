@@ -27,6 +27,7 @@ const zamanVerisi = {
     "1991-07-01": "Varşova Paktı dağıldı. Sovyet imparatorluğu için geri sayım hızlandı.",
     "1991-08-25": "Linus Torvalds, Linux'u duyurdu. Açık kaynak dünyası doğuyor.",
     "1991-10-20": "Genel seçimler yapıldı. Koalisyon hükümetleri kapıda.",
+    "1991-11-07": "deneme şeysidir [M]",
     "1991-11-24": "Freddie Mercury veda etti. 'The Show Must Go On' son kez yankılandı.",
     "1991-12-08": "SSCB dağıldı. 15 yeni ülke dünya haritasına eklendi.",
     "1992-02-25": "Hocalı Katliamı yaşandı. Türk dünyasının kalbine ateş düştü.",
