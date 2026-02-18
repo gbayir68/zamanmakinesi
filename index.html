@@ -13,11 +13,11 @@
         #starfield { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
         .container { width: 90%; max-width: 320px; text-align: center; position: relative; z-index: 10; }
         .header { font-size: 1.2rem; margin-bottom: 25px; text-shadow: 0 0 15px #fff; letter-spacing: 2px; }
-        .box { background: rgba(10, 10, 10, 0.8); border: 2px solid rgba(255, 255, 255, 0.15); border-radius: 20px; padding: 20px 10px; box-shadow: 0 0 50px rgba(0,0,0,1); backdrop-filter: blur(10px); }
-        .display { background: rgba(0, 0, 0, 0.95); border: 1px solid #333; border-radius: 12px; margin: 12px 0; padding: 15px 5px; min-height: 80px; display: flex; flex-direction: column; justify-content: center; }
-        .label { font-size: 0.65rem; color: #777; margin-bottom: 5px; display: block; letter-spacing: 1px; }
-        .red { color: #ff3131; text-shadow: 0 0 15px #ff3131; }
-        .green { color: #00ff41; text-shadow: 0 0 15px #00ff41; }
+        .box { background: rgba(10, 10, 10, 0.8); border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 20px; padding: 20px 10px; box-shadow: 0 0 60px rgba(0,0,0,1); backdrop-filter: blur(10px); }
+        .display { background: rgba(0, 0, 0, 0.95); border: 1px solid #444; border-radius: 12px; margin: 12px 0; padding: 15px 5px; min-height: 80px; display: flex; flex-direction: column; justify-content: center; }
+        .label { font-size: 0.65rem; color: #888; margin-bottom: 5px; display: block; letter-spacing: 1px; }
+        .red { color: #ff3131; text-shadow: 0 0 20px #ff3131; }
+        .green { color: #00ff41; text-shadow: 0 0 20px #00ff41; }
         .slots { display: flex; justify-content: space-around; height: 40px; overflow: hidden; font-size: 1.1rem; line-height: 40px; }
         .strip { transition: transform 2.5s cubic-bezier(0.1, 0, 0.1, 1); }
         .item { height: 40px; min-width: 65px; text-align: center; }
@@ -54,13 +54,11 @@
         const ITEM_H = 40; const COUNT = 30;
         let isSpinning = false;
 
-        // --- GELİŞMİŞ HYPER-STARFIELD LOGIC ---
         const canvas = document.getElementById('starfield');
         const ctx = canvas.getContext('2d');
         let stars = [];
-        let numStars = 250; // Daha büyük ve etkili oldukları için sayıyı biraz azalttık
-        let speed = 2; // Normal akış hızı (Artık daha hızlı)
-        let warpSpeed = 2;
+        let numStars = 250; 
+        let warpSpeed = 60; // NORMAL BEKLEME HIZI (Yeni çark hızının yarısı)
 
         function setupStars() {
             canvas.width = window.innerWidth;
@@ -71,13 +69,13 @@
                     x: Math.random() * canvas.width - canvas.width / 2,
                     y: Math.random() * canvas.height - canvas.height / 2,
                     z: Math.random() * canvas.width,
-                    px: 0, py: 0 // Önceki konum takibi için
+                    px: 0, py: 0
                 });
             }
         }
 
         function drawStars() {
-            ctx.fillStyle = "rgba(0, 0, 0, 0.3)"; // Hafif trail (iz) bırakması için
+            ctx.fillStyle = "rgba(0, 0, 0, 0.4)"; // Daha derin bir trail efekti
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.translate(canvas.width / 2, canvas.height / 2);
 
@@ -95,8 +93,8 @@
                 let sy = s.y / (s.z / canvas.width);
                 
                 if (s.px !== 0) {
-                    ctx.strokeStyle = `rgba(255, 255, 255, ${Math.min(1, (canvas.width - s.z) / 500)})`;
-                    ctx.lineWidth = Math.min(5, (canvas.width - s.z) / 100); // Yaklaştıkça kalınlaşır
+                    ctx.strokeStyle = `rgba(255, 255, 255, ${Math.min(1, (canvas.width - s.z) / 400)})`;
+                    ctx.lineWidth = Math.min(8, (canvas.width - s.z) / 60); // Daha kalın ve belirgin nesneler
                     ctx.beginPath();
                     ctx.moveTo(sx, sy);
                     ctx.lineTo(s.px, s.py);
@@ -108,7 +106,6 @@
             requestAnimationFrame(drawStars);
         }
 
-        // --- MACHINE LOGIC ---
         function fillSlots() {
             const data = [ms, Array.from({length: 31}, (_, i) => i + 1), Array.from({length: 10}, (_, i) => 1990 + i)];
             ['m-strip', 'd-strip', 'y-strip'].forEach((id, idx) => {
@@ -122,7 +119,7 @@
             const btn = document.getElementById('spinBtn');
             btn.disabled = true;
 
-            warpSpeed = 45; // HİPER UZAY HIZI!
+            warpSpeed = 120; // ÇARK DÖNERKENKİ MEGA HIZ (2 KAT ARTIRILDI)
             
             const targets = [ms[Math.floor(Math.random()*12)], Math.floor(Math.random()*28)+1, Math.floor(Math.random()*10)+1990];
             ['m-strip', 'd-strip', 'y-strip'].forEach((id, i) => {
@@ -138,7 +135,7 @@
 
             setTimeout(() => {
                 isSpinning = false;
-                warpSpeed = 2; // Normal hıza dön
+                warpSpeed = 60; // TEKRAR YÜKSEK BEKLEME HIZINA DÖN
                 startCooldown(300);
             }, 2800);
         }
