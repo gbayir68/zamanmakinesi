@@ -3741,3 +3741,4 @@
  ", 1999-12-29": "Milenyum Korkusu (Y2K) için son hazırlıklar; tüm sistemler yedeklendi. Bugün Jude Law 27 yaşında ", 
  ", 1999-12-30": "Saraybosna'da yılın son gününde barış kutlamaları hazırlığı. Bugün LeBron James 15 yaşında ", 
  ", 1999-12-31": "Güle güle 20. yüzyıl! Türkiye depremin acısını AB adaylığının umuduyla sararak 2000 yılına giriyor."
+};
