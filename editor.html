@@ -17,7 +17,7 @@
         .panel-label { font-weight: bold; margin: 15px 0 5px 0; display: block; color: #34495e; font-size: 13px; }
         .old-data-view { width: 100%; height: 100px; padding: 12px; background: #f1f3f5; border: 1px solid #dee2e6; border-radius: 8px; overflow-y: auto; color: #333; font-size: 15px; box-sizing: border-box; border-left: 5px solid #e67e22; white-space: pre-wrap; }
         .toolbar { display: flex; gap: 8px; background: #34495e; padding: 8px; border-radius: 8px 8px 0 0; margin-top: 15px; }
-        .tool-btn { background: none; border: 1px solid #5d6d7e; color: white; padding: 6px 12px; border-radius: 4px; cursor: pointer; transition: 0.3s; }
+        .tool-btn { background: none; border: 1px solid #5d6d7e; color: white; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
         .tool-btn:hover { background: #e67e22; }
         textarea { width: 100%; box-sizing: border-box; padding: 15px; border: 1px solid #ced4da; font-size: 16px; line-height: 1.5; }
         #new-editor { height: 250px; border-radius: 0 0 8px 8px; margin-top: -1px; }
@@ -75,10 +75,8 @@
     <div id="status"></div>
 </div>
 
-<script src="data.js"></script>
-
 <script>
-    let activeData = null;
+    let localData = {};
     const dayS = document.getElementById('day-select');
     const yearS = document.getElementById('year-select');
     const monthS = document.getElementById('month-select');
@@ -86,7 +84,7 @@
     const newEditor = document.getElementById('new-editor');
     const codeOut = document.getElementById('code-output');
 
-    // Menüleri doldur (1990-1999)
+    // Seçicileri doldur (1990-1999)
     for (let i = 1; i <= 31; i++) {
         let d = i.toString().padStart(2, '0');
         dayS.innerHTML += `<option value="${d}">${d}</option>`;
@@ -95,73 +93,65 @@
         yearS.innerHTML += `<option value="${i}">${i}</option>`;
     }
 
-    // Otomatik Veri Kaynağı Bulucu
-    function findDataSource() {
-        // Tarayıcıdaki tüm değişkenleri tara, içinde tarih formatında anahtar olanı bul
-        for (let key in window) {
-            if (window[key] !== null && typeof window[key] === 'object' && !Array.isArray(window[key])) {
-                // Eğer nesnenin içinde 1990-01-01 gibi bir anahtar varsa o bizimdir
-                if (Object.keys(window[key]).some(k => /^\d{4}-\d{2}-\d{2}$/.test(k))) {
-                    console.log("Veri kaynağı bulundu:", key);
-                    return window[key];
-                }
-            }
-        }
-        return null;
-    }
-
-    // VERİ GETİR
-    document.getElementById('fetch-btn').onclick = () => {
+    // VERİ GETİRME (Dosyayı doğrudan metin olarak analiz eden akıllı versiyon)
+    document.getElementById('fetch-btn').onclick = async () => {
         if (!dayS.value || !monthS.value || !yearS.value) {
             showMsg("Lütfen tarih seçin!", "#e74c3c");
             return;
         }
-        const searchKey = `${yearS.value}-${monthS.value}-${dayS.value}`;
+        const key = `${yearS.value}-${monthS.value}-${dayS.value}`;
         
-        activeData = findDataSource();
-
-        if (activeData) {
-            if (activeData[searchKey]) {
-                oldView.innerText = activeData[searchKey];
-                newEditor.value = activeData[searchKey];
-                showMsg(searchKey + " yüklendi.", "#27ae60");
-            } else {
-                oldView.innerText = "Kayıt bulunamadı.";
-                newEditor.value = "";
-                showMsg("Arşivde bu tarih boş.", "#e67e22");
+        try {
+            const resp = await fetch('data.js');
+            const rawText = await resp.text();
+            
+            // Dosyanın içindeki JSON kısmını bul ve temizle
+            const startIdx = rawText.indexOf('{');
+            const endIdx = rawText.lastIndexOf('}');
+            if (startIdx !== -1 && endIdx !== -1) {
+                const jsonStr = rawText.substring(startIdx, endIdx + 1);
+                localData = JSON.parse(jsonStr);
+                
+                if (localData[key]) {
+                    oldView.innerText = localData[key];
+                    newEditor.value = localData[key];
+                    showMsg(key + " yüklendi.", "#27ae60");
+                } else {
+                    oldView.innerText = "Kayıt bulunamadı.";
+                    newEditor.value = "";
+                    showMsg("Bu tarih boş.", "#e67e22");
+                }
             }
-        } else {
-            oldView.innerText = "Hata: data.js yüklendi ancak veri yapısı (örn: const dataJS = {...}) bulunamadı. Lütfen dosyanızın en başında bir değişken ismi olduğundan emin olun.";
-            showMsg("Veri yapısı eksik!", "red");
+        } catch (e) {
+            oldView.innerText = "HATA: data.js dosyasındaki veriler okunabilir bir formatta değil. Lütfen dosyanızın sadece { ... } şeklinde veri içerdiğinden emin olun.";
+            showMsg("Dosya Hatası!", "red");
         }
     };
 
-    // 1. KODA İŞLE
+    // 1. KODA İŞLE (Hafızada Güncelle)
     document.getElementById('process-btn').onclick = () => {
         const key = `${yearS.value}-${monthS.value}-${dayS.value}`;
-        if (activeData && key) {
-            activeData[key] = newEditor.value;
-            showMsg("Değişiklik hafızaya alındı.", "#2980b9");
+        if (key && localData) {
+            localData[key] = newEditor.value;
+            showMsg("Değişiklik hazırlandı. Şimdi kod oluşturun.", "#2980b9");
         }
     };
 
     // 2. DOSYA KODUNU OLUŞTUR
     document.getElementById('generate-btn').onclick = () => {
-        if (activeData) {
-            const fullCode = "const dataJS = " + JSON.stringify(activeData, null, 4) + ";";
-            codeOut.value = fullCode;
-            showMsg("Yeni kod hazır!", "#8e44ad");
-        }
+        const fullCode = "const dataJS = " + JSON.stringify(localData, null, 4) + ";";
+        codeOut.value = fullCode;
+        showMsg("Yeni kod hazır!", "#8e44ad");
     };
 
-    // KOPYALA
+    // TÜM KODU KOPYALA
     document.getElementById('copy-all-btn').onclick = () => {
         codeOut.select();
         document.execCommand('copy');
-        showMsg("Kod kopyalandı!", "#27ae60");
+        showMsg("Kod kopyalandı! Artık data.js içine yapıştırabilirsiniz.", "#27ae60");
     };
 
-    // ARAÇLAR (Sesli Yazma vb.)
+    // ARAÇLAR
     const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (Speech) {
         const rec = new Speech(); rec.lang = 'tr-TR';
