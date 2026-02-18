@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>OF-İS ZAMAN MAKİNESİ</title>
-    <link rel="apple-touch-icon" href="icon.png">
-    <link rel="icon" href="icon.png">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -17,10 +15,7 @@
         .fast-warp { animation: warpMove 0.4s linear infinite !important; }
         @keyframes warpMove { 0% { transform: rotateX(55deg) translateY(0); } 100% { transform: rotateX(55deg) translateY(60px); } }
 
-        /* PANEL */
         .container { width: 90%; max-width: 320px; text-align: center; position: relative; z-index: 10; }
-        
-        /* İKİ SATIRLI BAŞLIK */
         .header { font-size: 1.5rem; line-height: 1.2; margin-bottom: 25px; text-shadow: 0 0 15px #fff; letter-spacing: 2px; text-transform: uppercase; }
         .header span { display: block; font-size: 1.1rem; opacity: 0.9; }
 
@@ -60,15 +55,16 @@
 
     <script>
         const ms = ["OCAK", "SUB", "MART", "NIS", "MAY", "HAZ", "TEM", "AGU", "EYL", "EKM", "KAS", "ARL"];
-        const ITEM_H = 40; const COUNT = 30;
+        const ITEM_H = 40; 
+        const COUNT = 40; // Slot uzunluğunu artırdık
         let isSpinning = false;
 
         function fillSlots() {
-            const mData = ms;
             const dData = Array.from({length: 31}, (_, i) => i + 1);
             const yData = Array.from({length: 10}, (_, i) => 1990 + i);
             
-            document.getElementById('m-strip').innerHTML = Array.from({length: COUNT}, (_, i) => `<div class="item">${mData[i % 12]}</div>`).join('');
+            // Başlangıçta rastgele bir görünüm veriyoruz
+            document.getElementById('m-strip').innerHTML = Array.from({length: COUNT}, (_, i) => `<div class="item">${ms[i % 12]}</div>`).join('');
             document.getElementById('d-strip').innerHTML = Array.from({length: COUNT}, (_, i) => `<div class="item">${dData[i % 31]}</div>`).join('');
             document.getElementById('y-strip').innerHTML = Array.from({length: COUNT}, (_, i) => `<div class="item">${yData[i % 10]}</div>`).join('');
         }
@@ -82,20 +78,27 @@
             btn.disabled = true;
             lines.classList.add('fast-warp');
 
-            const targets = [ms[Math.floor(Math.random()*12)], Math.floor(Math.random()*28)+1, Math.floor(Math.random()*10)+1990];
+            // HEDEF TARİH OLUŞTURMA (1990-1999 arası rastgele)
+            const targetMonth = ms[Math.floor(Math.random() * 12)];
+            const targetDay = Math.floor(Math.random() * 28) + 1;
+            const targetYear = Math.floor(Math.random() * 10) + 1990;
+            const targets = [targetMonth, targetDay, targetYear];
+            
             const ids = ['m-strip', 'd-strip', 'y-strip'];
 
             ids.forEach((id, i) => {
                 const el = document.getElementById(id);
+                const items = el.getElementsByClassName('item');
+                
+                // Animasyon başlamadan hemen önce, duracağı noktadaki (COUNT-3) item'ı hedef tarihle değiştiriyoruz
+                items[COUNT - 3].innerText = targets[i];
+                
                 el.style.transition = "none";
                 el.style.transform = "translateY(0)";
                 
                 setTimeout(() => {
-                    if(el.getElementsByClassName('item')[COUNT-3]) {
-                        el.getElementsByClassName('item')[COUNT-3].innerText = targets[i];
-                    }
                     el.style.transition = "transform 2.5s cubic-bezier(0.1, 0, 0.1, 1)";
-                    el.style.transform = `translateY(-${(COUNT-3) * ITEM_H}px)`;
+                    el.style.transform = `translateY(-${(COUNT - 3) * ITEM_H}px)`;
                 }, 50);
             });
 
@@ -133,11 +136,7 @@
             const saved = localStorage.getItem('machineLock');
             if (saved) {
                 const remaining = Math.floor((saved - Date.now()) / 1000);
-                if (remaining > 0) {
-                    startCooldown(remaining);
-                } else {
-                    localStorage.removeItem('machineLock');
-                }
+                if (remaining > 0) startCooldown(remaining);
             }
         }
 
@@ -148,13 +147,12 @@
             document.getElementById('p-y').innerText = n.getFullYear();
         }
 
-        // ÖNEMLİ: Slotlar dolmadan butonu aktif etmiyoruz
-        window.addEventListener('load', () => {
+        window.onload = () => {
             fillSlots();
             clock();
             checkCooldown();
             setInterval(clock, 1000);
-        });
+        };
     </script>
 </body>
 </html>
