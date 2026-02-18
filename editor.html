@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gültekin Bayır - Arşiv Yönetim Paneli</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; padding: 20px; display: flex; justify-content: center; }
         .container { width: 100%; max-width: 850px; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
@@ -13,21 +12,20 @@
         .selection-box { background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #e9ecef; }
         .dropdowns { display: flex; gap: 10px; margin-bottom: 15px; }
         .select-group { flex: 1; display: flex; flex-direction: column; gap: 5px; }
-        select { padding: 12px; border-radius: 8px; border: 1px solid #ced4da; font-size: 15px; }
+        select { padding: 12px; border-radius: 8px; border: 1px solid #ced4da; font-size: 15px; background: white; }
         
-        #fetch-btn { width: 100%; padding: 12px; background: #34495e; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        #fetch-btn:hover { background: #2c3e50; }
+        #fetch-btn { width: 100%; padding: 14px; background: #34495e; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; }
         
-        .panel-label { font-weight: bold; margin: 20px 0 5px 0; display: block; font-size: 13px; color: #7f8c8d; }
+        /* Buton Grubu */
+        .toolbar { display: flex; gap: 10px; margin-top: 20px; }
+        .tool-btn { flex: 1; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; color: white; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-mic { background: #e74c3c; }
+        .btn-paste { background: #3498db; }
+        .btn-clear { background: #95a5a6; }
         
-        /* Araç Çubuğu */
-        .toolbar { display: flex; gap: 8px; background: #34495e; padding: 10px; border-radius: 8px 8px 0 0; }
-        .tool-btn { background: none; border: 1px solid #5d6d7e; color: white; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 13px; }
-        .tool-btn:hover { background: #e67e22; border-color: #e67e22; }
-        
-        textarea { width: 100%; height: 200px; padding: 15px; border: 1px solid #ced4da; border-radius: 0 0 8px 8px; font-size: 16px; box-sizing: border-box; resize: vertical; margin-top: -1px; }
+        textarea { width: 100%; height: 200px; padding: 15px; border: 1px solid #ced4da; border-radius: 8px; font-size: 16px; box-sizing: border-box; resize: vertical; margin-top: 10px; }
 
-        .output-box { background: #1e1e1e; color: #2ecc71; padding: 20px; border-radius: 8px; font-family: 'Consolas', monospace; font-size: 14px; margin-top: 10px; border-left: 5px solid #27ae60; word-break: break-all; min-height: 40px; }
+        .output-box { background: #1e1e1e; color: #2ecc71; padding: 20px; border-radius: 8px; font-family: 'Consolas', monospace; font-size: 14px; margin-top: 20px; border-left: 5px solid #27ae60; word-break: break-all; min-height: 30px; }
         
         .btn-row { display: flex; gap: 10px; margin-top: 20px; }
         .btn-gen { flex: 2; padding: 18px; background: #e67e22; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 16px; }
@@ -54,25 +52,23 @@
             </div>
             <div class="select-group"><label>Yıl</label><select id="year-select"><option value="">Yıl</option></select></div>
         </div>
-        <button id="fetch-btn"><i class="fas fa-search"></i> ESKİ VERİYİ GÖSTER</button>
+        <button id="fetch-btn">ESKİ VERİYİ GÖSTER</button>
     </div>
 
-    <label class="panel-label">Düzenleme Alanı:</label>
     <div class="toolbar">
-        <button class="tool-btn" id="mic-btn"><i class="fas fa-microphone"></i> Sesle Yaz</button>
-        <button class="tool-btn" id="paste-btn"><i class="fas fa-paste"></i> Yapıştır</button>
-        <button class="tool-btn" id="clear-btn"><i class="fas fa-trash"></i> Temizle</button>
+        <button class="tool-btn btn-mic" id="mic-btn">🎙 MİKROFON</button>
+        <button class="tool-btn btn-paste" id="paste-btn">📋 YAPIŞTIR</button>
+        <button class="tool-btn btn-clear" id="clear-btn">🗑 TEMİZLE</button>
     </div>
-    <textarea id="editor" placeholder="Açıklamanızı buraya yazın, sesle söyleyin veya yapıştırın..."></textarea>
+
+    <textarea id="editor" placeholder="Açıklamanızı buraya yazın veya mikrofonla söyleyin..."></textarea>
     
     <div class="btn-row">
         <button id="generate-btn" class="btn-gen">Mükemmel Koda Çevir</button>
-        <button id="copy-btn" class="btn-copy"><i class="fas fa-copy"></i> SATIRI KOPYALA</button>
+        <button id="copy-btn" class="btn-copy">SATIRI KOPYALA</button>
     </div>
 
-    <label class="panel-label">Yapıştırılmaya Hazır Satır:</label>
     <div id="output-line" class="output-box">...</div>
-
     <div id="status"></div>
 </div>
 
@@ -86,86 +82,73 @@
     const output = document.getElementById('output-line');
 
     // Menüleri doldur (1990-1999)
-    for(let i=1; i<=31; i++) dayS.innerHTML += `<option value="${i.toString().padStart(2,'0')}">${i.toString().padStart(2,'0')}</option>`;
-    for(let i=1990; i<=1999; i++) yearS.innerHTML += `<option value="${i}">${i}</option>`;
+    for(let i=1; i<=31; i++) {
+        let d = i.toString().padStart(2, '0');
+        dayS.innerHTML += `<option value="${d}">${d}</option>`;
+    }
+    for(let i=1990; i<=1999; i++) {
+        yearS.innerHTML += `<option value="${i}">${i}</option>`;
+    }
 
-    // --- ESKİ VERİYİ GÖSTERME FONKSİYONU ---
-    document.getElementById('fetch-btn').onclick = () => {
-        const key = `${yearS.value}-${monthS.value}-${dayS.value}`;
+    // ESKİ VERİYİ GETİR (Regex Modu - En Garantisi)
+    document.getElementById('fetch-btn').onclick = async () => {
+        const d = dayS.value, m = monthS.value, y = yearS.value;
+        if(!d || !m || !y) { showMsg("Lütfen tarih seçin!", "orange"); return; }
+        const key = `${y}-${m}-${d}`;
         
-        // Tarayıcıdaki veriyi isme bakmaksızın bulan akıllı arama
-        let archiveData = null;
-        for (let prop in window) {
-            if (window[prop] !== null && typeof window[prop] === 'object' && !Array.isArray(window[prop])) {
-                if (Object.keys(window[prop]).some(k => /^\d{4}-\d{2}-\d{2}$/.test(k))) {
-                    archiveData = window[prop];
-                    break;
-                }
+        try {
+            const response = await fetch('data.js');
+            const text = await response.text();
+            // Tırnak içindeki tarihi ve karşısındaki metni bulur
+            const regex = new RegExp(`"${key}"\\s*:\\s*"([^"]+)"`);
+            const match = text.match(regex);
+            
+            if (match && match[1]) {
+                editor.value = match[1];
+                showMsg("Eski veri getirildi.", "#27ae60");
+            } else {
+                showMsg("Kayıt bulunamadı.", "#e67e22");
+                editor.value = "";
             }
-        }
-
-        if (archiveData && archiveData[key]) {
-            editor.value = archiveData[key];
-            showMsg("Eski veri başarıyla yüklendi.", "#27ae60");
-        } else {
-            showMsg("Bu tarihe ait eski bir kayıt bulunamadı.", "#e67e22");
-            editor.value = "";
+        } catch (e) {
+            showMsg("Dosya okunamadı! (data.js)", "#c0392b");
         }
     };
 
-    // --- MÜKEMMEL KODA ÇEVİR ---
+    // MÜKEMMEL KODA ÇEVİR
     document.getElementById('generate-btn').onclick = () => {
-        if(!dayS.value || !monthS.value || !yearS.value) {
-            showMsg("Lütfen önce tarihi seçin!", "#c0392b");
-            return;
-        }
+        const d = dayS.value, m = monthS.value, y = yearS.value;
+        if(!d || !m || !y) { showMsg("Önce tarih seçin!", "red"); return; }
+        
+        let text = editor.value.replace(/"/g, "'").replace(/\n/g, " ").trim();
+        if(!text) { showMsg("Metin boş olamaz!", "red"); return; }
 
-        const key = `${yearS.value}-${monthS.value}-${dayS.value}`;
-        let text = editor.value
-            .replace(/"/g, "'")    // Çift tırnak -> Tek tırnak (Hata önleyici)
-            .replace(/\n/g, " ")   // Enter -> Boşluk (Hata önleyici)
-            .replace(/\r/g, "")    // Windows satır sonu temizliği
-            .trim();
-
-        if(!text) {
-            showMsg("Lütfen bir açıklama yazın!", "#c0392b");
-            return;
-        }
-
-        // Mükemmel format: "Tarih": "Mesaj",
-        const finalLine = `"${key}": "${text}",`;
-        output.innerText = finalLine;
-        showMsg("Mükemmel kod oluşturuldu!", "#27ae60");
+        output.innerText = `"${y}-${m}-${d}": "${text}",`;
+        showMsg("Kod hazır!", "#27ae60");
     };
 
-    // --- KOPYALAMA ---
+    // KOPYALA
     document.getElementById('copy-btn').onclick = () => {
-        const text = output.innerText;
-        if(text === "...") return;
-        navigator.clipboard.writeText(text).then(() => {
-            showMsg("Satır kopyalandı! data.js içine yapıştırabilirsiniz.", "#2980b9");
-        });
+        if(output.innerText === "...") return;
+        navigator.clipboard.writeText(output.innerText);
+        showMsg("Kopyalandı!", "#2980b9");
     };
 
-    // --- ARAÇLAR ---
-    // Sesle Yazma
+    // MİKROFON
     const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (Speech) {
         const rec = new Speech(); rec.lang = 'tr-TR';
         rec.onresult = (e) => { editor.value += (editor.value ? " " : "") + e.results[0][0].transcript; };
-        document.getElementById('mic-btn').onclick = () => { rec.start(); showMsg("Dinleniyor... Konuşun.", "#3498db"); };
+        document.getElementById('mic-btn').onclick = () => { rec.start(); showMsg("Dinleniyor...", "#3498db"); };
     }
 
-    // Yapıştır
+    // YAPIŞTIR
     document.getElementById('paste-btn').onclick = async () => {
-        try {
-            const clipText = await navigator.clipboard.readText();
-            editor.value += (editor.value ? " " : "") + clipText;
-            showMsg("Hafızadaki metin eklendi.", "#34495e");
-        } catch (err) { showMsg("Yapıştırma izni reddedildi.", "red"); }
+        const clip = await navigator.clipboard.readText();
+        editor.value += (editor.value ? " " : "") + clip;
     };
 
-    // Temizle
+    // TEMİZLE
     document.getElementById('clear-btn').onclick = () => { editor.value = ""; output.innerText = "..."; };
 
     function showMsg(txt, color) {
