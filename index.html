@@ -13,15 +13,15 @@
         .container { width: 90%; max-width: 320px; text-align: center; }
         .header { font-size: 1.2rem; margin-bottom: 25px; text-shadow: 0 0 10px #fff; letter-spacing: 2px; }
         .box { background: rgba(20, 20, 20, 0.95); border: 3px solid #333; border-radius: 20px; padding: 20px 10px; box-shadow: 0 0 30px #000; }
-        .display { background: #000; border: 2px solid #222; border-radius: 12px; margin: 12px 0; padding: 15px 5px; }
-        .label { font-size: 0.65rem; color: #888; margin-bottom: 10px; display: block; letter-spacing: 1px; }
+        .display { background: #000; border: 2px solid #222; border-radius: 12px; margin: 12px 0; padding: 15px 5px; min-height: 80px; display: flex; flex-direction: column; justify-content: center; }
+        .label { font-size: 0.65rem; color: #888; margin-bottom: 5px; display: block; letter-spacing: 1px; }
         .red { color: #ff3131; text-shadow: 0 0 10px #ff3131; }
         .green { color: #00ff41; text-shadow: 0 0 10px #00ff41; }
         .slots { display: flex; justify-content: space-around; height: 40px; overflow: hidden; font-size: 1.1rem; line-height: 40px; }
         .strip { transition: transform 2.5s cubic-bezier(0.1, 0, 0.1, 1); }
         .item { height: 40px; min-width: 65px; text-align: center; }
         .btn-box { margin-top: 40px; }
-        button { background: #b00; color: #fff; border: none; padding: 18px; font-size: 1.1rem; border-radius: 50px; box-shadow: 0 6px #600; cursor: pointer; font-family: 'Orbitron', sans-serif; width: 100%; font-weight: bold; -webkit-appearance: none; }
+        button { background: #b00; color: #fff; border: none; padding: 18px; font-size: 1.1rem; border-radius: 50px; box-shadow: 0 6px #600; cursor: pointer; font-family: 'Orbitron', sans-serif; width: 85%; font-weight: bold; -webkit-appearance: none; }
         button:disabled { background: #222; box-shadow: 0 2px #000; color: #555; cursor: not-allowed; opacity: 0.8; }
         #present { font-size: 0.9rem; display: flex; justify-content: center; gap: 8px; }
     </style>
@@ -32,7 +32,7 @@
         <div class="box">
             <div class="display red">
                 <span class="label">HEDEF TARİH</span>
-                <div class="slots">
+                <div class="slots" id="slot-container">
                     <div id="m-strip" class="strip"></div>
                     <div id="d-strip" class="strip"></div>
                     <div id="y-strip" class="strip"></div>
@@ -50,26 +50,30 @@
         const ITEM_H = 40; const COUNT = 30;
         let isSpinning = false;
 
-        function init() {
+        function fillSlots() {
             const data = [ms, Array.from({length: 31}, (_, i) => i + 1), Array.from({length: 10}, (_, i) => 1990 + i)];
-            ['m-strip', 'd-strip', 'y-strip'].forEach((id, idx) => {
-                document.getElementById(id).innerHTML = Array.from({length: COUNT}, (_, i) => `<div class="item">${data[idx][i % data[idx].length]}</div>`).join('');
+            const ids = ['m-strip', 'd-strip', 'y-strip'];
+            ids.forEach((id, idx) => {
+                const el = document.getElementById(id);
+                let html = "";
+                for(let i=0; i<COUNT; i++) {
+                    html += `<div class="item">${data[idx][i % data[idx].length]}</div>`;
+                }
+                el.innerHTML = html;
             });
-            checkCooldown();
         }
 
         function runMachine() {
             if(isSpinning) return;
             isSpinning = true;
-            
             const btn = document.getElementById('spinBtn');
-            btn.disabled = true; // Dönme esnasında tıkırtıyı önlemek için kilitle
+            btn.disabled = true;
 
             const targets = [ms[Math.floor(Math.random()*12)], Math.floor(Math.random()*28)+1, Math.floor(Math.random()*10)+1990];
-            
             ['m-strip', 'd-strip', 'y-strip'].forEach((id, i) => {
                 const el = document.getElementById(id);
-                el.style.transition = "none"; el.style.transform = "translateY(0)";
+                el.style.transition = "none"; 
+                el.style.transform = "translateY(0)";
                 setTimeout(() => {
                     el.getElementsByClassName('item')[COUNT-3].innerText = targets[i];
                     el.style.transition = "transform 2.5s cubic-bezier(0.1, 0, 0.1, 1)";
@@ -77,22 +81,18 @@
                 }, 50);
             });
 
-            // Animasyon bitince (2.5 saniye + biraz pay) geri sayımı başlat
             setTimeout(() => {
                 isSpinning = false;
-                startCooldown(300); // 5 dakika (300 saniye)
+                startCooldown(300);
             }, 2800);
         }
 
         function startCooldown(seconds) {
             const btn = document.getElementById('spinBtn');
             const endTime = Date.now() + (seconds * 1000);
-            localStorage.setItem('machineLock', endTime); // sessionStorage yerine localStorage (daha sağlam)
-
+            localStorage.setItem('machineLock', endTime);
             const timer = setInterval(() => {
-                const now = Date.now();
-                const distance = endTime - now;
-
+                const distance = endTime - Date.now();
                 if (distance <= 0) {
                     clearInterval(timer);
                     btn.disabled = false;
@@ -122,7 +122,13 @@
             document.getElementById('p-y').innerText = n.getFullYear();
         }
 
-        init(); clock(); setInterval(clock, 1000);
+        // Sayfa yüklenir yüklenmez her şeyi çalıştır
+        window.onload = function() {
+            fillSlots();
+            clock();
+            checkCooldown();
+            setInterval(clock, 1000);
+        };
     </script>
 </body>
 </html>
