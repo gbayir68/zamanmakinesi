@@ -8,22 +8,17 @@
         body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; padding: 20px; display: flex; justify-content: center; }
         .container { width: 100%; max-width: 900px; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
         h2 { color: #2c3e50; border-bottom: 3px solid #e67e22; padding-bottom: 10px; margin-top: 0; }
-        
         .selection-box { background: #f8f9fa; padding: 25px; border-radius: 10px; border: 1px solid #e9ecef; margin-bottom: 25px; }
         .dropdowns { display: flex; gap: 15px; margin-bottom: 15px; }
         .select-group { flex: 1; display: flex; flex-direction: column; gap: 8px; }
         label { font-size: 14px; font-weight: 600; color: #495057; }
-        select { padding: 12px; border-radius: 8px; border: 1px solid #ced4da; font-size: 16px; background: white; }
-        
+        select { padding: 12px; border-radius: 8px; border: 1px solid #ced4da; font-size: 16px; background: white; cursor: pointer; }
         #fetch-btn { width: 100%; padding: 15px; background: #e67e22; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 16px; }
         #fetch-btn:hover { background: #d35400; }
-
         .panel-label { font-weight: bold; margin: 20px 0 8px 0; display: block; color: #34495e; font-size: 14px; }
         .old-data-view { width: 100%; height: 120px; padding: 15px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; overflow-y: auto; color: #7f8c8d; font-size: 15px; box-sizing: border-box; border-left: 5px solid #e67e22; white-space: pre-wrap; }
         textarea { width: 100%; height: 300px; padding: 15px; border: 1px solid #ced4da; border-radius: 8px; font-size: 16px; line-height: 1.6; box-sizing: border-box; resize: vertical; }
-
         #save-btn { width: 100%; margin-top: 20px; padding: 18px; background: #27ae60; color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
-        
         #status { margin-top: 15px; text-align: center; font-weight: bold; padding: 10px; border-radius: 6px; display: none; }
     </style>
 </head>
@@ -31,7 +26,6 @@
 
 <div class="container">
     <h2>Arşiv Veri Editörü</h2>
-    
     <div class="selection-box">
         <div class="dropdowns">
             <div class="select-group"><label>Gün</label><select id="day-select"></select></div>
@@ -49,77 +43,79 @@
     </div>
 
     <label class="panel-label">Mevcut Kayıt (Eski Veri):</label>
-    <div id="old-view" class="old-data-view">Lütfen tarih seçip "Veriyi Getir"e basın...</div>
+    <div id="old-view" class="old-data-view">Henüz veri çağrılmadı...</div>
 
-    <label class="panel-label">Yeni Veri / Düzenleme Paneli:</label>
+    <label class="panel-label">Yeni Veri / Güncelleme Paneli:</label>
     <textarea id="new-editor" placeholder="Düzenlemek istediğiniz içeriği buraya yazın..."></textarea>
     
-    <button id="save-btn">GÜNCELLEMEYİ KAYDET</button>
+    <button id="save-btn" onclick="alert('Yerel düzenleme yapıldı. Kalıcı kayıt için sunucu bağlantısı gereklidir.')">GÜNCELLEMEYİ KAYDET</button>
     <div id="status"></div>
 </div>
 
 <script>
+    // 1. ADIM: Menüleri hemen doldur (Hata olsa bile menüler çalışır kalır)
     const daySelect = document.getElementById('day-select');
     const yearSelect = document.getElementById('year-select');
-    const fetchBtn = document.getElementById('fetch-btn');
-    const oldView = document.getElementById('old-view');
-    const newEditor = document.getElementById('new-editor');
-    const status = document.getElementById('status');
+    const monthSelect = document.getElementById('month-select');
 
-    function init() {
-        for (let i = 1; i <= 31; i++) {
-            let d = i.toString().padStart(2, '0');
-            daySelect.innerHTML += `<option value="${d}">${d}</option>`;
-        }
-        // Yıllar: 1990 - 1999 arası
-        for (let i = 1990; i <= 1999; i++) {
-            yearSelect.innerHTML += `<option value="${i}">${i}</option>`;
-        }
-        yearSelect.value = "1990";
+    // Günleri doldur (01-31)
+    for (let i = 1; i <= 31; i++) {
+        let d = i.toString().padStart(2, '0');
+        let opt = document.createElement('option');
+        opt.value = d; opt.textContent = d;
+        daySelect.appendChild(opt);
     }
 
-    // Dosyayı dokunmadan okuyan fonksiyon
+    // Yılları doldur (1990-1999)
+    for (let i = 1990; i <= 1999; i++) {
+        let opt = document.createElement('option');
+        opt.value = i; opt.textContent = i;
+        yearSelect.appendChild(opt);
+    }
+    yearSelect.value = "1990";
+
+    // 2. ADIM: Veri Getirme Fonksiyonu
     async function fetchData() {
         const d = daySelect.value;
-        const m = document.getElementById('month-select').value;
+        const m = monthSelect.value;
         const y = yearSelect.value;
         const dateKey = `${y}-${m}-${d}`;
-        
+        const status = document.getElementById('status');
+        const oldView = document.getElementById('old-view');
+        const newEditor = document.getElementById('new-editor');
+
         try {
-            // Dosyayı ham metin olarak çekiyoruz
+            // data.js dosyasını metin olarak oku
             const response = await fetch('data.js');
-            if (!response.ok) throw new Error();
-            
+            if (!response.ok) throw new Error("Dosya bulunamadı");
             const text = await response.text();
             
-            // Metin içinde ilgili tarihi arıyoruz
+            // Tarihi bulmak için arama yap
             const regex = new RegExp(`"${dateKey}"\\s*:\\s*"([^"]+)"`);
             const match = text.match(regex);
 
             if (match && match[1]) {
-                const content = match[1];
-                oldView.innerText = content;
-                newEditor.value = content;
-                showMsg(dateKey + " verisi yüklendi.", "#27ae60");
+                oldView.innerText = match[1];
+                newEditor.value = match[1];
+                showMsg(dateKey + " yüklendi.", "#27ae60");
             } else {
                 oldView.innerText = "Kayıt bulunamadı.";
                 newEditor.value = "";
-                showMsg("Arşivde bu tarih bulunamadı.", "#e67e22");
+                showMsg("Arşivde bu tarih yok.", "#e67e22");
             }
         } catch (err) {
-            showMsg("Hata: data.js dosyasına ulaşılamadı. Aynı klasörde olduklarından emin olun.", "#c0392b");
+            showMsg("Hata: data.js okunamadı.", "#c0392b");
         }
     }
 
     function showMsg(txt, color) {
-        status.innerText = txt;
-        status.style.color = color;
-        status.style.display = "block";
-        setTimeout(() => status.style.display = "none", 4000);
+        const status = document.getElementById('status');
+        status.innerText = txt; status.style.color = color; status.style.display = "block";
+        setTimeout(() => status.style.display = "none", 3000);
     }
 
-    init();
-    fetchBtn.addEventListener('click', fetchData);
+    // Dinleyiciler
+    document.getElementById('fetch-btn').addEventListener('click', fetchData);
     window.addEventListener('keypress', (e) => { if (e.key === 'Enter') fetchData(); });
 </script>
 
