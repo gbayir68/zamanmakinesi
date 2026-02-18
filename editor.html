@@ -3,86 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gültekin Bayır - Arşiv Yönetim Paneli</title>
+    <title>Gültekin Bayır - Arşiv Yönetim Merkezi</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; padding: 20px; display: flex; justify-content: center; }
-        .container { width: 100%; max-width: 1000px; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .container { width: 100%; max-width: 950px; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
         h2 { color: #2c3e50; border-bottom: 3px solid #e67e22; padding-bottom: 10px; margin-top: 0; }
         
-        /* Seçim Alanı */
-        .selection-box { background: #f8f9fa; padding: 25px; border-radius: 10px; border: 1px solid #e9ecef; margin-bottom: 25px; }
+        .selection-box { background: #f8f9fa; padding: 20px; border-radius: 10px; border: 1px solid #e9ecef; margin-bottom: 20px; }
         .dropdowns { display: flex; gap: 15px; margin-bottom: 15px; }
-        .select-group { flex: 1; display: flex; flex-direction: column; gap: 8px; }
-        label { font-size: 14px; font-weight: 600; color: #495057; }
-        select { padding: 12px; border-radius: 8px; border: 1px solid #ced4da; font-size: 16px; background: white; cursor: pointer; }
+        .select-group { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+        select { padding: 10px; border-radius: 8px; border: 1px solid #ced4da; font-size: 15px; background: white; cursor: pointer; }
         
-        #fetch-btn { width: 100%; padding: 15px; background: #e67e22; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 16px; }
-        #fetch-btn:hover { background: #d35400; }
+        #fetch-btn { width: 100%; padding: 12px; background: #e67e22; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
 
-        .panel-label { font-weight: bold; margin: 20px 0 8px 0; display: block; color: #34495e; font-size: 14px; }
+        .panel-label { font-weight: bold; margin: 15px 0 5px 0; display: block; color: #34495e; font-size: 13px; }
+        .old-data-view { width: 100%; height: 70px; padding: 12px; background: #f1f3f5; border: 1px solid #dee2e6; border-radius: 8px; overflow-y: auto; color: #6c757d; font-style: italic; font-size: 14px; box-sizing: border-box; }
+
+        .toolbar { display: flex; gap: 8px; background: #34495e; padding: 8px; border-radius: 8px 8px 0 0; margin-top: 15px; }
+        .tool-btn { background: none; border: 1px solid #5d6d7e; color: white; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
+        .tool-btn:hover { background: #e67e22; }
+
+        textarea { width: 100%; box-sizing: border-box; padding: 15px; border: 1px solid #ced4da; font-size: 16px; line-height: 1.5; }
+        #new-editor { height: 200px; border-radius: 0 0 8px 8px; margin-top: -1px; }
+
+        #code-output { height: 150px; background: #1e1e1e; color: #d4d4d4; font-family: 'Consolas', monospace; font-size: 11px; border-radius: 8px; margin-top: 5px; white-space: pre; overflow: auto; }
+
+        .action-btns { display: flex; gap: 10px; margin-top: 15px; }
+        .btn-main { flex: 1; padding: 15px; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
+        #process-btn { background: #2980b9; color: white; }
+        #generate-btn { background: #8e44ad; color: white; }
+        #copy-all-btn { background: #27ae60; color: white; margin-top: 10px; width: 100%; }
         
-        /* Eski Veri Görüntüleme */
-        .old-data-view { width: 100%; height: 80px; padding: 15px; background: #f1f3f5; border: 1px solid #dee2e6; border-radius: 8px; overflow-y: auto; color: #6c757d; font-style: italic; font-size: 15px; box-sizing: border-box; }
-
-        /* Araç Çubuğu */
-        .toolbar { display: flex; gap: 10px; background: #34495e; padding: 10px; border-radius: 8px 8px 0 0; margin-top: 15px; }
-        .tool-btn { background: none; border: 1px solid #5d6d7e; color: white; padding: 8px 15px; border-radius: 4px; cursor: pointer; transition: 0.3s; }
-        .tool-btn:hover { background: #e67e22; border-color: #e67e22; }
-
-        /* Editörler */
-        textarea { width: 100%; padding: 15px; border: 1px solid #ced4da; font-size: 16px; line-height: 1.6; box-sizing: border-box; resize: vertical; }
-        #new-editor { height: 250px; border-radius: 0 0 8px 8px; margin-top: -1px; }
-        #full-data-out { height: 200px; background: #2c3e50; color: #2ecc71; font-family: 'Courier New', monospace; font-size: 12px; border-radius: 8px; margin-top: 10px; }
-
-        /* Kaydet ve Kopyala Butonları */
-        .action-btns { display: flex; gap: 10px; margin-top: 20px; }
-        .btn-main { flex: 1; padding: 18px; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
-        #update-btn { background: #27ae60; color: white; }
-        #copy-all-btn { background: #2980b9; color: white; }
-        
-        #status { margin-top: 15px; text-align: center; font-weight: bold; display: none; padding: 10px; border-radius: 6px; }
+        #status { margin-top: 10px; text-align: center; font-weight: bold; display: none; padding: 8px; border-radius: 5px; font-size: 13px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Arşiv Veri Yönetim Paneli</h2>
+    <h2>Arşiv Yönetim Paneli</h2>
     
     <div class="selection-box">
         <div class="dropdowns">
-            <div class="select-group"><label>Gün</label><select id="day-select"></select></div>
-            <div class="select-group"><label>Ay</label>
-                <select id="month-select">
-                    <option value="01">Ocak</option><option value="02">Şubat</option><option value="03">Mart</option>
-                    <option value="04">Nisan</option><option value="05">Mayıs</option><option value="06">Haziran</option>
-                    <option value="07">Temmuz</option><option value="08">Ağustos</option><option value="09">Eylül</option>
-                    <option value="10">Ekim</option><option value="11">Kasım</option><option value="12">Aralık</option>
+            <div class="select-group">
+                <label>Gün</label>
+                <select id="day-select">
+                    <option value="">Gün</option>
                 </select>
             </div>
-            <div class="select-group"><label>Yıl</label><select id="year-select"></select></div>
+            <div class="select-group">
+                <label>Ay</label>
+                <select id="month-select">
+                    <option value="">Ay</option>
+                    <option value="01">Ocak</option>
+                    <option value="02">Şubat</option>
+                    <option value="03">Mart</option>
+                    <option value="04">Nisan</option>
+                    <option value="05">Mayıs</option>
+                    <option value="06">Haziran</option>
+                    <option value="07">Temmuz</option>
+                    <option value="08">Ağustos</option>
+                    <option value="09">Eylül</option>
+                    <option value="10">Ekim</option>
+                    <option value="11">Kasım</option>
+                    <option value="12">Aralık</option>
+                </select>
+            </div>
+            <div class="select-group">
+                <label>Yıl</label>
+                <select id="year-select">
+                    <option value="">Yıl</option>
+                </select>
+            </div>
         </div>
-        <button id="fetch-btn"><i class="fas fa-sync-alt"></i> VERİYİ GETİR</button>
+        <button id="fetch-btn"><i class="fas fa-download"></i> VERİYİ GETİR</button>
     </div>
 
     <label class="panel-label">Mevcut Kayıt (Eski):</label>
-    <div id="old-view" class="old-data-view">Henüz veri çağrılmadı...</div>
+    <div id="old-view" class="old-data-view">Henüz tarih seçilmedi...</div>
 
-    <label class="panel-label">Düzenleme Alanı:</label>
+    <label class="panel-label">Düzenleme Paneli:</label>
     <div class="toolbar">
         <button class="tool-btn" title="Mikrofon" id="mic-btn"><i class="fas fa-microphone"></i></button>
         <button class="tool-btn" title="Yapıştır" id="paste-btn"><i class="fas fa-paste"></i></button>
         <button class="tool-btn" title="Kopyala" id="copy-btn"><i class="fas fa-copy"></i></button>
     </div>
-    <textarea id="new-editor" placeholder="İçeriği burada güncelleyin..."></textarea>
+    <textarea id="new-editor" placeholder="Metni burada güncelleyin..."></textarea>
     
     <div class="action-btns">
-        <button id="update-btn" class="btn-main">Koda Uygula & Hazırla</button>
+        <button id="process-btn" class="btn-main"><i class="fas fa-check"></i> 1. Koda İşle</button>
+        <button id="generate-btn" class="btn-main"><i class="fas fa-code"></i> 2. Dosya Kodunu Oluştur</button>
     </div>
 
-    <label class="panel-label">Yeni data.js Çıktısı (Kopyalayıp dosyanıza yapıştırın):</label>
-    <textarea id="full-data-out" readonly placeholder="Dosyanın tamamı burada oluşacak..."></textarea>
-    <button id="copy-all-btn" class="btn-main">Dosya Kodunu Kopyala</button>
+    <label class="panel-label">Yeni data.js İçeriği (JS Dosyasına yapıştırılacak kısım):</label>
+    <textarea id="code-output" readonly placeholder="Kod burada oluşacak..."></textarea>
+    <button id="copy-all-btn" class="btn-main"><i class="fas fa-copy"></i> TÜM KODU KOPYALA</button>
 
     <div id="status"></div>
 </div>
@@ -94,9 +109,9 @@
     const yearS = document.getElementById('year-select');
     const monthS = document.getElementById('month-select');
     const newEditor = document.getElementById('new-editor');
-    const fullOut = document.getElementById('full-data-out');
+    const codeOut = document.getElementById('code-output');
 
-    // Menüleri doldur (1990-1999)
+    // Menüleri doldurma döngüleri
     for (let i = 1; i <= 31; i++) {
         let d = i.toString().padStart(2, '0');
         dayS.innerHTML += `<option value="${d}">${d}</option>`;
@@ -104,54 +119,63 @@
     for (let i = 1990; i <= 1999; i++) {
         yearS.innerHTML += `<option value="${i}">${i}</option>`;
     }
-    yearS.value = "1990";
 
-    // Veri Getir
+    // 1. Veriyi Çekme
     document.getElementById('fetch-btn').onclick = () => {
+        if (!dayS.value || !monthS.value || !yearS.value) {
+            showMsg("Lütfen Gün, Ay ve Yıl seçin!", "#e74c3c");
+            return;
+        }
         const key = `${yearS.value}-${monthS.value}-${dayS.value}`;
         if(typeof dataJS !== 'undefined' && dataJS[key]) {
             document.getElementById('old-view').innerText = dataJS[key];
             newEditor.value = dataJS[key];
-            showMsg("Veri yüklendi.", "#27ae60");
+            showMsg(key + " verisi getirildi.", "#27ae60");
         } else {
-            showMsg("Kayıt bulunamadı.", "#e67e22");
+            showMsg("Bu tarihte veri yok.", "#e67e22");
         }
     };
 
-    // Tüm Dosyayı Güncelle ve Pencereye Yaz
-    document.getElementById('update-btn').onclick = () => {
+    // 2. Koda İşle
+    document.getElementById('process-btn').onclick = () => {
         const key = `${yearS.value}-${monthS.value}-${dayS.value}`;
-        if(typeof dataJS !== 'undefined') {
+        if (!key.includes('undefined') && typeof dataJS !== 'undefined') {
             dataJS[key] = newEditor.value;
-            // Tüm nesneyi stringe çevirip pencereye yaz
-            const fullCode = "const dataJS = " + JSON.stringify(dataJS, null, 4) + ";";
-            fullOut.value = fullCode;
-            showMsg("Dosya kodu hazırlandı! Aşağıdan kopyalayabilirsiniz.", "#2980b9");
+            showMsg("Değişiklik hafızaya alındı.", "#2980b9");
         }
     };
 
-    // Dosyayı Kopyala
-    document.getElementById('copy-all-btn').onclick = () => {
-        fullOut.select();
-        document.execCommand('copy');
-        showMsg("Tüm kod kopyalandı! data.js'e yapıştırabilirsiniz.", "#27ae60");
+    // 3. Kod Oluştur
+    document.getElementById('generate-btn').onclick = () => {
+        if(typeof dataJS !== 'undefined') {
+            const fullCode = "const dataJS = " + JSON.stringify(dataJS, null, 4) + ";";
+            codeOut.value = fullCode;
+            showMsg("Yeni dosya kodu hazır!", "#8e44ad");
+        }
     };
 
-    // Mikrofon Desteği
+    // 4. Kopyala
+    document.getElementById('copy-all-btn').onclick = () => {
+        codeOut.select();
+        document.execCommand('copy');
+        showMsg("Kod kopyalandı! data.js içine yapıştırabilirsiniz.", "#27ae60");
+    };
+
+    // Araçlar (Mikrofon, Yapıştır, Kopyala)
     const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (Speech) {
-        const rec = new Speech();
-        rec.lang = 'tr-TR';
+        const rec = new Speech(); rec.lang = 'tr-TR';
         rec.onresult = (e) => { newEditor.value += " " + e.results[0][0].transcript; };
         document.getElementById('mic-btn').onclick = () => { rec.start(); showMsg("Dinleniyor...", "#3498db"); };
     }
+    document.getElementById('paste-btn').onclick = async () => { newEditor.value += await navigator.clipboard.readText(); };
+    document.getElementById('copy-btn').onclick = () => { newEditor.select(); document.execCommand('copy'); };
 
-    // Yardımcı Fonksiyonlar
     function showMsg(txt, color) {
         const s = document.getElementById('status');
-        s.innerText = txt; s.style.color = color; s.style.backgroundColor = color + "11";
+        s.innerText = txt; s.style.color = "white"; s.style.backgroundColor = color;
         s.style.display = "block";
-        setTimeout(() => s.style.display = "none", 4000);
+        setTimeout(() => s.style.display = "none", 3000);
     }
 </script>
 
