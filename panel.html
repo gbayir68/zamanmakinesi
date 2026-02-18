@@ -40,28 +40,27 @@
         </div>
         <div id="result-panel"></div>
     </div>
+
     <script src="data.js"></script>
+
     <script>
         const monthsTR = ["OCAK", "ŞUBAT", "MART", "NİSAN", "MAYIS", "HAZİRAN", "TEMMUZ", "AĞUSTOS", "EYLÜL", "EKİM", "KASIM", "ARALIK"];
+
+        // Sayfa açıldığında seçim kutularını doldurur
         function setup() {
             const d = document.getElementById('sel-day');
-            for(let i=1; i<=31; i++) { let v = i<10?'0'+i:i; d.innerHTML += `<option value="${v}">${i}</option>`; }
+            for(let i=1; i<=31; i++) { 
+                let v = i < 10 ? '0' + i : i; 
+                d.innerHTML += `<option value="${v}">${i}</option>`; 
+            }
+
             const m = document.getElementById('sel-month');
-            monthsTR.forEach((name, i) => { let v = (i+1)<10?'0'+(i+1):(i+1); m.innerHTML += `<option value="${v}">${name}</option>`; });
+            monthsTR.forEach((name, i) => { 
+                let v = (i + 1) < 10 ? '0' + (i + 1) : (i + 1); 
+                m.innerHTML += `<option value="${v}">${name}</option>`; 
+            });
+
             const y = document.getElementById('sel-year');
-            for(let i=1990; i<=1999; i++) { y.innerHTML += `<option value="${i}">${i}</option>`; }
-        }
-        function fetchHistory() {
-            const d = document.getElementById('sel-day').value;
-            const m = document.getElementById('sel-month').value;
-            const y = document.getElementById('sel-year').value;
-            const key = `${y}-${m}-${d}`;
-            const panel = document.getElementById('result-panel');
-            panel.style.display = 'block';
-            let metin = (typeof zamanVerisi !== 'undefined' && zamanVerisi[key]) ? zamanVerisi[key] : "Bu tarih için arşiv çalışması devam ediyor...";
-            panel.innerHTML = `<span class="date-badge">${d} ${monthsTR[parseInt(m)-1]} ${y}</span>${metin}`;
-        }
-        window.onload = setup;
-    </script>
-</body>
-</html>
+            for(let i=1990; i<=1999; i++) { 
+                y.innerHTML += `<option value="${i}">${i}</option>`; 
+            }
