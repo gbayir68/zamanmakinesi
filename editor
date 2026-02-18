@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ZAMAN EDİTÖRÜ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: #111; color: #fff; font-family: 'Montserrat', sans-serif; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; background: #222; padding: 20px; border-radius: 20px; box-shadow: 0 0 20px #000; }
+        h1 { font-family: 'Orbitron'; font-size: 1.2rem; text-align: center; color: #00ff41; margin-bottom: 20px; }
+        
+        .field { margin-bottom: 15px; }
+        label { display: block; font-size: 0.8rem; color: #888; margin-bottom: 5px; }
+        
+        /* Takvim ve Giriş Alanları */
+        input[type="date"] { width: 100%; padding: 15px; border-radius: 10px; border: 1px solid #444; background: #000; color: #fff; font-family: 'Orbitron'; font-size: 1rem; }
+        textarea { width: 100%; height: 120px; padding: 15px; border-radius: 10px; border: 1px solid #444; background: #000; color: #fff; font-family: 'Montserrat'; font-size: 1rem; resize: none; }
+        
+        .btn-group { display: flex; gap: 10px; margin-top: 10px; }
+        button { flex: 1; padding: 15px; border-radius: 10px; border: none; font-family: 'Orbitron'; cursor: pointer; font-weight: bold; }
+        .btn-add { background: #00ff41; color: #000; }
+        .btn-copy { background: #b00; color: #fff; }
+
+        /* Veri Önizleme Alanı */
+        #output-area { margin-top: 25px; background: #000; padding: 15px; border-radius: 10px; border: 1px dashed #555; position: relative; }
+        pre { white-space: pre-wrap; word-wrap: break-word; font-size: 0.8rem; color: #ccc; }
+        .status { font-size: 0.7rem; margin-top: 10px; display: block; }
+        .manual-tag { color: #fff; font-weight: bold; border: 1px solid #fff; padding: 2px 5px; border-radius: 4px; font-size: 0.6rem; }
+        .ai-tag { color: #ffd700; font-weight: bold; border: 1px solid #ffd700; padding: 2px 5px; border-radius: 4px; font-size: 0.6rem; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>ZAMAN EDİTÖRÜ</h1>
+    
+    <div class="field">
+        <label>TARİH SEÇİN (1990-1999)</label>
+        <input type="date" id="date-input" min="1990-01-01" max="1999-12-31" onchange="checkDate()">
+    </div>
+
+    <div class="field">
+        <label>GÜNÜN VERİSİ</label>
+        <textarea id="text-input" placeholder="O güne dair bilgileri buraya yazın..."></textarea>
+    </div>
+
+    <div class="btn-group">
+        <button class="btn-add" onclick="saveData()">LİSTEYE EKLE</button>
+        <button class="btn-copy" onclick="copyCode()">KODU KOPYALA</button>
+    </div>
+
+    <div id="output-area">
+        <span class="status">Şu anki Liste (Kopyalamaya Hazır):</span>
+        <pre id="code-preview">const zamanVerisi = {
+};</pre>
+    </div>
+</div>
+
+<script src="data.js"></script> <script>
+    let currentData = typeof zamanVerisi !== 'undefined' ? zamanVerisi : {};
+
+    function checkDate() {
+        const date = document.getElementById('date-input').value;
+        const textInput = document.getElementById('text-input');
+        
+        if (currentData[date]) {
+            textInput.value = currentData[date].replace(" [M]", "").replace(" [AI]", "");
+            alert("Bu tarih zaten sistemde kayıtlı. Güncelleyebilirsiniz.");
+        } else {
+            textInput.value = "";
+        }
+        updatePreview();
+    }
+
+    function saveData() {
+        const date = document.getElementById('date-input').value;
+        const text = document.getElementById('text-input').value;
+
+        if (!date || !text) {
+            alert("Lütfen tarih ve metin girin.");
+            return;
+        }
+
+        // El ile girildiğini anlamak için sonuna gizli imza [M] (Manual) ekliyoruz
+        currentData[date] = text + " [M]";
+        updatePreview();
+        alert("Eklendi! Kodu kopyalayıp data.js'ye yapıştırabilirsiniz.");
+    }
+
+    function updatePreview() {
+        let code = "const zamanVerisi = {\n";
+        const keys = Object.keys(currentData).sort();
+        
+        keys.forEach((key, index) => {
+            const isLast = index === keys.length - 1;
+            code += `    "${key}": "${currentData[key]}"${isLast ? "" : ","}\n`;
+        });
+        
+        code += "};";
+        document.getElementById('code-preview').innerText = code;
+    }
+
+    function copyCode() {
+        const code = document.getElementById('code-preview').innerText;
+        navigator.clipboard.writeText(code).then(() => {
+            alert("Tüm veri bankası kodu kopyalandı! Şimdi GitHub'daki data.js dosyasına yapıştırabilirsiniz.");
+        });
+    }
+
+    // Panel sayfasında font rengini ayarlamak için küçük bir düzenleme yapmalısınız.
+    updatePreview();
+</script>
+</body>
+</html>
