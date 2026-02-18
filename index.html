@@ -8,25 +8,101 @@
     <link rel="icon" href="icon.png">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
+        
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: #000; color: #fff; font-family: 'Orbitron', sans-serif; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; background-image: radial-gradient(circle, #001a33 0%, #000 100%); touch-action: manipulation; }
-        .container { width: 90%; max-width: 320px; text-align: center; }
-        .header { font-size: 1.2rem; margin-bottom: 25px; text-shadow: 0 0 10px #fff; letter-spacing: 2px; }
-        .box { background: rgba(20, 20, 20, 0.95); border: 3px solid #333; border-radius: 20px; padding: 20px 10px; box-shadow: 0 0 30px #000; }
-        .display { background: #000; border: 2px solid #222; border-radius: 12px; margin: 12px 0; padding: 15px 5px; min-height: 80px; display: flex; flex-direction: column; justify-content: center; }
-        .label { font-size: 0.65rem; color: #888; margin-bottom: 5px; display: block; letter-spacing: 1px; }
-        .red { color: #ff3131; text-shadow: 0 0 10px #ff3131; }
-        .green { color: #00ff41; text-shadow: 0 0 10px #00ff41; }
+        
+        body { 
+            background: #000; 
+            color: #fff; 
+            font-family: 'Orbitron', sans-serif; 
+            height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            overflow: hidden; 
+            position: relative;
+        }
+
+        /* PARABOLİK TÜNEL EFEKTİ */
+        .tunnel-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, #001a33 0%, #000 80%);
+            z-index: -1;
+            perspective: 500px;
+        }
+
+        .stars {
+            position: absolute;
+            width: 100%; height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/stardust.png');
+            opacity: 0.3;
+            animation: starsMove 100s linear infinite;
+        }
+
+        .grid-tunnel {
+            position: absolute;
+            width: 200%; height: 200%;
+            top: -50%; left: -50%;
+            background-image: 
+                linear-gradient(to right, rgba(0, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            transform: rotateX(60deg) translateZ(0);
+            animation: tunnelMove 4s linear infinite;
+        }
+
+        @keyframes tunnelMove {
+            0% { transform: rotateX(60deg) translateY(0); }
+            100% { transform: rotateX(60deg) translateY(50px); }
+        }
+
+        @keyframes starsMove {
+            from { background-position: 0 0; }
+            to { background-position: 1000px 1000px; }
+        }
+
+        /* ANA PANEL TASARIMI */
+        .container { width: 90%; max-width: 320px; text-align: center; position: relative; z-index: 10; }
+        .header { font-size: 1.2rem; margin-bottom: 25px; text-shadow: 0 0 15px #fff; letter-spacing: 2px; }
+        .box { background: rgba(10, 10, 10, 0.85); border: 2px solid rgba(0, 255, 255, 0.2); border-radius: 20px; padding: 20px 10px; box-shadow: 0 0 40px rgba(0,0,0,1); backdrop-filter: blur(5px); }
+        .display { background: rgba(0, 0, 0, 0.9); border: 1px solid #222; border-radius: 12px; margin: 12px 0; padding: 15px 5px; min-height: 80px; display: flex; flex-direction: column; justify-content: center; }
+        .label { font-size: 0.65rem; color: #666; margin-bottom: 5px; display: block; letter-spacing: 1px; }
+        .red { color: #ff3131; text-shadow: 0 0 12px #ff3131; }
+        .green { color: #00ff41; text-shadow: 0 0 12px #00ff41; }
         .slots { display: flex; justify-content: space-around; height: 40px; overflow: hidden; font-size: 1.1rem; line-height: 40px; }
         .strip { transition: transform 2.5s cubic-bezier(0.1, 0, 0.1, 1); }
         .item { height: 40px; min-width: 65px; text-align: center; }
         .btn-box { margin-top: 40px; }
-        button { background: #b00; color: #fff; border: none; padding: 18px; font-size: 1.1rem; border-radius: 50px; box-shadow: 0 6px #600; cursor: pointer; font-family: 'Orbitron', sans-serif; width: 85%; font-weight: bold; -webkit-appearance: none; }
-        button:disabled { background: #222; box-shadow: 0 2px #000; color: #555; cursor: not-allowed; opacity: 0.8; }
+        
+        button { 
+            background: #b00; 
+            color: #fff; 
+            border: 2px solid rgba(255, 255, 255, 0.1); 
+            padding: 18px; 
+            font-size: 1.1rem; 
+            border-radius: 50px; 
+            box-shadow: 0 8px #600; 
+            cursor: pointer; 
+            font-family: 'Orbitron', sans-serif; 
+            width: 85%; 
+            font-weight: bold; 
+            -webkit-appearance: none; 
+            transition: 0.3s;
+        }
+
+        button:disabled { background: #222; box-shadow: 0 3px #000; color: #444; cursor: not-allowed; opacity: 0.7; border: none; }
+        button:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 2px #300; }
         #present { font-size: 0.9rem; display: flex; justify-content: center; gap: 8px; }
     </style>
 </head>
 <body>
+
+    <div class="tunnel-bg">
+        <div class="stars"></div>
+        <div class="grid-tunnel"></div>
+    </div>
+
     <div class="container">
         <h1 class="header">ZAMAN MAKİNESİ</h1>
         <div class="box">
@@ -45,6 +121,7 @@
         </div>
         <div class="btn-box"><button id="spinBtn" onclick="runMachine()">ZAMANI DEĞİŞTİR</button></div>
     </div>
+
     <script>
         const ms = ["OCAK", "SUB", "MART", "NIS", "MAY", "HAZ", "TEM", "AGU", "EYL", "EKM", "KAS", "ARL"];
         const ITEM_H = 40; const COUNT = 30;
@@ -52,14 +129,9 @@
 
         function fillSlots() {
             const data = [ms, Array.from({length: 31}, (_, i) => i + 1), Array.from({length: 10}, (_, i) => 1990 + i)];
-            const ids = ['m-strip', 'd-strip', 'y-strip'];
-            ids.forEach((id, idx) => {
+            ['m-strip', 'd-strip', 'y-strip'].forEach((id, idx) => {
                 const el = document.getElementById(id);
-                let html = "";
-                for(let i=0; i<COUNT; i++) {
-                    html += `<div class="item">${data[idx][i % data[idx].length]}</div>`;
-                }
-                el.innerHTML = html;
+                el.innerHTML = Array.from({length: COUNT}, (_, i) => `<div class="item">${data[idx][i % data[idx].length]}</div>`).join('');
             });
         }
 
@@ -122,7 +194,6 @@
             document.getElementById('p-y').innerText = n.getFullYear();
         }
 
-        // Sayfa yüklenir yüklenmez her şeyi çalıştır
         window.onload = function() {
             fillSlots();
             clock();
