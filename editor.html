@@ -53,7 +53,7 @@
     </div>
 
     <label class="panel-label">Mevcut Kayıt (Eski):</label>
-    <div id="old-view" class="old-data-view">Lütfen tarih seçip "Veriyi Getir"e basın...</div>
+    <div id="old-view" class="old-data-view">Henüz tarih seçilmedi...</div>
 
     <label class="panel-label">Düzenleme Paneli:</label>
     <div class="toolbar">
@@ -68,7 +68,7 @@
         <button id="generate-btn" class="btn-main"><i class="fas fa-code"></i> 2. DOSYA KODUNU OLUŞTUR</button>
     </div>
 
-    <label class="panel-label">Yeni data.js Çıktısı (Kopyalayıp dosyanıza yapıştırın):</label>
+    <label class="panel-label">Yeni data.js Çıktısı (Dosyaya yapıştırılacak kısım):</label>
     <textarea id="code-output" readonly placeholder="Kod burada oluşacak..."></textarea>
     <button id="copy-all-btn" class="btn-main"><i class="fas fa-copy"></i> TÜM KODU KOPYALA</button>
 
@@ -85,7 +85,6 @@
     const newEditor = document.getElementById('new-editor');
     const codeOut = document.getElementById('code-output');
 
-    // Menüleri doldur (1990-1999)
     for (let i = 1; i <= 31; i++) {
         let d = i.toString().padStart(2, '0');
         dayS.innerHTML += `<option value="${d}">${d}</option>`;
@@ -94,56 +93,59 @@
         yearS.innerHTML += `<option value="${i}">${i}</option>`;
     }
 
-    // 1. Veriyi Getir (Global dataJS değişkenini kullanır)
     document.getElementById('fetch-btn').onclick = () => {
         if (!dayS.value || !monthS.value || !yearS.value) {
-            showMsg("Lütfen tüm tarih seçimlerini yapın!", "#e74c3c");
+            showMsg("Lütfen Gün, Ay ve Yıl seçin!", "#e74c3c");
             return;
         }
         const key = `${yearS.value}-${monthS.value}-${dayS.value}`;
         
-        if (typeof dataJS !== 'undefined') {
-            if (dataJS[key]) {
-                oldView.innerText = dataJS[key];
-                newEditor.value = dataJS[key];
-                showMsg(key + " yüklendi.", "#27ae60");
+        // Esnek Değişken Kontrolü (dataJS veya datajs)
+        let source = null;
+        if (typeof dataJS !== 'undefined') source = dataJS;
+        else if (typeof datajs !== 'undefined') source = datajs;
+
+        if (source) {
+            if (source[key]) {
+                oldView.innerText = source[key];
+                newEditor.value = source[key];
+                showMsg(key + " verisi getirildi.", "#27ae60");
             } else {
-                oldView.innerText = "Kayıt bulunamadı: " + key;
+                oldView.innerText = "Bu tarihe ait kayıt bulunamadı.";
                 newEditor.value = "";
                 showMsg("Arşivde bu tarih yok.", "#e67e22");
             }
         } else {
-            oldView.innerText = "HATA: data.js yüklendi ancak içindeki 'dataJS' değişkeni bulunamadı!";
-            showMsg("Veri yapısı eksik!", "red");
+            oldView.innerText = "HATA: data.js yüklendi ancak içindeki veri yapısı tanınamadı. Lütfen dosyanın 'const dataJS = {' ile başladığından emin olun.";
+            showMsg("Bağlantı Hatası!", "red");
         }
     };
 
-    // 2. Koda İşle
     document.getElementById('process-btn').onclick = () => {
         const key = `${yearS.value}-${monthS.value}-${dayS.value}`;
-        if (typeof dataJS !== 'undefined' && dayS.value) {
-            dataJS[key] = newEditor.value;
-            showMsg("Değişiklik hafızaya alındı.", "#2980b9");
+        let source = (typeof dataJS !== 'undefined') ? dataJS : (typeof datajs !== 'undefined' ? datajs : null);
+        
+        if (source && dayS.value) {
+            source[key] = newEditor.value;
+            showMsg("Hafızaya alındı. Şimdi 'Dosya Kodunu Oluştur'a basın.", "#2980b9");
         }
     };
 
-    // 3. Dosya Kodunu Oluştur
     document.getElementById('generate-btn').onclick = () => {
-        if (typeof dataJS !== 'undefined') {
-            const fullCode = "const dataJS = " + JSON.stringify(dataJS, null, 4) + ";";
+        let source = (typeof dataJS !== 'undefined') ? dataJS : (typeof datajs !== 'undefined' ? datajs : null);
+        if (source) {
+            const fullCode = "const dataJS = " + JSON.stringify(source, null, 4) + ";";
             codeOut.value = fullCode;
             showMsg("Yeni kod oluşturuldu!", "#8e44ad");
         }
     };
 
-    // 4. Tümünü Kopyala
     document.getElementById('copy-all-btn').onclick = () => {
         codeOut.select();
         document.execCommand('copy');
         showMsg("Kod kopyalandı!", "#27ae60");
     };
 
-    // Araçlar
     const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (Speech) {
         const rec = new Speech(); rec.lang = 'tr-TR';
