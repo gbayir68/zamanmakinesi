@@ -3,44 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gültekin Bayır - Arşiv Editörü</title>
+    <title>Gültekin Bayır - Arşiv Yönetim Paneli</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; padding: 20px; display: flex; justify-content: center; }
-        .container { width: 100%; max-width: 900px; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .container { width: 100%; max-width: 1000px; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
         h2 { color: #2c3e50; border-bottom: 3px solid #e67e22; padding-bottom: 10px; margin-top: 0; }
         
+        /* Seçim Alanı */
         .selection-box { background: #f8f9fa; padding: 25px; border-radius: 10px; border: 1px solid #e9ecef; margin-bottom: 25px; }
         .dropdowns { display: flex; gap: 15px; margin-bottom: 15px; }
         .select-group { flex: 1; display: flex; flex-direction: column; gap: 8px; }
         label { font-size: 14px; font-weight: 600; color: #495057; }
         select { padding: 12px; border-radius: 8px; border: 1px solid #ced4da; font-size: 16px; background: white; cursor: pointer; }
         
-        #fetch-btn { width: 100%; padding: 15px; background: #e67e22; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 16px; transition: background 0.3s; }
+        #fetch-btn { width: 100%; padding: 15px; background: #e67e22; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 16px; }
         #fetch-btn:hover { background: #d35400; }
 
         .panel-label { font-weight: bold; margin: 20px 0 8px 0; display: block; color: #34495e; font-size: 14px; }
-        .old-data-view { width: 100%; height: 100px; padding: 15px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; overflow-y: auto; color: #7f8c8d; font-size: 15px; box-sizing: border-box; border-left: 5px solid #e67e22; }
+        
+        /* Eski Veri Görüntüleme */
+        .old-data-view { width: 100%; height: 80px; padding: 15px; background: #f1f3f5; border: 1px solid #dee2e6; border-radius: 8px; overflow-y: auto; color: #6c757d; font-style: italic; font-size: 15px; box-sizing: border-box; }
 
-        /* Araç Çubuğu ve İkonlar */
-        .toolbar { display: flex; gap: 10px; background: #34495e; padding: 10px; border-radius: 8px 8px 0 0; margin-top: 10px; }
-        .tool-btn { background: none; border: 1px solid #5d6d7e; color: white; padding: 8px 12px; border-radius: 4px; cursor: pointer; transition: 0.3s; font-size: 18px; }
+        /* Araç Çubuğu */
+        .toolbar { display: flex; gap: 10px; background: #34495e; padding: 10px; border-radius: 8px 8px 0 0; margin-top: 15px; }
+        .tool-btn { background: none; border: 1px solid #5d6d7e; color: white; padding: 8px 15px; border-radius: 4px; cursor: pointer; transition: 0.3s; }
         .tool-btn:hover { background: #e67e22; border-color: #e67e22; }
-        .tool-btn.active { color: #ff0000; animation: pulse 1.5s infinite; }
 
-        textarea { width: 100%; height: 280px; padding: 15px; border: 1px solid #ced4da; border-radius: 0 0 8px 8px; font-size: 16px; line-height: 1.6; box-sizing: border-box; resize: vertical; margin-top: -1px; }
+        /* Editörler */
+        textarea { width: 100%; padding: 15px; border: 1px solid #ced4da; font-size: 16px; line-height: 1.6; box-sizing: border-box; resize: vertical; }
+        #new-editor { height: 250px; border-radius: 0 0 8px 8px; margin-top: -1px; }
+        #full-data-out { height: 200px; background: #2c3e50; color: #2ecc71; font-family: 'Courier New', monospace; font-size: 12px; border-radius: 8px; margin-top: 10px; }
 
-        #save-btn { width: 100%; margin-top: 20px; padding: 18px; background: #27ae60; color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+        /* Kaydet ve Kopyala Butonları */
+        .action-btns { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-main { flex: 1; padding: 18px; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
+        #update-btn { background: #27ae60; color: white; }
+        #copy-all-btn { background: #2980b9; color: white; }
         
-        #status { margin-top: 15px; text-align: center; font-weight: bold; padding: 10px; border-radius: 6px; display: none; }
-        
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        #status { margin-top: 15px; text-align: center; font-weight: bold; display: none; padding: 10px; border-radius: 6px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Arşiv Veri Editörü</h2>
+    <h2>Arşiv Veri Yönetim Paneli</h2>
+    
     <div class="selection-box">
         <div class="dropdowns">
             <div class="select-group"><label>Gün</label><select id="day-select"></select></div>
@@ -54,98 +62,97 @@
             </div>
             <div class="select-group"><label>Yıl</label><select id="year-select"></select></div>
         </div>
-        <button id="fetch-btn">VERİYİ GETİR</button>
+        <button id="fetch-btn"><i class="fas fa-sync-alt"></i> VERİYİ GETİR</button>
     </div>
 
-    <label class="panel-label">Mevcut Kayıt (Eski Veri):</label>
+    <label class="panel-label">Mevcut Kayıt (Eski):</label>
     <div id="old-view" class="old-data-view">Henüz veri çağrılmadı...</div>
 
-    <label class="panel-label">Yeni Veri / Güncelleme Paneli:</label>
+    <label class="panel-label">Düzenleme Alanı:</label>
     <div class="toolbar">
-        <button class="tool-btn" title="Mikrofonla Kaydet" id="mic-btn"><i class="fas fa-microphone"></i></button>
+        <button class="tool-btn" title="Mikrofon" id="mic-btn"><i class="fas fa-microphone"></i></button>
         <button class="tool-btn" title="Yapıştır" id="paste-btn"><i class="fas fa-paste"></i></button>
         <button class="tool-btn" title="Kopyala" id="copy-btn"><i class="fas fa-copy"></i></button>
-        <button class="tool-btn" title="Klavyeye Odaklan" id="kb-btn"><i class="fas fa-keyboard"></i></button>
     </div>
-    <textarea id="new-editor" placeholder="Düzenlemek istediğiniz içeriği buraya yazın..."></textarea>
+    <textarea id="new-editor" placeholder="İçeriği burada güncelleyin..."></textarea>
     
-    <button id="save-btn">GÜNCELLEMEYİ KAYDET</button>
+    <div class="action-btns">
+        <button id="update-btn" class="btn-main">Koda Uygula & Hazırla</button>
+    </div>
+
+    <label class="panel-label">Yeni data.js Çıktısı (Kopyalayıp dosyanıza yapıştırın):</label>
+    <textarea id="full-data-out" readonly placeholder="Dosyanın tamamı burada oluşacak..."></textarea>
+    <button id="copy-all-btn" class="btn-main">Dosya Kodunu Kopyala</button>
+
     <div id="status"></div>
 </div>
 
-<script>
-    const daySelect = document.getElementById('day-select');
-    const yearSelect = document.getElementById('year-select');
-    const monthSelect = document.getElementById('month-select');
-    const newEditor = document.getElementById('new-editor');
+<script src="data.js"></script>
 
-    // Seçicileri doldur (1990-1999)
+<script>
+    const dayS = document.getElementById('day-select');
+    const yearS = document.getElementById('year-select');
+    const monthS = document.getElementById('month-select');
+    const newEditor = document.getElementById('new-editor');
+    const fullOut = document.getElementById('full-data-out');
+
+    // Menüleri doldur (1990-1999)
     for (let i = 1; i <= 31; i++) {
         let d = i.toString().padStart(2, '0');
-        daySelect.innerHTML += `<option value="${d}">${d}</option>`;
+        dayS.innerHTML += `<option value="${d}">${d}</option>`;
     }
     for (let i = 1990; i <= 1999; i++) {
-        yearSelect.innerHTML += `<option value="${i}">${i}</option>`;
+        yearS.innerHTML += `<option value="${i}">${i}</option>`;
     }
-    yearSelect.value = "1990";
+    yearS.value = "1990";
 
-    // --- Fonksiyonlar ---
-
-    // Veri Getirme
-    async function fetchData() {
-        const dateKey = `${yearSelect.value}-${monthSelect.value}-${daySelect.value}`;
-        try {
-            const response = await fetch('data.js');
-            const text = await response.text();
-            const regex = new RegExp(`"${dateKey}"\\s*:\\s*"([^"]+)"`);
-            const match = text.match(regex);
-            if (match) {
-                document.getElementById('old-view').innerText = match[1];
-                newEditor.value = match[1];
-                showMsg("Veri getirildi.", "#27ae60");
-            } else {
-                showMsg("Kayıt bulunamadı.", "#e67e22");
-            }
-        } catch (e) { showMsg("Hata!", "red"); }
-    }
-
-    // Sesli Yazma (Mikrofon)
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (SpeechRecognition) {
-        const recognition = new SpeechRecognition();
-        recognition.lang = 'tr-TR';
-        recognition.onresult = (event) => {
-            newEditor.value += " " + event.results[0][0].transcript;
-        };
-        document.getElementById('mic-btn').onclick = () => {
-            recognition.start();
-            showMsg("Dinleniyor...", "#3498db");
-        };
-    }
-
-    // Yapıştır
-    document.getElementById('paste-btn').onclick = async () => {
-        const text = await navigator.clipboard.readText();
-        newEditor.value += text;
+    // Veri Getir
+    document.getElementById('fetch-btn').onclick = () => {
+        const key = `${yearS.value}-${monthS.value}-${dayS.value}`;
+        if(typeof dataJS !== 'undefined' && dataJS[key]) {
+            document.getElementById('old-view').innerText = dataJS[key];
+            newEditor.value = dataJS[key];
+            showMsg("Veri yüklendi.", "#27ae60");
+        } else {
+            showMsg("Kayıt bulunamadı.", "#e67e22");
+        }
     };
 
-    // Kopyala
-    document.getElementById('copy-btn').onclick = () => {
-        newEditor.select();
+    // Tüm Dosyayı Güncelle ve Pencereye Yaz
+    document.getElementById('update-btn').onclick = () => {
+        const key = `${yearS.value}-${monthS.value}-${dayS.value}`;
+        if(typeof dataJS !== 'undefined') {
+            dataJS[key] = newEditor.value;
+            // Tüm nesneyi stringe çevirip pencereye yaz
+            const fullCode = "const dataJS = " + JSON.stringify(dataJS, null, 4) + ";";
+            fullOut.value = fullCode;
+            showMsg("Dosya kodu hazırlandı! Aşağıdan kopyalayabilirsiniz.", "#2980b9");
+        }
+    };
+
+    // Dosyayı Kopyala
+    document.getElementById('copy-all-btn').onclick = () => {
+        fullOut.select();
         document.execCommand('copy');
-        showMsg("Kopyalandı!", "#2ecc71");
+        showMsg("Tüm kod kopyalandı! data.js'e yapıştırabilirsiniz.", "#27ae60");
     };
 
-    // Klavye Odaklanma
-    document.getElementById('kb-btn').onclick = () => newEditor.focus();
+    // Mikrofon Desteği
+    const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (Speech) {
+        const rec = new Speech();
+        rec.lang = 'tr-TR';
+        rec.onresult = (e) => { newEditor.value += " " + e.results[0][0].transcript; };
+        document.getElementById('mic-btn').onclick = () => { rec.start(); showMsg("Dinleniyor...", "#3498db"); };
+    }
 
+    // Yardımcı Fonksiyonlar
     function showMsg(txt, color) {
         const s = document.getElementById('status');
-        s.innerText = txt; s.style.color = color; s.style.display = "block";
-        setTimeout(() => s.style.display = "none", 3000);
+        s.innerText = txt; s.style.color = color; s.style.backgroundColor = color + "11";
+        s.style.display = "block";
+        setTimeout(() => s.style.display = "none", 4000);
     }
-
-    document.getElementById('fetch-btn').onclick = fetchData;
 </script>
 
 </body>
