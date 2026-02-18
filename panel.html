@@ -26,7 +26,6 @@
             position: relative; 
         }
 
-        /* ARKA PLAN TÜNELİ */
         .warp-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, #1a0033 0%, #000 80%); z-index: -1; perspective: 600px; }
         .lines { position: absolute; width: 200%; height: 200%; top: -50%; left: -50%; background-image: linear-gradient(to right, rgba(147, 51, 234, 0.2) 2px, transparent 2px), linear-gradient(to bottom, rgba(147, 51, 234, 0.2) 2px, transparent 2px); background-size: 60px 60px; transform: rotateX(55deg); animation: warpMove 4s linear infinite; }
         @keyframes warpMove { 0% { transform: rotateX(55deg) translateY(0); } 100% { transform: rotateX(55deg) translateY(60px); } }
@@ -36,7 +35,6 @@
         .main-logo { width: 130px; height: 130px; margin: 0 auto 15px auto; display: block; filter: drop-shadow(0 0 15px rgba(147, 51, 234, 0.6)); object-fit: contain; }
         .header { font-size: 1rem; margin-bottom: 25px; text-shadow: 0 0 8px #fff; letter-spacing: 2px; text-transform: uppercase; }
         
-        /* SEÇİM KUTUSU */
         .selection-box {
             background: rgba(20, 20, 20, 0.95);
             border: 2px solid #333;
@@ -57,10 +55,15 @@
             border: 1px solid #00ff41;
             padding: 15px 5px;
             font-family: 'Orbitron', sans-serif;
-            font-size: 1rem;
+            font-size: 0.9rem;
             border-radius: 10px;
             outline: none;
             text-align: center;
+        }
+
+        /* Seçilmemiş/Placeholder seçeneği için stil */
+        select option[value=""] {
+            color: #444;
         }
 
         .main-btn { 
@@ -80,7 +83,6 @@
         }
         .main-btn:active { transform: translateY(4px); box-shadow: 0 2px #300; }
 
-        /* SONUÇ PANELİ - TÜRKÇE KARAKTER DOSTU FONT BURADA */
         #result-panel { 
             background: rgba(5, 5, 5, 0.98); 
             border: 1px solid #444;
@@ -88,7 +90,7 @@
             padding: 25px; 
             border-radius: 15px; 
             min-height: 180px; 
-            font-family: 'Montserrat', sans-serif; /* Okunaklı font */
+            font-family: 'Montserrat', sans-serif;
             font-weight: 400;
             font-size: 1.15rem; 
             line-height: 1.8; 
@@ -98,87 +100,3 @@
             margin-top: 15px;
             animation: slideUp 0.4s ease-out;
             box-shadow: 0 0 30px rgba(0,0,0,1);
-        }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .date-badge { 
-            color: #00ff41; 
-            font-family: 'Orbitron', sans-serif; /* Tarih başlığı Orbitron kalsın */
-            font-size: 0.8rem; 
-            display: block; 
-            margin-bottom: 15px; 
-            opacity: 0.8; 
-            letter-spacing: 1px; 
-            border-bottom: 1px solid #222; 
-            padding-bottom: 8px; 
-        }
-    </style>
-</head>
-<body>
-    <div class="warp-bg"><div class="lines"></div></div>
-
-    <div class="container">
-        <img src="icon.png" alt="" class="main-logo" onerror="this.style.display='none'">
-        <h1 class="header">KONTROL MERKEZİ</h1>
-        
-        <div class="selection-box">
-            <div class="dropdown-grid">
-                <div class="field"><span class="label">GÜN</span><select id="sel-day"></select></div>
-                <div class="field"><span class="label">AY</span><select id="sel-month"></select></div>
-                <div class="field"><span class="label">YIL</span><select id="sel-year"></select></div>
-            </div>
-            
-            <button class="main-btn" onclick="fetchHistory()">O TARİHE GİT</button>
-        </div>
-
-        <div id="result-panel"></div>
-    </div>
-
-    <script src="data.js"></script>
-    
-    <script>
-        const monthsTR = ["OCAK", "SUBAT", "MART", "NISAN", "MAYIS", "HAZIRAN", "TEMMUZ", "AGUSTOS", "EYLUL", "EKIM", "KASIM", "ARALIK"];
-
-        function setup() {
-            const d = document.getElementById('sel-day');
-            for(let i=1; i<=31; i++) { let v = i < 10 ? '0'+i : i; d.innerHTML += `<option value="${v}">${i}</option>`; }
-            
-            const m = document.getElementById('sel-month');
-            monthsTR.forEach((name, i) => { let v = (i+1) < 10 ? '0'+(i+1) : (i+1); m.innerHTML += `<option value="${v}">${name}</option>`; });
-
-            const y = document.getElementById('sel-year');
-            for(let i=1990; i<=1999; i++) { y.innerHTML += `<option value="${i}">${i}</option>`; }
-        }
-
-        function fetchHistory() {
-            const d = document.getElementById('sel-day').value;
-            const m = document.getElementById('sel-month').value;
-            const y = document.getElementById('sel-year').value;
-            const key = `${y}-${m}-${d}`;
-            const panel = document.getElementById('result-panel');
-            panel.style.display = 'block';
-
-            const jenerik = {
-                "1990": "Yeni bir on yılın şafağı. Analog hayatın en saf hali. Sokaklarda 80'lerin izi olsa da gelecek heyecan verici.",
-                "1991": "Pop müziğin ayak sesleri... Özel kanalların renkli dünyası ve kasetçalarların kalemle sarıldığı bir gün.",
-                "1992": "Tarkan rüzgarı esmeye başladı. Renkli ceketler, kabarık saçlar ve değişim rüzgarları her yerde.",
-                "1993": "Barış Manço'lu pazar sabahlarının samimiyeti sokaklara taşıyor. Zamanın yavaş ama derin aktığı bir an.",
-                "1994": "Pop müziğin patladığı yıl. Walkman sesleri sokaklara karışıyor, her köşe başında bir melodi yükseliyor.",
-                "1995": "Windows 95 heyecanı evlerde. Analog dünyadan dijital dünyaya geçişin o keskin ve meraklı eşiği.",
-                "1996": "Müzik kanalları ve sabah şekerleri dönemi. Hayatın hızlandığı ama komşuluğun hala bitmediği bir tarih.",
-                "1997": "İnternet kafelerin mahalle aralarına sızdığı günler. Bilginin kablolardan aktığı o ilk büyük merak dönemi.",
-                "1998": "Doksanların efsane dizilerinin herkesi akşamları ekran başına kilitlediği, stat gösterilerinin zirve yaptığı bir yıl.",
-                "1999": "Milenyumun kapısı. Gelecek bin yıla dair büyük bir merak ve analog dünyanın son görkemli vedası."
-            };
-
-            let metin = (typeof zamanVerisi !== 'undefined' && zamanVerisi[key]) ? zamanVerisi[key] : (jenerik[y] || "Doksanların ruhu bu tarihin her detayında hissediliyor.");
-            
-            panel.innerHTML = `<span class="date-badge">${d} ${monthsTR[parseInt(m)-1]} ${y}</span>${metin}`;
-            
-            setTimeout(() => { panel.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
-        }
-
-        window.onload = setup;
-    </script>
-</body>
-</html>
