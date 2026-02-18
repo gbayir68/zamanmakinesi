@@ -4,24 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>OF-İS KONTROL PANELİ</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="icon.png">
     <link rel="icon" href="icon.png">
+
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         body { background: #000; color: #fff; font-family: 'Orbitron', sans-serif; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 20px 0; overflow-x: hidden; position: relative; }
+        
+        /* Arka Plan Efektleri */
         .warp-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, #1a0033 0%, #000 80%); z-index: -1; perspective: 600px; }
         .lines { position: absolute; width: 200%; height: 200%; top: -50%; left: -50%; background-image: linear-gradient(to right, rgba(147, 51, 234, 0.2) 2px, transparent 2px), linear-gradient(to bottom, rgba(147, 51, 234, 0.2) 2px, transparent 2px); background-size: 60px 60px; transform: rotateX(55deg); animation: warpMove 4s linear infinite; }
         @keyframes warpMove { 0% { transform: rotateX(55deg) translateY(0); } 100% { transform: rotateX(55deg) translateY(60px); } }
-        .container { width: 90%; max-width: 450px; z-index: 10; text-align: center; }
-        .main-logo { width: 120px; height: 120px; margin: 0 auto 15px auto; display: block; filter: drop-shadow(0 0 15px rgba(147, 51, 234, 0.6)); object-fit: contain; }
-        .selection-box { background: rgba(20, 20, 20, 0.95); border: 2px solid #333; border-radius: 20px; padding: 25px; box-shadow: 0 10px 40px rgba(0,0,0,1); }
-        .dropdown-grid { display: flex; gap: 10px; margin-bottom: 20px; }
+
+        .container { width: 95%; max-width: 450px; z-index: 10; text-align: center; padding: 10px; }
+        .main-logo { width: 100px; height: 100px; margin: 0 auto 15px auto; display: block; filter: drop-shadow(0 0 15px rgba(147, 51, 234, 0.6)); object-fit: contain; }
+        
+        .selection-box { background: rgba(20, 20, 20, 0.95); border: 2px solid #333; border-radius: 20px; padding: 20px; box-shadow: 0 10px 40px rgba(0,0,0,1); }
+        .dropdown-grid { display: flex; gap: 8px; margin-bottom: 20px; }
         .field { flex: 1; display: flex; flex-direction: column; text-align: left; }
         .label { font-size: 0.6rem; color: #777; margin-bottom: 5px; font-family: 'Orbitron'; }
-        select { width: 100%; background: #000; color: #00ff41; border: 1px solid #00ff41; padding: 12px 5px; border-radius: 10px; font-family: 'Orbitron'; font-size: 0.85rem; outline: none; text-align: center; }
-        .main-btn { background: #b00; color: #fff; border: none; padding: 20px; font-size: 1.1rem; border-radius: 50px; width: 100%; cursor: pointer; font-family: 'Orbitron'; font-weight: bold; box-shadow: 0 6px #600; transition: 0.2s; }
+        
+        /* Mobil Dokunmatik Alan Optimizasyonu */
+        select { width: 100%; background: #000; color: #00ff41; border: 1px solid #00ff41; padding: 15px 5px; border-radius: 10px; font-family: 'Orbitron'; font-size: 0.9rem; outline: none; appearance: none; -webkit-appearance: none; text-align: center; }
+        
+        .main-btn { background: #b00; color: #fff; border: none; padding: 20px; font-size: 1.1rem; border-radius: 50px; width: 100%; cursor: pointer; font-family: 'Orbitron'; font-weight: bold; box-shadow: 0 6px #600; transition: 0.2s; -webkit-appearance: none; }
         .main-btn:active { transform: translateY(3px); box-shadow: 0 2px #300; }
+        
         #result-panel { background: rgba(5, 5, 5, 0.98); border: 1px solid #444; border-left: 5px solid #00ff41; padding: 20px; border-radius: 15px; min-height: 150px; font-family: 'Montserrat', sans-serif; font-size: 1.1rem; line-height: 1.6; color: #fff; display: none; text-align: left; margin-top: 15px; box-shadow: 0 0 30px rgba(0,0,0,1); }
         .date-badge { color: #00ff41; font-size: 0.8rem; margin-bottom: 10px; display: block; font-family: 'Orbitron'; border-bottom: 1px solid #222; padding-bottom: 5px; }
     </style>
@@ -46,7 +59,6 @@
     <script>
         const monthsTR = ["OCAK", "ŞUBAT", "MART", "NİSAN", "MAYIS", "HAZİRAN", "TEMMUZ", "AĞUSTOS", "EYLÜL", "EKİM", "KASIM", "ARALIK"];
 
-        // Sayfa açıldığında seçim kutularını doldurur
         function setup() {
             const d = document.getElementById('sel-day');
             for(let i=1; i<=31; i++) { 
@@ -64,3 +76,37 @@
             for(let i=1990; i<=1999; i++) { 
                 y.innerHTML += `<option value="${i}">${i}</option>`; 
             }
+        }
+
+        function fetchHistory() {
+            const d = document.getElementById('sel-day').value;
+            const m = document.getElementById('sel-month').value;
+            const y = document.getElementById('sel-year').value;
+            const key = `${y}-${m}-${d}`;
+            
+            const panel = document.getElementById('result-panel');
+            panel.style.display = 'block';
+
+            let metin = "";
+            
+            // window.zamanVerisi kontrolü mobil tarayıcılar için daha güvenlidir
+            if (window.zamanVerisi && window.zamanVerisi[key]) {
+                metin = window.zamanVerisi[key];
+            } else {
+                metin = "Bu tarih için arşiv çalışması devam ediyor veya veri dosyası (data.js) hatalı.";
+                console.error("Veri bulunamadı veya data.js yüklenemedi. Key:", key);
+            }
+
+            panel.innerHTML = `
+                <span class="date-badge">${d} ${monthsTR[parseInt(m)-1]} ${y}</span>
+                <div style="font-size: 1rem;">${metin}</div>
+            `;
+            
+            // Mobil ekranı otomatik aşağı kaydır
+            panel.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        window.onload = setup;
+    </script>
+</body>
+</html>
