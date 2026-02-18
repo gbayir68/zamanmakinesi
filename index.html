@@ -6,80 +6,217 @@
     <title>ZAMAN MAKİNESİ</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
-        * { box-sizing: border-box; }
-        body { background: #000; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; font-family: 'Orbitron', sans-serif; color: #fff; overflow: hidden; }
-        .main-header { font-size: 1.5rem; letter-spacing: 2px; text-shadow: 0 0 10px #fff; margin-bottom: 20px; text-align: center; }
-        .panel { background: #151515; border: 4px solid #333; border-radius: 20px; width: 90%; max-width: 350px; padding: 15px; box-shadow: 0 0 30px #000; }
-        .display { background: #000; border: 2px solid #222; border-radius: 10px; margin: 10px 0; padding: 15px; text-align: center; }
-        .label { font-size: 0.7rem; letter-spacing: 1px; margin-bottom: 8px; display: block; }
+        
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            background: #000; 
+            margin: 0; 
+            padding: 0;
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh;
+            width: 100vw;
+            font-family: 'Orbitron', sans-serif;
+            color: #fff;
+            overflow: hidden;
+            touch-action: none;
+        }
+
+        /* Ana Konteyner: Ekran daraldıkça her şeyi orantılı küçültür */
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 360px; /* Standart mobil genişliği */
+            padding: 20px;
+        }
+
+        .main-header { 
+            font-size: 1.5rem; 
+            letter-spacing: 2px; 
+            text-shadow: 0 0 10px #fff;
+            margin-bottom: 30px;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .panel {
+            background: #151515;
+            border: 4px solid #333;
+            border-radius: 20px;
+            width: 100%;
+            padding: 15px;
+            box-shadow: 0 0 30px #000;
+        }
+
+        .display {
+            background: #000;
+            border: 2px solid #222;
+            border-radius: 12px;
+            margin: 10px 0;
+            padding: 12px 5px;
+            text-align: center;
+        }
+
+        .label { 
+            font-size: 0.65rem; 
+            letter-spacing: 1px; 
+            margin-bottom: 10px; 
+            display: block;
+            opacity: 0.8;
+        }
+
         .red { color: #ff3131; text-shadow: 0 0 8px #ff3131; }
         .green { color: #00ff41; text-shadow: 0 0 8px #00ff41; }
-        .slots { display: flex; justify-content: space-around; height: 40px; overflow: hidden; font-size: 1.2rem; }
-        .strip { display: flex; flex-direction: column; transition: transform 2s cubic-bezier(0.1, 0, 0.1, 1); }
-        .slot-item { height: 40px; display: flex; align-items: center; justify-content: center; min-width: 60px; }
-        .btn-container { margin-top: 30px; width: 100%; text-align: center; }
-        #spinBtn { background: #b00; color: #fff; border: none; padding: 15px 30px; font-size: 1.1rem; font-weight: bold; border-radius: 50px; box-shadow: 0 6px #600; cursor: pointer; width: 80%; max-width: 250px; -webkit-appearance: none; }
+
+        /* Slotların Hizalanması */
+        .slots { 
+            display: flex; 
+            justify-content: space-evenly; 
+            height: 45px; 
+            overflow: hidden; 
+            font-size: 1.1rem;
+        }
+
+        .strip { 
+            display: flex; 
+            flex-direction: column; 
+            width: 30%;
+        }
+
+        .slot-item { 
+            height: 45px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            white-space: nowrap;
+        }
+
+        .btn-container { 
+            margin-top: 40px; 
+            width: 100%; 
+            display: flex;
+            justify-content: center;
+        }
+
+        #spinBtn { 
+            background: #b00; 
+            color: #fff; 
+            border: none; 
+            padding: 18px 0; 
+            font-size: 1.1rem; 
+            font-weight: bold; 
+            border-radius: 50px; 
+            box-shadow: 0 6px #600; 
+            cursor: pointer; 
+            width: 85%;
+            font-family: 'Orbitron', sans-serif;
+            transition: all 0.1s;
+        }
+
         #spinBtn:active { transform: translateY(4px); box-shadow: 0 2px #300; }
-        #present-display { font-size: 1rem; display: flex; justify-content: center; gap: 5px; }
+
+        #present-display { 
+            font-size: 0.95rem; 
+            display: flex; 
+            justify-content: center; 
+            gap: 6px;
+            white-space: nowrap;
+        }
     </style>
 </head>
 <body>
-    <h1 class="main-header">ZAMAN MAKİNESİ</h1>
-    <div class="panel">
-        <div class="display red">
-            <span class="label">HEDEF TARİH</span>
-            <div class="slots">
-                <div id="m-strip" class="strip"></div>
-                <div id="d-strip" class="strip"></div>
-                <div id="y-strip" class="strip"></div>
+
+    <div class="wrapper">
+        <h1 class="main-header">ZAMAN MAKİNESİ</h1>
+
+        <div class="panel">
+            <div class="display red">
+                <span class="label">HEDEF TARİH</span>
+                <div class="slots">
+                    <div id="m-strip" class="strip"></div>
+                    <div id="d-strip" class="strip"></div>
+                    <div id="y-strip" class="strip"></div>
+                </div>
+            </div>
+            
+            <div class="display green">
+                <span class="label">ŞİMDİKİ TARİH</span>
+                <div id="present-display">
+                    <span id="p-day"></span> <span id="p-month"></span> <span id="p-year"></span>
+                </div>
             </div>
         </div>
-        <div class="display green">
-            <span class="label">ŞİMDİKİ TARİH</span>
-            <div id="present-display">
-                <span id="p-day"></span> <span id="p-month"></span> <span id="p-year"></span>
-            </div>
+
+        <div class="btn-container">
+            <button id="spinBtn" onclick="startSpin()">ZAMANI DEĞİŞTİR</button>
         </div>
     </div>
-    <div class="btn-container">
-        <button id="spinBtn" onclick="startSpin()">ZAMANI DEĞİŞTİR</button>
-    </div>
+
     <script>
         const months = ["OCAK", "SUB", "MART", "NIS", "MAY", "HAZ", "TEM", "AGU", "EYL", "EKM", "KAS", "ARL"];
-        const ITEM_HEIGHT = 40;
+        const ITEM_HEIGHT = 45;
         const STRIP_COUNT = 30;
+
         function init() {
-            const data = [months, Array.from({length: 31}, (_, i) => i + 1), Array.from({length: 10}, (_, i) => 1990 + i)];
+            const data = [
+                months,
+                Array.from({length: 31}, (_, i) => i + 1),
+                Array.from({length: 10}, (_, i) => 1990 + i)
+            ];
+
             ['m-strip', 'd-strip', 'y-strip'].forEach((id, idx) => {
                 const el = document.getElementById(id);
-                el.innerHTML = Array.from({length: STRIP_COUNT}, (_, i) => `<div class="slot-item">${data[idx][i % data[idx].length]}</div>`).join('');
+                let html = "";
+                for(let i=0; i<STRIP_COUNT; i++) {
+                    html += `<div class="slot-item">${data[idx][i % data[idx].length]}</div>`;
+                }
+                el.innerHTML = html;
             });
         }
+
         function startSpin() {
             const btn = document.getElementById('spinBtn');
             if(btn.disabled) return;
             btn.disabled = true;
-            const targets = [months[Math.floor(Math.random()*12)], Math.floor(Math.random()*28)+1, Math.floor(Math.random()*10)+1990];
+
+            const targets = [
+                months[Math.floor(Math.random() * 12)],
+                Math.floor(Math.random() * 28) + 1,
+                Math.floor(Math.random() * 10) + 1990
+            ];
+
             ['m-strip', 'd-strip', 'y-strip'].forEach((id, i) => {
                 const el = document.getElementById(id);
                 const stopIdx = STRIP_COUNT - 3;
+                
                 el.style.transition = "none";
                 el.style.transform = "translateY(0)";
+
                 setTimeout(() => {
                     el.getElementsByClassName('slot-item')[stopIdx].innerText = targets[i];
-                    el.style.transition = "transform 2s cubic-bezier(0.1, 0, 0.1, 1)";
+                    el.style.transition = "transform 2.5s cubic-bezier(0.1, 0, 0.1, 1)";
                     el.style.transform = `translateY(-${stopIdx * ITEM_HEIGHT}px)`;
                 }, 50);
             });
-            setTimeout(() => { btn.disabled = false; }, 2500);
+
+            setTimeout(() => { btn.disabled = false; }, 3000);
         }
+
         function updateClock() {
             const now = new Date();
             document.getElementById('p-day').innerText = String(now.getDate()).padStart(2, '0');
             document.getElementById('p-month').innerText = months[now.getMonth()];
             document.getElementById('p-year').innerText = now.getFullYear();
         }
-        init(); updateClock(); setInterval(updateClock, 1000);
+
+        init();
+        updateClock();
+        setInterval(updateClock, 1000);
     </script>
 </body>
 </html>
