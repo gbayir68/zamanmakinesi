@@ -1,61 +1,120 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gültekin Bayır - Arşiv Editörü</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; padding: 20px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 900px; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        h2 { color: #2c3e50; border-bottom: 3px solid #e67e22; padding-bottom: 10px; margin-top: 0; }
+        
+        /* Seçim Alanı */
+        .selection-box { background: #f8f9fa; padding: 20px; border-radius: 10px; border: 1px solid #e9ecef; margin-bottom: 20px; }
+        .dropdowns { display: flex; gap: 15px; margin-bottom: 15px; }
+        .select-group { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+        select { padding: 10px; border-radius: 6px; border: 1px solid #ddd; font-size: 16px; }
+        
+        #fetch-btn { width: 100%; padding: 12px; background: #e67e22; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+        #fetch-btn:hover { background: #d35400; }
+
+        /* Çift Pencere Alanı */
+        .editor-label { font-weight: bold; margin-bottom: 5px; display: block; color: #555; }
+        .view-area { width: 100%; height: 150px; padding: 15px; background: #f1f1f1; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 20px; overflow-y: auto; white-space: pre-wrap; color: #666; font-style: italic; }
+        textarea { width: 100%; height: 250px; padding: 15px; border: 1px solid #ced4da; border-radius: 8px; font-size: 16px; line-height: 1.5; box-sizing: border-box; resize: vertical; }
+
+        #save-btn { width: 100%; margin-top: 20px; padding: 15px; background: #27ae60; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; }
+        #status { margin-top: 10px; text-align: center; font-weight: bold; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Arşiv Veri Editörü</h2>
+    
+    <div class="selection-box">
+        <div class="dropdowns">
+            <div class="select-group"><label>Gün</label><select id="day-select"></select></div>
+            <div class="select-group"><label>Ay</label><select id="month-select">
+                <option value="01">Ocak</option><option value="02">Şubat</option><option value="03">Mart</option>
+                <option value="04">Nisan</option><option value="05">Mayıs</option><option value="06">Haziran</option>
+                <option value="07">Temmuz</option><option value="08">Ağustos</option><option value="09">Eylül</option>
+                <option value="10">Ekim</option><option value="11">Kasım</option><option value="12">Aralık</option>
+            </select></div>
+            <div class="select-group"><label>Yıl</label><select id="year-select"></select></div>
+        </div>
+        <button id="fetch-btn">VERİYİ GETİR</button>
+    </div>
+
+    <label class="editor-label">Mevcut Kayıt (Eski Veri):</label>
+    <div id="current-data-view" class="view-area">Henüz veri çağrılmadı...</div>
+
+    <label class="editor-label">Yeni Veri / Güncelleme Paneli:</label>
+    <textarea id="data-editor" placeholder="Güncelleyeceğiniz içeriği buraya yazın..."></textarea>
+    
+    <button id="save-btn">GÜNCELLEMEYİ KAYDET</button>
+    <div id="status"></div>
+</div>
+
+<script src="data.js"></script>
+
 <script>
     const daySelect = document.getElementById('day-select');
-    const monthSelect = document.getElementById('month-select');
     const yearSelect = document.getElementById('year-select');
     const fetchBtn = document.getElementById('fetch-btn');
+    const viewArea = document.getElementById('current-data-view');
     const dataEditor = document.getElementById('data-editor');
     const status = document.getElementById('status');
 
-    function initSelectors() {
+    function init() {
+        // Günler
         for (let i = 1; i <= 31; i++) {
-            let day = i.toString().padStart(2, '0');
-            daySelect.innerHTML += `<option value="${day}">${day}</option>`;
+            let d = i.toString().padStart(2, '0');
+            daySelect.innerHTML += `<option value="${d}">${d}</option>`;
         }
-        for (let i = 1995; i <= 2005; i++) {
+        // Yıllar: Sadece 1990 - 1999 arası
+        for (let i = 1990; i <= 1999; i++) {
             yearSelect.innerHTML += `<option value="${i}">${i}</option>`;
         }
         yearSelect.value = "1997";
     }
 
     function fetchData() {
-        const fullDate = `${yearSelect.value}-${monthSelect.value}-${daySelect.value}`;
+        const day = daySelect.value;
+        const month = document.getElementById('month-select').value;
+        const year = yearSelect.value;
         
-        // ÖNEMLİ: data.js dosyanızdaki ana değişken ismini kontrol edin.
-        // Eğer verileriniz 'const veri = { ... }' şeklindeyse buraya 'veri' yazılmalıdır.
-        // Aşağıdaki kontrol hem dataJS hem de genel nesne yapısını denetler.
+        // data.js'deki formata göre burayı deniyoruz (YYYY-MM-DD)
+        const dateKey = `${year}-${month}-${day}`;
         
-        try {
-            // Eğer verileriniz global bir nesne içindeyse (Örn: dataJS)
-            let source = (typeof dataJS !== 'undefined') ? dataJS : null;
-            
-            // Eğer değişken ismi farklıysa buraya o ismi ekleyebiliriz
-            if (!source && typeof arsivData !== 'undefined') source = arsivData;
+        // Veri kaynağını kontrol et
+        const source = (typeof dataJS !== 'undefined') ? dataJS : null;
 
-            if (source && source[fullDate]) {
-                dataEditor.value = source[fullDate];
-                showStatus(fullDate + " verisi başarıyla yüklendi.", "#27ae60");
+        if (source) {
+            const content = source[dateKey];
+            if (content) {
+                viewArea.innerText = content; // Üst pencere (Eski)
+                dataEditor.value = content;   // Alt pencere (Düzenleme için kopyala)
+                msg("Veri başarıyla getirildi.", "#27ae60");
             } else {
+                viewArea.innerText = "Bu tarihe ait kayıt bulunamadı.";
                 dataEditor.value = "";
-                showStatus("Hata: " + fullDate + " tarihinde veri bulunamadı veya değişken ismi hatalı.", "#e67e22");
-                console.error("Veri kaynağı bulunamadı veya tarih anahtarı yok:", fullDate);
+                msg("Kayıt bulunamadı.", "#e67e22");
             }
-        } catch (err) {
-            showStatus("Sistemsel bir hata oluştu!", "#c0392b");
-            console.error(err);
+        } else {
+            msg("Hata: data.js yüklenemedi!", "#c0392b");
         }
     }
 
-    function showStatus(msg, color) {
-        status.textContent = msg;
-        status.style.display = "block";
-        status.style.color = color;
-        setTimeout(() => { status.style.display = "none"; }, 4000);
+    function msg(t, c) {
+        status.innerText = t; status.style.color = c; status.style.display = "block";
+        setTimeout(() => status.style.display = "none", 3000);
     }
 
-    initSelectors();
+    init();
     fetchBtn.addEventListener('click', fetchData);
-
-    window.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') fetchData();
-    });
+    window.onkeypress = (e) => { if(e.key === "Enter") fetchData(); };
 </script>
+
+</body>
+</html>
