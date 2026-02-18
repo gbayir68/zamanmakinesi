@@ -10,26 +10,42 @@
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: #000; color: #fff; font-family: 'Orbitron', sans-serif; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+        
+        /* Hibrit Arka Plan Katmanları */
         #starfield { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        
         .container { width: 90%; max-width: 320px; text-align: center; position: relative; z-index: 10; }
         .header { font-size: 1.2rem; margin-bottom: 25px; text-shadow: 0 0 15px #fff; letter-spacing: 2px; }
-        .box { background: rgba(10, 10, 10, 0.8); border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 20px; padding: 20px 10px; box-shadow: 0 0 60px rgba(0,0,0,1); backdrop-filter: blur(10px); }
-        .display { background: rgba(0, 0, 0, 0.95); border: 1px solid #444; border-radius: 12px; margin: 12px 0; padding: 15px 5px; min-height: 80px; display: flex; flex-direction: column; justify-content: center; }
-        .label { font-size: 0.65rem; color: #888; margin-bottom: 5px; display: block; letter-spacing: 1px; }
-        .red { color: #ff3131; text-shadow: 0 0 20px #ff3131; }
-        .green { color: #00ff41; text-shadow: 0 0 20px #00ff41; }
+        
+        .box { 
+            background: rgba(5, 5, 5, 0.75); 
+            border: 1px solid rgba(147, 51, 234, 0.3); /* Hafif mor çerçeve */
+            border-radius: 20px; 
+            padding: 20px 10px; 
+            box-shadow: 0 0 50px rgba(0,0,0,1); 
+            backdrop-filter: blur(12px); 
+        }
+
+        .display { background: rgba(0, 0, 0, 0.95); border: 1px solid #333; border-radius: 12px; margin: 12px 0; padding: 15px 5px; min-height: 80px; display: flex; flex-direction: column; justify-content: center; }
+        .label { font-size: 0.65rem; color: #777; margin-bottom: 5px; display: block; letter-spacing: 1px; }
+        .red { color: #ff3131; text-shadow: 0 0 15px #ff3131; }
+        .green { color: #00ff41; text-shadow: 0 0 15px #00ff41; }
+        
         .slots { display: flex; justify-content: space-around; height: 40px; overflow: hidden; font-size: 1.1rem; line-height: 40px; }
         .strip { transition: transform 2.5s cubic-bezier(0.1, 0, 0.1, 1); }
         .item { height: 40px; min-width: 65px; text-align: center; }
+
         .btn-box { margin-top: 40px; }
         button { background: #b00; color: #fff; border: none; padding: 18px; font-size: 1.1rem; border-radius: 50px; box-shadow: 0 8px #600; cursor: pointer; font-family: 'Orbitron', sans-serif; width: 85%; font-weight: bold; -webkit-appearance: none; transition: 0.3s; }
         button:disabled { background: #222; box-shadow: 0 3px #000; color: #444; cursor: not-allowed; opacity: 0.7; }
-        button:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 2px #300; }
+        
         #present { font-size: 0.9rem; display: flex; justify-content: center; gap: 8px; }
     </style>
 </head>
 <body>
+
     <canvas id="starfield"></canvas>
+
     <div class="container">
         <h1 class="header">ZAMAN MAKİNESİ</h1>
         <div class="box">
@@ -54,11 +70,12 @@
         const ITEM_H = 40; const COUNT = 30;
         let isSpinning = false;
 
+        // --- HYBRID WARP (STARS + PURPLE HYPERBOLIC) ---
         const canvas = document.getElementById('starfield');
         const ctx = canvas.getContext('2d');
         let stars = [];
-        let numStars = 250; 
-        let warpSpeed = 60; // NORMAL BEKLEME HIZI (Yeni çark hızının yarısı)
+        let numStars = 200; 
+        let warpSpeed = 60; // Sizin istediğiniz yüksek bekleme hızı
 
         function setupStars() {
             canvas.width = window.innerWidth;
@@ -74,11 +91,35 @@
             }
         }
 
-        function drawStars() {
-            ctx.fillStyle = "rgba(0, 0, 0, 0.4)"; // Daha derin bir trail efekti
+        function drawEffect() {
+            // Arka plan temizliği ve Trail (İz)
+            ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.save();
             ctx.translate(canvas.width / 2, canvas.height / 2);
 
+            // 1. KATMAN: MOR HİPERBOLİK ÇİZGİLER (Statik Değil, Dinamik Akış)
+            const numHyperLines = 36;
+            for (let i = 0; i < numHyperLines; i++) {
+                let angle = (i * (Math.PI * 2)) / numHyperLines;
+                let xEnd = Math.cos(angle) * canvas.width;
+                let yEnd = Math.sin(angle) * canvas.height;
+                
+                let gradient = ctx.createRadialGradient(0, 0, 50, 0, 0, canvas.width / 1.5);
+                gradient.addColorStop(0, 'rgba(147, 51, 234, 0.8)'); // Koyu Mor (Merkez)
+                gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');         // Silikleşen (Dış)
+
+                ctx.beginPath();
+                ctx.strokeStyle = gradient;
+                ctx.lineWidth = 2;
+                ctx.moveTo(0, 0);
+                // Hafif hiperbolik kavis veriyoruz
+                ctx.quadraticCurveTo(xEnd / 2, yEnd / 2, xEnd, yEnd);
+                ctx.stroke();
+            }
+
+            // 2. KATMAN: IŞIK HIZI YILDIZLAR
             for (let i = 0; i < numStars; i++) {
                 let s = stars[i];
                 s.z -= warpSpeed;
@@ -94,7 +135,7 @@
                 
                 if (s.px !== 0) {
                     ctx.strokeStyle = `rgba(255, 255, 255, ${Math.min(1, (canvas.width - s.z) / 400)})`;
-                    ctx.lineWidth = Math.min(8, (canvas.width - s.z) / 60); // Daha kalın ve belirgin nesneler
+                    ctx.lineWidth = Math.min(6, (canvas.width - s.z) / 70);
                     ctx.beginPath();
                     ctx.moveTo(sx, sy);
                     ctx.lineTo(s.px, s.py);
@@ -102,10 +143,12 @@
                 }
                 s.px = sx; s.py = sy;
             }
-            ctx.translate(-canvas.width / 2, -canvas.height / 2);
-            requestAnimationFrame(drawStars);
+
+            ctx.restore();
+            requestAnimationFrame(drawEffect);
         }
 
+        // --- PANEL & MACHINE LOGIC ---
         function fillSlots() {
             const data = [ms, Array.from({length: 31}, (_, i) => i + 1), Array.from({length: 10}, (_, i) => 1990 + i)];
             ['m-strip', 'd-strip', 'y-strip'].forEach((id, idx) => {
@@ -119,7 +162,7 @@
             const btn = document.getElementById('spinBtn');
             btn.disabled = true;
 
-            warpSpeed = 120; // ÇARK DÖNERKENKİ MEGA HIZ (2 KAT ARTIRILDI)
+            warpSpeed = 120; // MEGA HIZ
             
             const targets = [ms[Math.floor(Math.random()*12)], Math.floor(Math.random()*28)+1, Math.floor(Math.random()*10)+1990];
             ['m-strip', 'd-strip', 'y-strip'].forEach((id, i) => {
@@ -129,61 +172,4 @@
                 setTimeout(() => {
                     el.getElementsByClassName('item')[COUNT-3].innerText = targets[i];
                     el.style.transition = "transform 2.5s cubic-bezier(0.1, 0, 0.1, 1)";
-                    el.style.transform = `translateY(-${(COUNT-3) * ITEM_H}px)`;
-                }, 50);
-            });
-
-            setTimeout(() => {
-                isSpinning = false;
-                warpSpeed = 60; // TEKRAR YÜKSEK BEKLEME HIZINA DÖN
-                startCooldown(300);
-            }, 2800);
-        }
-
-        function startCooldown(seconds) {
-            const btn = document.getElementById('spinBtn');
-            const endTime = Date.now() + (seconds * 1000);
-            localStorage.setItem('machineLock', endTime);
-            const timer = setInterval(() => {
-                const distance = endTime - Date.now();
-                if (distance <= 0) {
-                    clearInterval(timer);
-                    btn.disabled = false;
-                    btn.innerText = "ZAMANI DEĞİŞTİR";
-                    localStorage.removeItem('machineLock');
-                } else {
-                    btn.disabled = true;
-                    const mins = Math.floor(distance / 60000);
-                    const secs = Math.floor((distance % 60000) / 1000);
-                    btn.innerText = `${mins}:${secs < 10 ? '0' : ''}${secs} KALDI`;
-                }
-            }, 1000);
-        }
-
-        function checkCooldown() {
-            const saved = localStorage.getItem('machineLock');
-            if (saved) {
-                const remaining = Math.floor((saved - Date.now()) / 1000);
-                if (remaining > 0) startCooldown(remaining);
-            }
-        }
-
-        function clock() {
-            const n = new Date();
-            document.getElementById('p-d').innerText = String(n.getDate()).padStart(2, '0');
-            document.getElementById('p-m').innerText = ms[n.getMonth()];
-            document.getElementById('p-y').innerText = n.getFullYear();
-        }
-
-        window.onload = function() {
-            setupStars();
-            drawStars();
-            fillSlots();
-            clock();
-            checkCooldown();
-            setInterval(clock, 1000);
-        };
-        window.onresize = setupStars;
-    </script>
-</body>
-</html>
+                    el.style.transform = `translateY(-${(COUNT-3) *
