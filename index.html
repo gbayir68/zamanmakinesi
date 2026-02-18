@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>OF-İS ZAMAN MAKİNESİ</title>
+    <link rel="apple-touch-icon" href="icon.png">
+    <link rel="icon" href="icon.png">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -16,18 +18,22 @@
         @keyframes warpMove { 0% { transform: rotateX(55deg) translateY(0); } 100% { transform: rotateX(55deg) translateY(60px); } }
 
         .container { width: 90%; max-width: 320px; text-align: center; position: relative; z-index: 10; }
-        .header { font-size: 1.5rem; line-height: 1.2; margin-bottom: 25px; text-shadow: 0 0 15px #fff; letter-spacing: 2px; text-transform: uppercase; }
+        
+        /* LOGO YERLEŞİMİ */
+        .main-logo { width: 150px; height: 150px; margin: 0 auto 10px auto; display: block; filter: drop-shadow(0 0 10px rgba(147, 51, 234, 0.5)); }
+
+        .header { font-size: 1.5rem; line-height: 1.2; margin-bottom: 20px; text-shadow: 0 0 15px #fff; letter-spacing: 2px; text-transform: uppercase; }
         .header span { display: block; font-size: 1.1rem; opacity: 0.9; }
 
-        .box { background: rgba(5, 5, 5, 0.9); border: 2px solid #333; border-radius: 20px; padding: 20px 10px; box-shadow: 0 0 40px #000; backdrop-filter: blur(5px); }
-        .display { background: #000; border: 1px solid #222; border-radius: 12px; margin: 12px 0; padding: 15px 5px; min-height: 80px; display: flex; flex-direction: column; justify-content: center; }
+        .box { background: rgba(5, 5, 5, 0.9); border: 2px solid #333; border-radius: 20px; padding: 15px 10px; box-shadow: 0 0 40px #000; backdrop-filter: blur(5px); }
+        .display { background: #000; border: 1px solid #222; border-radius: 12px; margin: 10px 0; padding: 12px 5px; min-height: 80px; display: flex; flex-direction: column; justify-content: center; }
         .label { font-size: 0.65rem; color: #666; margin-bottom: 5px; display: block; }
         .red { color: #ff3131; text-shadow: 0 0 12px #ff3131; }
         .green { color: #00ff41; text-shadow: 0 0 12px #00ff41; }
         .slots { display: flex; justify-content: space-around; height: 40px; overflow: hidden; font-size: 1.1rem; line-height: 40px; }
         .strip { transition: transform 2.5s cubic-bezier(0.1, 0, 0.1, 1); }
         .item { height: 40px; min-width: 65px; text-align: center; }
-        .btn-box { margin-top: 40px; }
+        .btn-box { margin-top: 30px; }
         button { background: #b00; color: #fff; border: none; padding: 18px; font-size: 1.1rem; border-radius: 50px; box-shadow: 0 8px #600; cursor: pointer; font-family: 'Orbitron', sans-serif; width: 85%; font-weight: bold; -webkit-appearance: none; transition: 0.3s; }
         button:disabled { background: #222; box-shadow: 0 3px #000; color: #444; cursor: not-allowed; opacity: 0.8; }
     </style>
@@ -35,6 +41,8 @@
 <body>
     <div class="warp-bg"><div id="warpLines" class="lines"></div></div>
     <div class="container">
+        <img src="icon.png" alt="Logo" class="main-logo">
+        
         <h1 class="header">OF-İS<span>ZAMAN MAKİNESİ</span></h1>
         <div class="box">
             <div class="display red">
@@ -56,14 +64,12 @@
     <script>
         const ms = ["OCAK", "SUB", "MART", "NIS", "MAY", "HAZ", "TEM", "AGU", "EYL", "EKM", "KAS", "ARL"];
         const ITEM_H = 40; 
-        const COUNT = 40; // Slot uzunluğunu artırdık
+        const COUNT = 40; 
         let isSpinning = false;
 
         function fillSlots() {
             const dData = Array.from({length: 31}, (_, i) => i + 1);
             const yData = Array.from({length: 10}, (_, i) => 1990 + i);
-            
-            // Başlangıçta rastgele bir görünüm veriyoruz
             document.getElementById('m-strip').innerHTML = Array.from({length: COUNT}, (_, i) => `<div class="item">${ms[i % 12]}</div>`).join('');
             document.getElementById('d-strip').innerHTML = Array.from({length: COUNT}, (_, i) => `<div class="item">${dData[i % 31]}</div>`).join('');
             document.getElementById('y-strip').innerHTML = Array.from({length: COUNT}, (_, i) => `<div class="item">${yData[i % 10]}</div>`).join('');
@@ -72,30 +78,22 @@
         function runMachine() {
             if(isSpinning) return;
             isSpinning = true;
-
             const btn = document.getElementById('spinBtn');
             const lines = document.getElementById('warpLines');
             btn.disabled = true;
             lines.classList.add('fast-warp');
 
-            // HEDEF TARİH OLUŞTURMA (1990-1999 arası rastgele)
             const targetMonth = ms[Math.floor(Math.random() * 12)];
             const targetDay = Math.floor(Math.random() * 28) + 1;
             const targetYear = Math.floor(Math.random() * 10) + 1990;
             const targets = [targetMonth, targetDay, targetYear];
-            
             const ids = ['m-strip', 'd-strip', 'y-strip'];
 
             ids.forEach((id, i) => {
                 const el = document.getElementById(id);
-                const items = el.getElementsByClassName('item');
-                
-                // Animasyon başlamadan hemen önce, duracağı noktadaki (COUNT-3) item'ı hedef tarihle değiştiriyoruz
-                items[COUNT - 3].innerText = targets[i];
-                
+                el.getElementsByClassName('item')[COUNT - 3].innerText = targets[i];
                 el.style.transition = "none";
                 el.style.transform = "translateY(0)";
-                
                 setTimeout(() => {
                     el.style.transition = "transform 2.5s cubic-bezier(0.1, 0, 0.1, 1)";
                     el.style.transform = `translateY(-${(COUNT - 3) * ITEM_H}px)`;
@@ -113,11 +111,8 @@
             const btn = document.getElementById('spinBtn');
             const endTime = Date.now() + (seconds * 1000);
             localStorage.setItem('machineLock', endTime);
-
             const timer = setInterval(() => {
-                const now = Date.now();
-                const distance = endTime - now;
-
+                const distance = endTime - Date.now();
                 if (distance <= 0) {
                     clearInterval(timer);
                     btn.disabled = false;
